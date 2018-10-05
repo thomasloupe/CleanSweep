@@ -1,0 +1,10 @@
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\bin\Release\CleanSweep.exe.config
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\bin\Release\CleanSweep.exe
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\bin\Release\CleanSweep.pdb
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\Clean Sweep.csprojAssemblyReference.cache
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\WindowsFormsApp1.Form1.resources
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\CleanSweep.Properties.Resources.resources
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\Clean Sweep.csproj.GenerateResource.cache
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\Clean Sweep.csproj.CoreCompileInputs.cache
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\CleanSweep.exe
+C:\Users\acidx\Desktop\CleanSweep\WindowsFormsApp1\obj\Release\CleanSweep.pdb
