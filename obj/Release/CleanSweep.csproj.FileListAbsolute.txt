@@ -1,0 +1,13 @@
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\bin\Release\CleanSweep.exe.config
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\bin\Release\CleanSweep.exe
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\bin\Release\CleanSweep.pdb
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\bin\Release\Octokit.dll
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\bin\Release\Octokit.xml
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.csprojAssemblyReference.cache
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.Form1.resources
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.Properties.Resources.resources
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.csproj.GenerateResource.cache
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.csproj.CoreCompileInputs.cache
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.csproj.CopyComplete
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.exe
+C:\Users\acid_rain\Desktop\CleanSweep\CleanSweep\obj\Release\CleanSweep.pdb
