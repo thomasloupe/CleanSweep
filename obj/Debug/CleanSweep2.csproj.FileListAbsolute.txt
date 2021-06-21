@@ -31,3 +31,4 @@ Z:\Development\Git Repositories\CleanSweep2\bin\Debug\System.Management.Automati
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.csproj.CopyComplete
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.exe
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.pdb
+\\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.csproj.AssemblyReference.cache

@@ -9,7 +9,8 @@ namespace CleanSweep2
 {
     public partial class Form1 : Form
     {
-        private const string CurrentVersion = "v2.0.1";
+        #region Declarations
+        private const string CurrentVersion = "v2.0.2";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -28,6 +29,13 @@ namespace CleanSweep2
         long tempSetupDirSize;
         long tempSetupSizeInMegabytes;
         long tempSetupFilesSizeBeforeDelete;
+
+        // Temporary Internet Files
+        string tempInternetFilesDirectory;
+        long tempInternetFilesDirSize;
+        long tempInternetSizeInMegabytes;
+        long tempInternetFilesBeforeDelete;
+        #endregion
 
         public Form1()
         {
@@ -73,6 +81,7 @@ namespace CleanSweep2
             Properties.Settings.Default.Save();
         }
 
+        #region Calculate Space To Regain
         private void Form1_Load(object sender, EventArgs e)
         {
             // Get size of Temporary Files.
@@ -85,47 +94,43 @@ namespace CleanSweep2
             tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
 
+            // Get size of Temporary Internet Files.
+            tempInternetFilesDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Microsoft\\Windows\\INetCache\\";
+            try
+            {
+                tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            }
+            catch (Exception ex)
+            {
+                // Skip files we don't have privileges to.
+                if (isVerboseMode)
+                {
+                    richTextBox1.AppendText(ex.Message + "Skipping..." + "\n", Color.Red);
+                }
+                else
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                ScrollToOutputBottom();
+            }
+            tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
+
             // Show potential reclamation, then each individual category.
             richTextBox1.AppendText("Space to reclaim: " + (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes) + "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
                 "----------------------------------------------------------------------------------------------------------------------------------------" + "\n");
-            // Temporary Files
+
+            // List out total space reclamation per category.
             richTextBox1.AppendText("Temp Directory size: " + tempDirSizeInMegaBytes + "MB" + "\n");
-            // Temporary Setup Files
-            richTextBox1.AppendText("Temporary Setup Files directory size: " + tempSetupSizeInMegabytes + "MB" + "\n" + "\n");
+            richTextBox1.AppendText("Temporary Setup Files directory size: " + tempSetupSizeInMegabytes + "MB" + "\n");
+            richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n" + "\n");
         }
+        #endregion
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            richTextBox1.SelectionStart = richTextBox1.Text.Length;
-            richTextBox1.ScrollToCaret();
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void UpdateCheck()
-        {
-            // Add each new checkbox here once added to the main content window and pass the operations complete bool so we can unlock the buttons once everything is finished.
-            if (!checkBox1.Checked && !checkBox2.Checked && !isOperationComplete && !isOperationComplete)
-            {
-                button1.Enabled = false;
-            }
-            else
-            {
-                button1.Enabled = true;
-            }
-        }
-
+        #region Sweep Button
         // Sweep button function.
         private void button1_Click_1(object sender, EventArgs e)
         {
+            #region Temporary Files Removal
             // Temporary Files removal.
             if (checkBox1.Checked)
             {
@@ -201,7 +206,8 @@ namespace CleanSweep2
                     }
                 }
             }
-
+            #endregion
+            #region Temporary Setup Files Removal
             // Temporary Setup Files removal
             if (checkBox2.Checked)
             {
@@ -275,48 +281,148 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
+            }
+            #endregion
+            #region Temporary Internet Files Removal
+            // Temporary Setup Files removal
+            if (checkBox3.Checked)
+            {
+                checkBox3.Checked = false;
+                tempInternetFilesBeforeDelete = tempInternetSizeInMegabytes;
 
-                richTextBox1.AppendText("\n" + "Recovery results:", Color.Green);
-                richTextBox1.AppendText("\n" + "----------------------------------------------------------------------------------------------------------------------------------------", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Sweeping Temporary Internet Files..." + "\n", Color.Green);
+                DirectoryInfo di = new DirectoryInfo(tempInternetFilesDirectory);
 
-
-                // Get new Temporary Files size and output what was saved.
-                tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
-                long newTempSize = tempSizeBeforeDelete - tempDirSizeInMegaBytes;
-                if (isVerboseMode)
+                foreach (FileInfo file in di.GetFiles())
                 {
-                    richTextBox1.AppendText("\n" + "Recovered " + newTempSize + "MB from removing Temporary Files." + "\n", Color.Green);
+                    try
+                    {
+                        file.Delete();
+                        if (!File.Exists(file.Name))
+                        {
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("o", Color.Green);
+                            }
+                            ScrollToOutputBottom();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Skip all failed files.
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("x", Color.Red);
+                        }
+                        ScrollToOutputBottom();
+                    }
                 }
-                else
+                foreach (DirectoryInfo dir in di.GetDirectories())
                 {
-                    richTextBox1.AppendText("\n" + "\n" + "Recovered " + newTempSize + "MB from removing Temporary Files." + "\n", Color.Green);
+                    try
+                    {
+                        dir.Delete(true);
+                        if (Directory.Exists(dir.Name))
+                        {
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("o", Color.Green);
+                            }
+                            ScrollToOutputBottom();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Skip all failed directories.
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("x", Color.Red);
+                        }
+                        ScrollToOutputBottom();
+                    }
                 }
-                ScrollToOutputBottom();
+            }
+            #endregion
+            #region Calculate Space Saved
+            richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
+            richTextBox1.AppendText("\n" + "----------------------------------------------------------------------------------------------------------------------------------------", Color.Green);
 
-                // Get new Temporary Setup Files size and output what was saved.
-                tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
-                long newTempSetupDirSize = tempSetupFilesSizeBeforeDelete - tempSetupSizeInMegabytes;
-                if (isVerboseMode)
-                {
-                    richTextBox1.AppendText("Recovered " + newTempSetupDirSize + "MB from removing Temporary Setup Files." + "\n", Color.Green);
-                }
-                else
-                {
-                    richTextBox1.AppendText("Recovered " + newTempSetupDirSize + "MB from removing Temporary Setup Files." + "\n", Color.Green);
-                }
-                ScrollToOutputBottom();
+            // Get new Temporary Files size and output what was saved.
+            tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
+            long newTempDirSize = tempSizeBeforeDelete - tempDirSizeInMegaBytes;
+            if (newTempDirSize > 0)
+            {
+                richTextBox1.AppendText("\n" + "Recovered " + newTempDirSize + "MB from removing Temporary Files." + "\n", Color.Green);
+            }
+            else
+            {
+                richTextBox1.AppendText("<1MB recovered from Temporary Files..." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
 
-                // Output the total space saved from the entire operation.
-                long totalSpaceSaved = newTempSize + newTempSetupDirSize;
+            // Get new Temporary Setup Files size and output what was saved.
+            tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
+            long newTempSetupDirSize = tempSetupFilesSizeBeforeDelete - tempSetupSizeInMegabytes;
+            if (newTempSetupDirSize > 0)
+            {
+                richTextBox1.AppendText("Recovered " + newTempSetupDirSize + "MB from removing Temporary Setup Files." + "\n", Color.Green);
+            }
+            else
+            {
+                richTextBox1.AppendText("<1MB recovered from Temporary Setup Files..." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            // Get new Temporary Internet Files size and output what was saved.
+            tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
+            long newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
+            if (newTempInternetFilesDirSize > 0)
+            {
+                richTextBox1.AppendText("Recovered " + newTempInternetFilesDirSize + "MB from removing Temporary Internet Files." + "\n", Color.Green);
+            }
+            else
+            {
+                richTextBox1.AppendText("<1MB recovered from Temporary Internet Files..." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            // Output the total space saved from the entire operation.
+            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize;
+            if (totalSpaceSaved > 0)
+            {
                 richTextBox1.AppendText("Total space recovered: " + totalSpaceSaved + "MB", Color.Green);
             }
+            else
+            {
+                richTextBox1.AppendText("Total space recovered: <1MB", Color.Green);
+            }
+            ScrollToOutputBottom();
 
             // Mark the sweeping operation as completed to allow sweeping again.
             isOperationComplete = true;
             UpdateCheck();
+            #endregion
         }
+        #endregion
 
         private void ScrollToOutputBottom()
         {
@@ -325,12 +431,51 @@ namespace CleanSweep2
             richTextBox1.ScrollToCaret();
         }
 
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            richTextBox1.SelectionStart = richTextBox1.Text.Length;
+            richTextBox1.ScrollToCaret();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void UpdateCheck()
+        {
+            // Add each new checkbox here once added to the main content window and pass the operations complete bool so we can unlock the buttons once everything is finished.
+            if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked)
+            {
+                    button1.Enabled = false;
+            }
+            else
+            {
+                button1.Enabled = true;
+            }
+            while (!isOperationComplete)
+            {
+                button1.Enabled = false;
+            }
+        }
+
         private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
         {
             UpdateCheck();
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCheck();
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             UpdateCheck();
         }
