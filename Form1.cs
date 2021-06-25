@@ -4,19 +4,22 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using octo = Octokit;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CleanSweep2
 {
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.2";
+        private const string CurrentVersion = "v2.0.3";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
 
         bool isOperationComplete = true;
         bool isVerboseMode;
+        bool eventLogsCleared = false;
 
         // Temporary Files
         string tempDirectory;
@@ -128,8 +131,11 @@ namespace CleanSweep2
 
         #region Sweep Button
         // Sweep button function.
-        private void button1_Click_1(object sender, EventArgs e)
+        private async void button1_Click_1(object sender, EventArgs e)
         {
+            // Lock cleaning until the entire operation is done.
+            UpdateCheck();
+
             #region Temporary Files Removal
             // Temporary Files removal.
             if (checkBox1.Checked)
@@ -359,6 +365,52 @@ namespace CleanSweep2
                 }
             }
             #endregion
+            #region Event Viewer Logs Removal
+            // Event Viewer Logs Removal.
+            if (checkBox4.Checked)
+            {
+                checkBox4.Checked = false;
+                richTextBox1.AppendText("\n" + "\n" + "Sweeping Event Viewer Logs", Color.Green);
+                ScrollToOutputBottom();
+                AddWaitText();
+
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    if (isVerboseMode)
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    }
+                    else
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    }
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.Arguments = "/C for /F \"tokens=*\" %1 in ('wevtutil.exe el') DO wevtutil.exe cl \"%1\"";
+                    startInfo.Verb = "runas";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Thread.Sleep(200);
+                        AddWaitText();
+                        if (process.HasExited)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                ScrollToOutputBottom();
+                            }));
+                            break;
+                        }
+                    }
+                });
+
+                richTextBox1.AppendText("\n" + "Swept Event Viewer Logs!" + "\n", Color.Green);
+                eventLogsCleared = true;
+            }
+            #endregion
             #region Calculate Space Saved
             richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
             richTextBox1.AppendText("\n" + "----------------------------------------------------------------------------------------------------------------------------------------", Color.Green);
@@ -392,7 +444,23 @@ namespace CleanSweep2
             ScrollToOutputBottom();
 
             // Get new Temporary Internet Files size and output what was saved.
-            tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            try
+            {
+                tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            }
+            catch (Exception ex)
+            {
+                // Skip files we don't have privileges to.
+                if (isVerboseMode)
+                {
+                    richTextBox1.AppendText(ex.Message + "Skipping..." + "\n", Color.Red);
+                }
+                else
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                ScrollToOutputBottom();
+            }
             tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
             long newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
             if (newTempInternetFilesDirSize > 0)
@@ -405,19 +473,30 @@ namespace CleanSweep2
             }
             ScrollToOutputBottom();
 
-            // Output the total space saved from the entire operation.
-            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize;
-            if (totalSpaceSaved > 0)
+            if (eventLogsCleared)
             {
-                richTextBox1.AppendText("Total space recovered: " + totalSpaceSaved + "MB", Color.Green);
+                richTextBox1.AppendText("Event Logs were cleared.", Color.Green);
             }
-            else
+            // Mark the sweeping of Event Logs as completed to allow re-sweeping.
+            if (eventLogsCleared)
             {
-                richTextBox1.AppendText("Total space recovered: <1MB", Color.Green);
+                eventLogsCleared = false;
             }
             ScrollToOutputBottom();
 
-            // Mark the sweeping operation as completed to allow sweeping again.
+            // Output the total space saved from the entire operation and other important completed actions.
+            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize;
+            if (totalSpaceSaved > 0)
+            {
+                richTextBox1.AppendText("\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
+            }
+            else
+            {
+                richTextBox1.AppendText("\n" + "Total space recovered: <1MB" + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            // Complete the entire operation and unlock cleaning.
             isOperationComplete = true;
             UpdateCheck();
             #endregion
@@ -431,6 +510,13 @@ namespace CleanSweep2
             richTextBox1.ScrollToCaret();
         }
 
+        private void AddWaitText()
+        {
+            Invoke(new Action(() =>
+            {
+                richTextBox1.AppendText(".", Color.Green);
+            }));
+        }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
@@ -451,17 +537,13 @@ namespace CleanSweep2
         private void UpdateCheck()
         {
             // Add each new checkbox here once added to the main content window and pass the operations complete bool so we can unlock the buttons once everything is finished.
-            if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked)
+            if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked || !isOperationComplete)
             {
                     button1.Enabled = false;
             }
             else
             {
                 button1.Enabled = true;
-            }
-            while (!isOperationComplete)
-            {
-                button1.Enabled = false;
             }
         }
 
@@ -476,6 +558,11 @@ namespace CleanSweep2
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCheck();
+        }
+
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             UpdateCheck();
         }
@@ -544,11 +631,6 @@ namespace CleanSweep2
             "Github: https://github.com/thomasloupe" + "\n" +
             "Twitter: https://twitter.com/acid_rain" + "\n" +
             "Website: https://thomasloupe.com", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void verboseModeToolStripMenuItem_Click(object sender, EventArgs e)
