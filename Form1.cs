@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.3";
+        private const string CurrentVersion = "v2.0.4";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -20,6 +20,7 @@ namespace CleanSweep2
         bool isOperationComplete = true;
         bool isVerboseMode;
         bool eventLogsCleared = false;
+        bool isRecycleBinEmpty = false;
 
         // Temporary Files
         string tempDirectory;
@@ -211,6 +212,7 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
+                richTextBox1.AppendText("\n" + "\n");
             }
             #endregion
             #region Temporary Setup Files Removal
@@ -220,7 +222,7 @@ namespace CleanSweep2
                 checkBox2.Checked = false;
                 tempSetupFilesSizeBeforeDelete = tempSetupSizeInMegabytes;
 
-                richTextBox1.AppendText("\n" + "\n" + "Sweeping Temporary Setup Files..." + "\n", Color.Green);
+                richTextBox1.AppendText("Sweeping Temporary Setup Files..." + "\n", Color.Green);
                 DirectoryInfo di = new DirectoryInfo(tempSetupDirectory);
 
                 foreach (FileInfo file in di.GetFiles())
@@ -287,6 +289,7 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
+                richTextBox1.AppendText("\n" + "\n");
             }
             #endregion
             #region Temporary Internet Files Removal
@@ -296,7 +299,7 @@ namespace CleanSweep2
                 checkBox3.Checked = false;
                 tempInternetFilesBeforeDelete = tempInternetSizeInMegabytes;
 
-                richTextBox1.AppendText("\n" + "\n" + "Sweeping Temporary Internet Files..." + "\n", Color.Green);
+                richTextBox1.AppendText("Sweeping Temporary Internet Files..." + "\n", Color.Green);
                 DirectoryInfo di = new DirectoryInfo(tempInternetFilesDirectory);
 
                 foreach (FileInfo file in di.GetFiles())
@@ -363,6 +366,7 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
+                richTextBox1.AppendText("\n" + "\n");
             }
             #endregion
             #region Event Viewer Logs Removal
@@ -370,7 +374,7 @@ namespace CleanSweep2
             if (checkBox4.Checked)
             {
                 checkBox4.Checked = false;
-                richTextBox1.AppendText("\n" + "\n" + "Sweeping Event Viewer Logs", Color.Green);
+                richTextBox1.AppendText("Sweeping Event Viewer Logs", Color.Green);
                 ScrollToOutputBottom();
                 AddWaitText();
 
@@ -406,9 +410,54 @@ namespace CleanSweep2
                         }
                     }
                 });
-
-                richTextBox1.AppendText("\n" + "Swept Event Viewer Logs!" + "\n", Color.Green);
+                
                 eventLogsCleared = true;
+                richTextBox1.AppendText("\n" + "Swept Event Viewer Logs!" + "\n" + "\n", Color.Green);
+            }
+            #endregion
+            #region Empty Recycle Bin
+            // Empty Recycle Bin.
+            if (checkBox5.Checked)
+            {
+                checkBox4.Checked = false;
+                richTextBox1.AppendText("Emptying Recycle Bin", Color.Green);
+                ScrollToOutputBottom();
+
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    if (isVerboseMode)
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    }
+                    else
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    }
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.Arguments = "/C rd /s /q %systemdrive%\\$Recycle.bin";
+                    startInfo.Verb = "runas";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Thread.Sleep(200);
+                        AddWaitText();
+                        if (process.HasExited)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                ScrollToOutputBottom();
+                            }));
+                            break;
+                        }
+                    }
+                });
+
+                richTextBox1.AppendText("Emptied Recycle Bin!" + "\n", Color.Green);
+                isRecycleBinEmpty = true;
             }
             #endregion
             #region Calculate Space Saved
@@ -475,12 +524,16 @@ namespace CleanSweep2
 
             if (eventLogsCleared)
             {
-                richTextBox1.AppendText("Event Logs were cleared.", Color.Green);
-            }
-            // Mark the sweeping of Event Logs as completed to allow re-sweeping.
-            if (eventLogsCleared)
-            {
+                // Mark the sweeping of Event Logs as completed to allow re-sweeping.
                 eventLogsCleared = false;
+                richTextBox1.AppendText("Event Logs were cleared." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            if (isRecycleBinEmpty)
+            {
+                isRecycleBinEmpty = false;
+                richTextBox1.AppendText("Recycle Bin was emptied." + "\n", Color.Green);
             }
             ScrollToOutputBottom();
 
@@ -537,7 +590,8 @@ namespace CleanSweep2
         private void UpdateCheck()
         {
             // Add each new checkbox here once added to the main content window and pass the operations complete bool so we can unlock the buttons once everything is finished.
-            if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked || !isOperationComplete)
+            // Create an array and loop through this later.
+            if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked &&!checkBox5.Checked || !isOperationComplete)
             {
                     button1.Enabled = false;
             }
@@ -563,6 +617,10 @@ namespace CleanSweep2
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCheck();
+        }
+        private void checkBox5_CheckedChanged(object sender, EventArgs e)
         {
             UpdateCheck();
         }

@@ -56,6 +56,8 @@ namespace CleanSweep2
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -301,11 +303,32 @@ namespace CleanSweep2
             this.checkBox4.UseVisualStyleBackColor = true;
             this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(28, 141);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(64, 13);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "Recycle Bin";
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(7, 141);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(15, 14);
+            this.checkBox5.TabIndex = 19;
+            this.checkBox5.UseVisualStyleBackColor = true;
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(434, 561);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.checkBox5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.checkBox4);
             this.Controls.Add(this.label3);
@@ -358,6 +381,8 @@ namespace CleanSweep2
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox checkBox4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox checkBox5;
     }
 }
 
