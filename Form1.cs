@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.4.1";
+        private const string CurrentVersion = "v2.0.4.2";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -374,7 +374,13 @@ namespace CleanSweep2
             if (checkBox4.Checked)
             {
                 checkBox4.Checked = false;
-                richTextBox1.AppendText("Sweeping Event Viewer Logs", Color.Green);
+                
+                // If this operation is selected, we need to uncheck other operations' checkboxes to ensure locking of sweeping.
+                if (checkBox5.Checked)
+                {
+                    checkBox5.Checked = false;
+                }
+                    richTextBox1.AppendText("Sweeping Event Viewer Logs", Color.Green);
                 ScrollToOutputBottom();
                 AddWaitText();
 
