@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.4";
+        private const string CurrentVersion = "v2.0.4.1";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -419,7 +419,7 @@ namespace CleanSweep2
             // Empty Recycle Bin.
             if (checkBox5.Checked)
             {
-                checkBox4.Checked = false;
+                checkBox5.Checked = false;
                 richTextBox1.AppendText("Emptying Recycle Bin", Color.Green);
                 ScrollToOutputBottom();
 
