@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace CleanSweep2
 {
     partial class Form1
@@ -58,6 +60,8 @@ namespace CleanSweep2
             this.checkBox4 = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -70,7 +74,7 @@ namespace CleanSweep2
             this.checkBox1.Size = new System.Drawing.Size(15, 14);
             this.checkBox1.TabIndex = 9;
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // label1
             // 
@@ -90,7 +94,7 @@ namespace CleanSweep2
             this.button1.TabIndex = 6;
             this.button1.Text = "Sweep it!";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            this.button1.Click += new System.EventHandler(this.Button1_Click_1);
             // 
             // menuStrip1
             // 
@@ -102,7 +106,7 @@ namespace CleanSweep2
             this.menuStrip1.Size = new System.Drawing.Size(434, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
-            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuStrip1_ItemClicked);
             // 
             // fileToolStripMenuItem
             // 
@@ -117,7 +121,7 @@ namespace CleanSweep2
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -135,21 +139,21 @@ namespace CleanSweep2
             this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
             this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.checkForUpdatesToolStripMenuItem.Text = "Check For Updates";
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesToolStripMenuItem_Click);
+            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdatesToolStripMenuItem_Click);
             // 
             // donateToolStripMenuItem
             // 
             this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
             this.donateToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.donateToolStripMenuItem.Text = "Donate";
-            this.donateToolStripMenuItem.Click += new System.EventHandler(this.donateToolStripMenuItem_Click);
+            this.donateToolStripMenuItem.Click += new System.EventHandler(this.DonateToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // verboseModeToolStripMenuItem
             // 
@@ -157,7 +161,7 @@ namespace CleanSweep2
             this.verboseModeToolStripMenuItem.Name = "verboseModeToolStripMenuItem";
             this.verboseModeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.verboseModeToolStripMenuItem.Text = "Verbose Mode";
-            this.verboseModeToolStripMenuItem.Click += new System.EventHandler(this.verboseModeToolStripMenuItem_Click);
+            this.verboseModeToolStripMenuItem.Click += new System.EventHandler(this.VerboseModeToolStripMenuItem_Click);
             // 
             // richTextBox1
             // 
@@ -177,7 +181,7 @@ namespace CleanSweep2
             this.checkBox2.Size = new System.Drawing.Size(15, 14);
             this.checkBox2.TabIndex = 12;
             this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
             // 
             // label2
             // 
@@ -203,7 +207,7 @@ namespace CleanSweep2
             this.TopToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.TopToolStripPanel.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.TopToolStripPanel.Size = new System.Drawing.Size(0, 0);
-            this.TopToolStripPanel.Click += new System.EventHandler(this.toolStripContainer1_TopToolStripPanel_Click);
+            this.TopToolStripPanel.Click += new System.EventHandler(this.ToolStripContainer1_TopToolStripPanel_Click);
             // 
             // RightToolStripPanel
             // 
@@ -282,7 +286,7 @@ namespace CleanSweep2
             this.checkBox3.Size = new System.Drawing.Size(15, 14);
             this.checkBox3.TabIndex = 15;
             this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.CheckBox3_CheckedChanged);
             // 
             // label4
             // 
@@ -301,7 +305,7 @@ namespace CleanSweep2
             this.checkBox4.Size = new System.Drawing.Size(15, 14);
             this.checkBox4.TabIndex = 17;
             this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.CheckBox4_CheckedChanged);
             // 
             // label5
             // 
@@ -320,13 +324,34 @@ namespace CleanSweep2
             this.checkBox5.Size = new System.Drawing.Size(15, 14);
             this.checkBox5.TabIndex = 19;
             this.checkBox5.UseVisualStyleBackColor = true;
-            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            this.checkBox5.CheckedChanged += new System.EventHandler(this.CheckBox5_CheckedChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(28, 170);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(116, 13);
+            this.label6.TabIndex = 22;
+            this.label6.Text = "Windows Error Reports";
+            // 
+            // checkBox6
+            // 
+            this.checkBox6.AutoSize = true;
+            this.checkBox6.Location = new System.Drawing.Point(7, 170);
+            this.checkBox6.Name = "checkBox6";
+            this.checkBox6.Size = new System.Drawing.Size(15, 14);
+            this.checkBox6.TabIndex = 21;
+            this.checkBox6.UseVisualStyleBackColor = true;
+            this.checkBox6.CheckedChanged += new System.EventHandler(this.CheckBox6_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(434, 561);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.checkBox6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.checkBox5);
             this.Controls.Add(this.label4);
@@ -383,6 +408,8 @@ namespace CleanSweep2
         private System.Windows.Forms.CheckBox checkBox4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox checkBox5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBox6;
     }
 }
 

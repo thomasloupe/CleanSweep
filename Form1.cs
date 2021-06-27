@@ -12,15 +12,18 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.4.2";
+        private const string CurrentVersion = "v2.0.5";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        readonly string programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
-        bool isOperationComplete = true;
         bool isVerboseMode;
         bool eventLogsCleared = false;
         bool isRecycleBinEmpty = false;
+        bool windowsErrorReportsCleared = false;
+        bool[] checkedArrayBool;
+        CheckBox[] checkedArray;
 
         // Temporary Files
         string tempDirectory;
@@ -39,6 +42,13 @@ namespace CleanSweep2
         long tempInternetFilesDirSize;
         long tempInternetSizeInMegabytes;
         long tempInternetFilesBeforeDelete;
+
+        //Windows Error Reports
+        // %ProgramData%\Microsoft\Windows\WER\ReportArchive
+        string windowsErrorReportsDirectory;
+        long windowsErrorReportsDirSize;
+        long windowsErrorReportsDirSizeInMegabytes;
+        long windowsErrorReportsDirSizeBeforeDelete;
         #endregion
 
         public Form1()
@@ -88,6 +98,9 @@ namespace CleanSweep2
         #region Calculate Space To Regain
         private void Form1_Load(object sender, EventArgs e)
         {
+            checkedArray = new CheckBox[6] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6};
+            checkedArrayBool = new bool[6] { checkBox1.Checked, checkBox2.Checked, checkBox3.Checked, checkBox4.Checked, checkBox5.Checked, checkBox6.Checked };
+
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
             tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
@@ -119,29 +132,37 @@ namespace CleanSweep2
             }
             tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
 
+            // Get size of Windows Error Reports
+            windowsErrorReportsDirectory = programDataDirectory + "\\Microsoft\\Windows\\WER\\ReportArchive";
+            windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
+
             // Show potential reclamation, then each individual category.
-            richTextBox1.AppendText("Space to reclaim: " + (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes) + "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
+            richTextBox1.AppendText("Space to reclaim: " + 
+                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes) + 
+                "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
                 "----------------------------------------------------------------------------------------------------------------------------------------" + "\n");
 
             // List out total space reclamation per category.
             richTextBox1.AppendText("Temp Directory size: " + tempDirSizeInMegaBytes + "MB" + "\n");
             richTextBox1.AppendText("Temporary Setup Files directory size: " + tempSetupSizeInMegabytes + "MB" + "\n");
-            richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n" + "\n");
+            richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n");
+            richTextBox1.AppendText("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n" + "\n");
+
         }
         #endregion
 
         #region Sweep Button
         // Sweep button function.
-        private async void button1_Click_1(object sender, EventArgs e)
+        private async void Button1_Click_1(object sender, EventArgs e)
         {
             // Lock cleaning until the entire operation is done.
-            UpdateCheck();
+            LockCleaning(true);
 
             #region Temporary Files Removal
             // Temporary Files removal.
             if (checkBox1.Checked)
             {
-                checkBox1.Checked = false;
                 tempSizeBeforeDelete = tempDirSizeInMegaBytes;
 
                 richTextBox1.AppendText("Sweeping Temporary Files..." + "\n", Color.Green);
@@ -219,7 +240,6 @@ namespace CleanSweep2
             // Temporary Setup Files removal
             if (checkBox2.Checked)
             {
-                checkBox2.Checked = false;
                 tempSetupFilesSizeBeforeDelete = tempSetupSizeInMegabytes;
 
                 richTextBox1.AppendText("Sweeping Temporary Setup Files..." + "\n", Color.Green);
@@ -296,7 +316,6 @@ namespace CleanSweep2
             // Temporary Setup Files removal
             if (checkBox3.Checked)
             {
-                checkBox3.Checked = false;
                 tempInternetFilesBeforeDelete = tempInternetSizeInMegabytes;
 
                 richTextBox1.AppendText("Sweeping Temporary Internet Files..." + "\n", Color.Green);
@@ -373,14 +392,7 @@ namespace CleanSweep2
             // Event Viewer Logs Removal.
             if (checkBox4.Checked)
             {
-                checkBox4.Checked = false;
-                
-                // If this operation is selected, we need to uncheck other operations' checkboxes to ensure locking of sweeping.
-                if (checkBox5.Checked)
-                {
-                    checkBox5.Checked = false;
-                }
-                    richTextBox1.AppendText("Sweeping Event Viewer Logs", Color.Green);
+                richTextBox1.AppendText("Sweeping Event Viewer Logs", Color.Green);
                 ScrollToOutputBottom();
                 AddWaitText();
 
@@ -425,7 +437,6 @@ namespace CleanSweep2
             // Empty Recycle Bin.
             if (checkBox5.Checked)
             {
-                checkBox5.Checked = false;
                 richTextBox1.AppendText("Emptying Recycle Bin", Color.Green);
                 ScrollToOutputBottom();
 
@@ -461,13 +472,91 @@ namespace CleanSweep2
                         }
                     }
                 });
-
-                richTextBox1.AppendText("Emptied Recycle Bin!" + "\n", Color.Green);
+                
+                richTextBox1.AppendText("\n" + "Emptied Recycle Bin!" + "\n" + "\n", Color.Green);
                 isRecycleBinEmpty = true;
             }
             #endregion
-            #region Calculate Space Saved
-            richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
+            #region Windows Error Reports Removal
+            // Temporary Setup Files removal
+            if (checkBox6.Checked)
+            {
+                windowsErrorReportsDirSizeBeforeDelete = windowsErrorReportsDirSizeInMegabytes;
+
+                richTextBox1.AppendText("Sweeping Windows Error Reports" + "\n", Color.Green);
+                DirectoryInfo di = new DirectoryInfo(windowsErrorReportsDirectory);
+
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                        if (!File.Exists(file.Name))
+                        {
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("o", Color.Green);
+                            }
+                            ScrollToOutputBottom();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Skip all failed files.
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("x", Color.Red);
+                        }
+                        ScrollToOutputBottom();
+                    }
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    try
+                    {
+                        dir.Delete(true);
+                        if (Directory.Exists(dir.Name))
+                        {
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("o", Color.Green);
+                            }
+                            ScrollToOutputBottom();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Skip all failed directories.
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("x", Color.Red);
+                        }
+                        ScrollToOutputBottom();
+                    }
+                }
+                richTextBox1.AppendText("Swept Windows Error Reports!" + "\n", Color.Green);
+                windowsErrorReportsCleared = true;
+            }
+                #endregion
+
+                #region Calculate Space Saved
+                richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
             richTextBox1.AppendText("\n" + "----------------------------------------------------------------------------------------------------------------------------------------", Color.Green);
 
             // Get new Temporary Files size and output what was saved.
@@ -543,8 +632,29 @@ namespace CleanSweep2
             }
             ScrollToOutputBottom();
 
+            if (windowsErrorReportsCleared)
+            {
+                windowsErrorReportsCleared = false;
+                richTextBox1.AppendText("Windows Error Reports were cleared." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            // Get new Windows Error Reports Directory Size and output what was saved.
+            windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
+            long newWindowsErrorReportsDirSize = windowsErrorReportsDirSizeBeforeDelete - windowsErrorReportsDirSizeInMegabytes;
+            if (newWindowsErrorReportsDirSize > 0)
+            {
+                richTextBox1.AppendText("Recovered " + newWindowsErrorReportsDirSize + "MB from removing Windows Error Reports." + "\n", Color.Green);
+            }
+            else
+            {
+                richTextBox1.AppendText("<1MB recovered from removing Windows Error Reports..." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
             // Output the total space saved from the entire operation and other important completed actions.
-            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize;
+            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize;
             if (totalSpaceSaved > 0)
             {
                 richTextBox1.AppendText("\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
@@ -555,9 +665,9 @@ namespace CleanSweep2
             }
             ScrollToOutputBottom();
 
-            // Complete the entire operation and unlock cleaning.
-            isOperationComplete = true;
-            UpdateCheck();
+            LockCleaning(false);
+            CanCleanStatus();
+            RemoveAllChecks();
             #endregion
         }
         #endregion
@@ -577,61 +687,112 @@ namespace CleanSweep2
             }));
         }
 
-        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        private void RichTextBox1_TextChanged(object sender, EventArgs e)
         {
             richTextBox1.SelectionStart = richTextBox1.Text.Length;
             richTextBox1.ScrollToCaret();
         }
 
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void MenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-
+            ToggleCleanableStatus(checkBox1.Checked, 0);
         }
 
-        private void UpdateCheck()
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
-            // Add each new checkbox here once added to the main content window and pass the operations complete bool so we can unlock the buttons once everything is finished.
-            // Create an array and loop through this later.
-            if (!checkBox1.Checked && !checkBox2.Checked && !checkBox3.Checked && !checkBox4.Checked &&!checkBox5.Checked || !isOperationComplete)
+            ToggleCleanableStatus(checkBox2.Checked, 1);
+        }
+
+        private void CheckBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox3.Checked, 2);
+        }
+
+        private void CheckBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox4.Checked, 3);
+        }
+
+        private void CheckBox5_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox5.Checked, 4);
+        }
+
+        private void CheckBox6_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox6.Checked, 5);
+        }
+
+        // Check each checkboxe's status and update the cleanable status immediately.
+        private void ToggleCleanableStatus(bool boxCheckedOperationPosition, int indexPosition)
+        {
+            if (boxCheckedOperationPosition)
             {
-                    button1.Enabled = false;
+                checkedArrayBool[indexPosition] = true;
             }
             else
             {
+                checkedArrayBool[indexPosition] = false;
+            }
+            CanCleanStatus();
+        }
+
+        // If any box is checked, allow cleaning. Otherwise, disable cleaning.
+        private void CanCleanStatus()
+        {
+            foreach (bool anyIsChecked in checkedArrayBool)
+            {
+                if (checkedArrayBool.Contains(true))
+                {
+                    button1.Enabled = true;
+                }
+                else
+                {
+                    button1.Enabled = false;
+                }
+            }
+        }
+
+        private void LockCleaning(bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                // Lock all checkboxes so we can't stop the operation.
+                checkBox1.Enabled = false;
+                checkBox2.Enabled = false;
+                checkBox3.Enabled = false;
+                checkBox4.Enabled = false;
+                checkBox5.Enabled = false;
+                checkBox6.Enabled = false;
+                button1.Enabled = false;
+            }
+            else
+            {
+                // Unlock all checkboxes so we can start the operation.
+                checkBox1.Enabled = true;
+                checkBox2.Enabled = true;
+                checkBox3.Enabled = true;
+                checkBox4.Enabled = true;
+                checkBox5.Enabled = true;
+                checkBox6.Enabled = true;
                 button1.Enabled = true;
             }
         }
 
-        private void checkBox1_CheckedChanged_1(object sender, EventArgs e)
+        private void RemoveAllChecks()
         {
-            UpdateCheck();
+            foreach (CheckBox box in checkedArray)
+            {
+                box.Checked = false;
+            }
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateCheck();
-        }
-
-        private void checkBox3_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateCheck();
-        }
-
-        private void checkBox4_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateCheck();
-        }
-        private void checkBox5_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateCheck();
-        }
-
-        private void checkForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void CheckForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_octoClient == null)
             {
@@ -671,13 +832,13 @@ namespace CleanSweep2
             }
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Dispose();
             Application.Exit();
         }
 
-        private void donateToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DonateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("CleanSweep will always be free!\n"
             + "If you'd like to buy me a beer anyway, I won't tell you no!\n"
@@ -688,7 +849,7 @@ namespace CleanSweep2
             }
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("CleanSweep " + CurrentVersion + ".\n" +
             "Created by Thomas Loupe." + "\n" +
@@ -697,7 +858,7 @@ namespace CleanSweep2
             "Website: https://thomasloupe.com", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void verboseModeToolStripMenuItem_Click(object sender, EventArgs e)
+        private void VerboseModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (verboseModeToolStripMenuItem.Checked)
             {
@@ -717,7 +878,7 @@ namespace CleanSweep2
 
         }
 
-        private void toolStripContainer1_TopToolStripPanel_Click(object sender, EventArgs e)
+        private void ToolStripContainer1_TopToolStripPanel_Click(object sender, EventArgs e)
         {
 
         }
