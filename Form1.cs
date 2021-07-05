@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.5";
+        private const string CurrentVersion = "v2.0.6";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -43,12 +43,17 @@ namespace CleanSweep2
         long tempInternetSizeInMegabytes;
         long tempInternetFilesBeforeDelete;
 
-        //Windows Error Reports
-        // %ProgramData%\Microsoft\Windows\WER\ReportArchive
+        // Windows Error Reports
         string windowsErrorReportsDirectory;
         long windowsErrorReportsDirSize;
         long windowsErrorReportsDirSizeInMegabytes;
         long windowsErrorReportsDirSizeBeforeDelete;
+
+        // Delivery Optimization Files
+        string deliveryOptimizationFilesDirectory;
+        long deliveryOptimizationFilesDirSize;
+        long deliveryOptimizationFilesDirSizeInMegabytes;
+        long deliveryOptimizationFilesDirSizeBeforeDelete;
         #endregion
 
         public Form1()
@@ -98,8 +103,8 @@ namespace CleanSweep2
         #region Calculate Space To Regain
         private void Form1_Load(object sender, EventArgs e)
         {
-            checkedArray = new CheckBox[6] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6};
-            checkedArrayBool = new bool[6] { checkBox1.Checked, checkBox2.Checked, checkBox3.Checked, checkBox4.Checked, checkBox5.Checked, checkBox6.Checked };
+            checkedArray = new CheckBox[7] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7};
+            checkedArrayBool = new bool[7] { checkBox1.Checked, checkBox2.Checked, checkBox3.Checked, checkBox4.Checked, checkBox5.Checked, checkBox6.Checked, checkBox7.Checked };
 
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
@@ -137,9 +142,14 @@ namespace CleanSweep2
             windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
 
+            // Get size of Windows Delivery Optimization Files
+            deliveryOptimizationFilesDirectory = windowsDirectory + "\\SoftwareDistribution\\";
+            deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
+
             // Show potential reclamation, then each individual category.
-            richTextBox1.AppendText("Space to reclaim: " + 
-                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes) + 
+            richTextBox1.AppendText("Potential space to reclaim: " + 
+                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + deliveryOptimizationFilesDirSizeInMegabytes) +
                 "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
                 "----------------------------------------------------------------------------------------------------------------------------------------" + "\n");
 
@@ -147,7 +157,8 @@ namespace CleanSweep2
             richTextBox1.AppendText("Temp Directory size: " + tempDirSizeInMegaBytes + "MB" + "\n");
             richTextBox1.AppendText("Temporary Setup Files directory size: " + tempSetupSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n");
-            richTextBox1.AppendText("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n" + "\n");
+            richTextBox1.AppendText("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n");
+            richTextBox1.AppendText("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n" + "\n");
 
         }
         #endregion
@@ -553,10 +564,86 @@ namespace CleanSweep2
                 richTextBox1.AppendText("Swept Windows Error Reports!" + "\n", Color.Green);
                 windowsErrorReportsCleared = true;
             }
-                #endregion
+            #endregion
+            #region Delivery Optimization Files
+            // Delivery Optimization Files Removal
+            if (checkBox7.Checked)
+            {
+                deliveryOptimizationFilesDirSizeBeforeDelete = deliveryOptimizationFilesDirSizeInMegabytes;
 
-                #region Calculate Space Saved
-                richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
+                richTextBox1.AppendText("Sweeping Delivery Optimization Files..." + "\n", Color.Green);
+                DirectoryInfo di = new DirectoryInfo(deliveryOptimizationFilesDirectory);
+
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    try
+                    {
+                        file.Delete();
+                        if (!File.Exists(file.Name))
+                        {
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("o", Color.Green);
+                            }
+                            ScrollToOutputBottom();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Skip all failed files.
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("x", Color.Red);
+                        }
+                        ScrollToOutputBottom();
+                    }
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    try
+                    {
+                        dir.Delete(true);
+                        if (Directory.Exists(dir.Name))
+                        {
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("o", Color.Green);
+                            }
+                            ScrollToOutputBottom();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // Skip all failed directories.
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                        }
+                        else
+                        {
+                            richTextBox1.AppendText("x", Color.Red);
+                        }
+                        ScrollToOutputBottom();
+                    }
+                }
+                richTextBox1.AppendText("\n" + "\n");
+            }
+            #endregion
+
+            #region Calculate Space Saved
+            richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
             richTextBox1.AppendText("\n" + "----------------------------------------------------------------------------------------------------------------------------------------", Color.Green);
 
             // Get new Temporary Files size and output what was saved.
@@ -653,8 +740,22 @@ namespace CleanSweep2
             }
             ScrollToOutputBottom();
 
+            // Get new Windows Delivery Optimization directory size and output what was saved.
+            deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
+            long newDeliveryOptimizationSize = deliveryOptimizationFilesDirSizeBeforeDelete - deliveryOptimizationFilesDirSizeInMegabytes;
+            if (newDeliveryOptimizationSize > 0)
+            {
+                richTextBox1.AppendText("Recovered " + newDeliveryOptimizationSize + "MB from removing Windows Delivery Optimization Files." + "\n", Color.Green);
+            }
+            else
+            {
+                richTextBox1.AppendText("<1MB recovered from Windows Delivery Optimization Files..." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
             // Output the total space saved from the entire operation and other important completed actions.
-            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize;
+            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize + newDeliveryOptimizationSize;
             if (totalSpaceSaved > 0)
             {
                 richTextBox1.AppendText("\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
@@ -728,6 +829,11 @@ namespace CleanSweep2
             ToggleCleanableStatus(checkBox6.Checked, 5);
         }
 
+        private void CheckBox7_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox7.Checked, 6);
+        }
+
         // Check each checkboxe's status and update the cleanable status immediately.
         private void ToggleCleanableStatus(bool boxCheckedOperationPosition, int indexPosition)
         {
@@ -745,16 +851,13 @@ namespace CleanSweep2
         // If any box is checked, allow cleaning. Otherwise, disable cleaning.
         private void CanCleanStatus()
         {
-            foreach (bool anyIsChecked in checkedArrayBool)
+            if (checkedArrayBool.Contains(true))
             {
-                if (checkedArrayBool.Contains(true))
-                {
-                    button1.Enabled = true;
-                }
-                else
-                {
-                    button1.Enabled = false;
-                }
+                button1.Enabled = true;
+            }
+            else
+            {
+                button1.Enabled = false;
             }
         }
 
@@ -769,6 +872,7 @@ namespace CleanSweep2
                 checkBox4.Enabled = false;
                 checkBox5.Enabled = false;
                 checkBox6.Enabled = false;
+                checkBox7.Enabled = false;
                 button1.Enabled = false;
             }
             else
@@ -780,6 +884,7 @@ namespace CleanSweep2
                 checkBox4.Enabled = true;
                 checkBox5.Enabled = true;
                 checkBox6.Enabled = true;
+                checkBox7.Enabled = true;
                 button1.Enabled = true;
             }
         }

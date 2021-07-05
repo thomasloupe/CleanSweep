@@ -62,6 +62,8 @@ namespace CleanSweep2
             this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBox6 = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -345,11 +347,32 @@ namespace CleanSweep2
             this.checkBox6.UseVisualStyleBackColor = true;
             this.checkBox6.CheckedChanged += new System.EventHandler(this.CheckBox6_CheckedChanged);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(28, 201);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(152, 13);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Windows Delivery Optimization";
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.Location = new System.Drawing.Point(7, 201);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(15, 14);
+            this.checkBox7.TabIndex = 23;
+            this.checkBox7.UseVisualStyleBackColor = true;
+            this.checkBox7.CheckedChanged += new System.EventHandler(this.CheckBox7_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(434, 561);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.checkBox7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.checkBox6);
             this.Controls.Add(this.label5);
@@ -410,6 +433,8 @@ namespace CleanSweep2
         private System.Windows.Forms.CheckBox checkBox5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBox6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox checkBox7;
     }
 }
 
