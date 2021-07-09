@@ -64,6 +64,28 @@ namespace CleanSweep2
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.checkBox8 = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.checkBox9 = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkBox10 = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.checkBox11 = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.checkBox12 = new System.Windows.Forms.CheckBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.checkBox13 = new System.Windows.Forms.CheckBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.checkBox14 = new System.Windows.Forms.CheckBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.checkBox15 = new System.Windows.Forms.CheckBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.checkBox16 = new System.Windows.Forms.CheckBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.checkBox17 = new System.Windows.Forms.CheckBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.checkBox18 = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -71,7 +93,7 @@ namespace CleanSweep2
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(7, 25);
+            this.checkBox1.Location = new System.Drawing.Point(7, 30);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(15, 14);
             this.checkBox1.TabIndex = 9;
@@ -81,7 +103,7 @@ namespace CleanSweep2
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(28, 25);
+            this.label1.Location = new System.Drawing.Point(28, 30);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(81, 13);
             this.label1.TabIndex = 8;
@@ -90,7 +112,7 @@ namespace CleanSweep2
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(148, 217);
+            this.button1.Location = new System.Drawing.Point(205, 211);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(115, 46);
             this.button1.TabIndex = 6;
@@ -105,7 +127,7 @@ namespace CleanSweep2
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(434, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(534, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.MenuStrip1_ItemClicked);
@@ -171,14 +193,14 @@ namespace CleanSweep2
             this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.richTextBox1.Location = new System.Drawing.Point(0, 268);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(434, 293);
+            this.richTextBox1.Size = new System.Drawing.Size(534, 293);
             this.richTextBox1.TabIndex = 11;
             this.richTextBox1.Text = "";
             // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(7, 53);
+            this.checkBox2.Location = new System.Drawing.Point(7, 58);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(15, 14);
             this.checkBox2.TabIndex = 12;
@@ -188,7 +210,7 @@ namespace CleanSweep2
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 53);
+            this.label2.Location = new System.Drawing.Point(28, 58);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(112, 13);
             this.label2.TabIndex = 13;
@@ -274,7 +296,7 @@ namespace CleanSweep2
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(28, 82);
+            this.label3.Location = new System.Drawing.Point(28, 87);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(120, 13);
             this.label3.TabIndex = 16;
@@ -283,7 +305,7 @@ namespace CleanSweep2
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(7, 82);
+            this.checkBox3.Location = new System.Drawing.Point(7, 87);
             this.checkBox3.Name = "checkBox3";
             this.checkBox3.Size = new System.Drawing.Size(15, 14);
             this.checkBox3.TabIndex = 15;
@@ -293,7 +315,7 @@ namespace CleanSweep2
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(28, 112);
+            this.label4.Location = new System.Drawing.Point(28, 117);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(96, 13);
             this.label4.TabIndex = 18;
@@ -302,7 +324,7 @@ namespace CleanSweep2
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(7, 112);
+            this.checkBox4.Location = new System.Drawing.Point(7, 117);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(15, 14);
             this.checkBox4.TabIndex = 17;
@@ -312,7 +334,7 @@ namespace CleanSweep2
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(28, 141);
+            this.label5.Location = new System.Drawing.Point(28, 146);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(64, 13);
             this.label5.TabIndex = 20;
@@ -321,7 +343,7 @@ namespace CleanSweep2
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(7, 141);
+            this.checkBox5.Location = new System.Drawing.Point(7, 146);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(15, 14);
             this.checkBox5.TabIndex = 19;
@@ -331,7 +353,7 @@ namespace CleanSweep2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(28, 170);
+            this.label6.Location = new System.Drawing.Point(376, 147);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(116, 13);
             this.label6.TabIndex = 22;
@@ -340,7 +362,7 @@ namespace CleanSweep2
             // checkBox6
             // 
             this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(7, 170);
+            this.checkBox6.Location = new System.Drawing.Point(355, 147);
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Size = new System.Drawing.Size(15, 14);
             this.checkBox6.TabIndex = 21;
@@ -350,7 +372,7 @@ namespace CleanSweep2
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(28, 201);
+            this.label7.Location = new System.Drawing.Point(376, 178);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(152, 13);
             this.label7.TabIndex = 24;
@@ -359,18 +381,249 @@ namespace CleanSweep2
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(7, 201);
+            this.checkBox7.Location = new System.Drawing.Point(355, 178);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(15, 14);
             this.checkBox7.TabIndex = 23;
             this.checkBox7.UseVisualStyleBackColor = true;
             this.checkBox7.CheckedChanged += new System.EventHandler(this.CheckBox7_CheckedChanged);
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(196, 29);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(90, 13);
+            this.label8.TabIndex = 26;
+            this.label8.Text = "Thumbnail Cache";
+            // 
+            // checkBox8
+            // 
+            this.checkBox8.AutoSize = true;
+            this.checkBox8.Location = new System.Drawing.Point(175, 29);
+            this.checkBox8.Name = "checkBox8";
+            this.checkBox8.Size = new System.Drawing.Size(15, 14);
+            this.checkBox8.TabIndex = 25;
+            this.checkBox8.UseVisualStyleBackColor = true;
+            this.checkBox8.CheckedChanged += new System.EventHandler(this.CheckBox8_CheckedChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(196, 58);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(83, 13);
+            this.label9.TabIndex = 28;
+            this.label9.Text = "User File History";
+            // 
+            // checkBox9
+            // 
+            this.checkBox9.AutoSize = true;
+            this.checkBox9.Location = new System.Drawing.Point(175, 58);
+            this.checkBox9.Name = "checkBox9";
+            this.checkBox9.Size = new System.Drawing.Size(15, 14);
+            this.checkBox9.TabIndex = 27;
+            this.checkBox9.UseVisualStyleBackColor = true;
+            this.checkBox9.CheckedChanged += new System.EventHandler(this.CheckBox9_CheckedChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(196, 87);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(108, 13);
+            this.label10.TabIndex = 30;
+            this.label10.Text = "Windows OLD Folder";
+            // 
+            // checkBox10
+            // 
+            this.checkBox10.AutoSize = true;
+            this.checkBox10.Location = new System.Drawing.Point(175, 87);
+            this.checkBox10.Name = "checkBox10";
+            this.checkBox10.Size = new System.Drawing.Size(15, 14);
+            this.checkBox10.TabIndex = 29;
+            this.checkBox10.UseVisualStyleBackColor = true;
+            this.checkBox10.CheckedChanged += new System.EventHandler(this.CheckBox10_CheckedChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(196, 117);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(124, 13);
+            this.label11.TabIndex = 32;
+            this.label11.Text = "Windows Defender Logs";
+            // 
+            // checkBox11
+            // 
+            this.checkBox11.AutoSize = true;
+            this.checkBox11.Location = new System.Drawing.Point(175, 117);
+            this.checkBox11.Name = "checkBox11";
+            this.checkBox11.Size = new System.Drawing.Size(15, 14);
+            this.checkBox11.TabIndex = 31;
+            this.checkBox11.UseVisualStyleBackColor = true;
+            this.checkBox11.CheckedChanged += new System.EventHandler(this.CheckBox11_CheckedChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(196, 146);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(115, 13);
+            this.label12.TabIndex = 34;
+            this.label12.Text = "Microsoft Office Cache";
+            // 
+            // checkBox12
+            // 
+            this.checkBox12.AutoSize = true;
+            this.checkBox12.Location = new System.Drawing.Point(175, 146);
+            this.checkBox12.Name = "checkBox12";
+            this.checkBox12.Size = new System.Drawing.Size(15, 14);
+            this.checkBox12.TabIndex = 33;
+            this.checkBox12.UseVisualStyleBackColor = true;
+            this.checkBox12.CheckedChanged += new System.EventHandler(this.CheckBox12_CheckedChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(196, 177);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(112, 13);
+            this.label13.TabIndex = 36;
+            this.label13.Text = "Microsoft Edge Cache";
+            // 
+            // checkBox13
+            // 
+            this.checkBox13.AutoSize = true;
+            this.checkBox13.Location = new System.Drawing.Point(175, 177);
+            this.checkBox13.Name = "checkBox13";
+            this.checkBox13.Size = new System.Drawing.Size(15, 14);
+            this.checkBox13.TabIndex = 35;
+            this.checkBox13.UseVisualStyleBackColor = true;
+            this.checkBox13.CheckedChanged += new System.EventHandler(this.CheckBox13_CheckedChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(28, 176);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(77, 13);
+            this.label14.TabIndex = 38;
+            this.label14.Text = "Chrome Cache";
+            // 
+            // checkBox14
+            // 
+            this.checkBox14.AutoSize = true;
+            this.checkBox14.Location = new System.Drawing.Point(7, 176);
+            this.checkBox14.Name = "checkBox14";
+            this.checkBox14.Size = new System.Drawing.Size(15, 14);
+            this.checkBox14.TabIndex = 37;
+            this.checkBox14.UseVisualStyleBackColor = true;
+            this.checkBox14.CheckedChanged += new System.EventHandler(this.CheckBox14_CheckedChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(376, 31);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(124, 13);
+            this.label15.TabIndex = 40;
+            this.label15.Text = "Windows Installer Cache";
+            // 
+            // checkBox15
+            // 
+            this.checkBox15.AutoSize = true;
+            this.checkBox15.Location = new System.Drawing.Point(355, 31);
+            this.checkBox15.Name = "checkBox15";
+            this.checkBox15.Size = new System.Drawing.Size(15, 14);
+            this.checkBox15.TabIndex = 39;
+            this.checkBox15.UseVisualStyleBackColor = true;
+            this.checkBox15.CheckedChanged += new System.EventHandler(this.CheckBox15_CheckedChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(376, 59);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(96, 13);
+            this.label16.TabIndex = 42;
+            this.label16.Text = "Windows Log Files";
+            // 
+            // checkBox16
+            // 
+            this.checkBox16.AutoSize = true;
+            this.checkBox16.Location = new System.Drawing.Point(355, 59);
+            this.checkBox16.Name = "checkBox16";
+            this.checkBox16.Size = new System.Drawing.Size(15, 14);
+            this.checkBox16.TabIndex = 41;
+            this.checkBox16.UseVisualStyleBackColor = true;
+            this.checkBox16.CheckedChanged += new System.EventHandler(this.CheckBox16_CheckedChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(376, 88);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(128, 13);
+            this.label17.TabIndex = 44;
+            this.label17.Text = "Windows Shadow Copies";
+            // 
+            // checkBox17
+            // 
+            this.checkBox17.AutoSize = true;
+            this.checkBox17.Location = new System.Drawing.Point(355, 88);
+            this.checkBox17.Name = "checkBox17";
+            this.checkBox17.Size = new System.Drawing.Size(15, 14);
+            this.checkBox17.TabIndex = 43;
+            this.checkBox17.UseVisualStyleBackColor = true;
+            this.checkBox17.CheckedChanged += new System.EventHandler(this.CheckBox17_CheckedChanged);
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(376, 118);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(115, 13);
+            this.label18.TabIndex = 46;
+            this.label18.Text = "Windows Update Logs";
+            // 
+            // checkBox18
+            // 
+            this.checkBox18.AutoSize = true;
+            this.checkBox18.Location = new System.Drawing.Point(355, 118);
+            this.checkBox18.Name = "checkBox18";
+            this.checkBox18.Size = new System.Drawing.Size(15, 14);
+            this.checkBox18.TabIndex = 45;
+            this.checkBox18.UseVisualStyleBackColor = true;
+            this.checkBox18.CheckedChanged += new System.EventHandler(this.CheckBox18_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(434, 561);
+            this.ClientSize = new System.Drawing.Size(534, 561);
+            this.Controls.Add(this.label18);
+            this.Controls.Add(this.checkBox18);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.checkBox17);
+            this.Controls.Add(this.label16);
+            this.Controls.Add(this.checkBox16);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.checkBox15);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.checkBox14);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.checkBox13);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.checkBox12);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.checkBox11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.checkBox10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.checkBox9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.checkBox8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBox7);
             this.Controls.Add(this.label6);
@@ -435,6 +688,28 @@ namespace CleanSweep2
         private System.Windows.Forms.CheckBox checkBox6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBox7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox checkBox8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox checkBox9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkBox10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox checkBox11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.CheckBox checkBox12;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox checkBox13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.CheckBox checkBox14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.CheckBox checkBox15;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox checkBox16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.CheckBox checkBox17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.CheckBox checkBox18;
     }
 }
 

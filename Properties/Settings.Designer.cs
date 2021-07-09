@@ -37,7 +37,7 @@ namespace CleanSweep2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("450")]
+        [global::System.Configuration.DefaultSettingValueAttribute("550")]
         public int FormWidth {
             get {
                 return ((int)(this["FormWidth"]));

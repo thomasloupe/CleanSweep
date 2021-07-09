@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.6";
+        private const string CurrentVersion = "v2.0.7";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -22,6 +22,10 @@ namespace CleanSweep2
         bool eventLogsCleared = false;
         bool isRecycleBinEmpty = false;
         bool windowsErrorReportsCleared = false;
+        bool thumbnailCacheCleared = false;
+        bool deletedFileHistory = false;
+        bool windowsOldCleaned = false;
+        bool windowsDefenderLogsCleared = false;
         bool[] checkedArrayBool;
         CheckBox[] checkedArray;
 
@@ -103,8 +107,58 @@ namespace CleanSweep2
         #region Calculate Space To Regain
         private void Form1_Load(object sender, EventArgs e)
         {
-            checkedArray = new CheckBox[7] { checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7};
-            checkedArrayBool = new bool[7] { checkBox1.Checked, checkBox2.Checked, checkBox3.Checked, checkBox4.Checked, checkBox5.Checked, checkBox6.Checked, checkBox7.Checked };
+            // Disable incomplete cleaning solutions:
+            checkBox12.Enabled = false;
+            checkBox13.Enabled = false;
+            checkBox14.Enabled = false;
+            checkBox15.Enabled = false;
+            checkBox16.Enabled = false;
+            checkBox17.Enabled = false;
+            checkBox18.Checked = false;
+
+            checkedArray = new CheckBox[18] 
+            { 
+                checkBox1, 
+                checkBox2, 
+                checkBox3, 
+                checkBox4, 
+                checkBox5, 
+                checkBox6, 
+                checkBox7, 
+                checkBox8, 
+                checkBox9, 
+                checkBox10, 
+                checkBox11, 
+                checkBox12, 
+                checkBox13, 
+                checkBox14, 
+                checkBox15, 
+                checkBox16, 
+                checkBox17, 
+                checkBox18
+            };
+
+            checkedArrayBool = new bool[18] 
+            { 
+                checkBox1.Checked, 
+                checkBox2.Checked, 
+                checkBox3.Checked, 
+                checkBox4.Checked, 
+                checkBox5.Checked, 
+                checkBox6.Checked, 
+                checkBox7.Checked, 
+                checkBox8.Checked, 
+                checkBox9.Checked, 
+                checkBox10.Checked, 
+                checkBox11.Checked, 
+                checkBox12.Checked, 
+                checkBox13.Checked, 
+                checkBox14.Checked, 
+                checkBox15.Checked, 
+                checkBox16.Checked, 
+                checkBox17.Checked, 
+                checkBox18.Checked
+            };
 
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
@@ -124,15 +178,7 @@ namespace CleanSweep2
             }
             catch (Exception ex)
             {
-                // Skip files we don't have privileges to.
-                if (isVerboseMode)
-                {
-                    richTextBox1.AppendText(ex.Message + "Skipping..." + "\n", Color.Red);
-                }
-                else
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                Console.WriteLine(ex.Message);
                 ScrollToOutputBottom();
             }
             tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
@@ -159,7 +205,6 @@ namespace CleanSweep2
             richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n" + "\n");
-
         }
         #endregion
 
@@ -574,73 +619,380 @@ namespace CleanSweep2
                 richTextBox1.AppendText("Sweeping Delivery Optimization Files..." + "\n", Color.Green);
                 DirectoryInfo di = new DirectoryInfo(deliveryOptimizationFilesDirectory);
 
-                foreach (FileInfo file in di.GetFiles())
+                if (di.GetFiles().Length != 0)
                 {
-                    try
+                    foreach (FileInfo file in di.GetFiles())
                     {
-                        file.Delete();
-                        if (!File.Exists(file.Name))
+                        try
                         {
+                            file.Delete();
+                            if (!File.Exists(file.Name))
+                            {
+                                if (isVerboseMode)
+                                {
+                                    richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                }
+                                else
+                                {
+                                    richTextBox1.AppendText("o", Color.Green);
+                                }
+                                ScrollToOutputBottom();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // Skip all failed files.
                             if (isVerboseMode)
                             {
-                                richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
                             }
                             else
                             {
-                                richTextBox1.AppendText("o", Color.Green);
+                                richTextBox1.AppendText("x", Color.Red);
                             }
                             ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    foreach (DirectoryInfo dir in di.GetDirectories())
                     {
-                        // Skip all failed files.
-                        if (isVerboseMode)
+                        try
                         {
-                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            dir.Delete(true);
+                            if (Directory.Exists(dir.Name))
+                            {
+                                if (isVerboseMode)
+                                {
+                                    richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                }
+                                else
+                                {
+                                    richTextBox1.AppendText("o", Color.Green);
+                                }
+                                ScrollToOutputBottom();
+                            }
                         }
-                        else
+                        catch (Exception)
                         {
-                            richTextBox1.AppendText("x", Color.Red);
+                            // Skip all failed directories.
+                            if (isVerboseMode)
+                            {
+                                richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            }
+                            else
+                            {
+                                richTextBox1.AppendText("x", Color.Red);
+                            }
+                            ScrollToOutputBottom();
                         }
-                        ScrollToOutputBottom();
                     }
+                    richTextBox1.AppendText("Removed Delivery Optimization Files!" + "\n", Color.Green);
                 }
-                foreach (DirectoryInfo dir in di.GetDirectories())
+                else
                 {
-                    try
-                    {
-                        dir.Delete(true);
-                        if (Directory.Exists(dir.Name))
-                        {
-                            if (isVerboseMode)
-                            {
-                                richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
-                            }
-                            else
-                            {
-                                richTextBox1.AppendText("o", Color.Green);
-                            }
-                            ScrollToOutputBottom();
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // Skip all failed directories.
-                        if (isVerboseMode)
-                        {
-                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
-                        }
-                        else
-                        {
-                            richTextBox1.AppendText("x", Color.Red);
-                        }
-                        ScrollToOutputBottom();
-                    }
+                    richTextBox1.AppendText("No Delivery Optimization Files needed to be cleaned." + "\n", Color.Green);
                 }
                 richTextBox1.AppendText("\n" + "\n");
             }
             #endregion
+            #region Thumbnail Cache Removal
+            // Thumbnail Cache Removal.
+            if (checkBox8.Checked)
+            {
+                richTextBox1.AppendText("Clearing Thumbnail Cache", Color.Green);
+                ScrollToOutputBottom();
+                AddWaitText();
+
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    if (isVerboseMode)
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    }
+                    else
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    }
+                    startInfo.FileName = "cmd.exe";
+                    Invoke(new Action(() =>
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText("\n" + "Shutting down Explorer.exe process...", Color.Green);
+                        }
+                    }));
+                    startInfo.Arguments = "/C taskkill /f /im explorer.exe & del / f / s / q / a % LocalAppData %\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & start explorer.exe";
+                    startInfo.Verb = "runas";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Thread.Sleep(200);
+                        AddWaitText();
+                        if (process.HasExited)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                ScrollToOutputBottom();
+                            }));
+                            break;
+                        }
+                    }
+                });
+                Invoke(new Action(() =>
+                {
+                    if (isVerboseMode)
+                    {
+                        richTextBox1.AppendText("\n" + "Restarted Explorer.exe process.", Color.Green);
+                    }
+                }));
+                richTextBox1.AppendText("\n" + "Cleared Thumbnail Cache!" + "\n" + "\n", Color.Green);
+                thumbnailCacheCleared = true;
+            }
+            #endregion
+            #region User File History Removal
+            // User File History Removal.
+            if (checkBox9.Checked)
+            {
+                richTextBox1.AppendText("Attempting to remove all file history snapshots except latest", Color.Green);
+                ScrollToOutputBottom();
+                AddWaitText();
+
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    if (isVerboseMode)
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    }
+                    else
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    }
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.Arguments = "/C FhManagew.exe -cleanup 0 -quiet";
+                    startInfo.Verb = "runas";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Thread.Sleep(200);
+                        AddWaitText();
+                        if (process.HasExited)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                ScrollToOutputBottom();
+                            }));
+                            break;
+                        }
+                    }
+                });
+                richTextBox1.AppendText("\n" + "If file history was enabled, all versions except latest were removed." + "\n" + "\n", Color.Green);
+                deletedFileHistory = true;
+            }
+            #endregion
+            #region Windows.old Directory Removal
+            // Windows.old Directory Removal.
+            if (checkBox10.Checked)
+            {
+                richTextBox1.AppendText("Removing old versions of Windows", Color.Green);
+                ScrollToOutputBottom();
+                if (Directory.Exists("C:\\windows.old"))
+                {
+                    richTextBox1.AppendText("\n" + "Found Windows.old directory. Cleaning", Color.Green);
+                    AddWaitText();
+                    await Task.Run(() =>
+                    {
+                        System.Diagnostics.Process process = new System.Diagnostics.Process();
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                        if (isVerboseMode)
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                        }
+                        else
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                        }
+                        startInfo.FileName = "cmd.exe";
+                        startInfo.WorkingDirectory = "C:\\Windows\\";
+                        startInfo.Arguments = "/C takeown /F C:\\Windows.old* /R /A /D Y & cacls C:\\Windows.old*.* /T /grant administrators:F & rmdir /S /Q C:\\Windows.old";
+                        startInfo.Verb = "runas";
+                        process.StartInfo = startInfo;
+                        process.Start();
+
+                        while (!process.HasExited)
+                        {
+                            Thread.Sleep(200);
+                            AddWaitText();
+                            if (process.HasExited)
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    ScrollToOutputBottom();
+                                }));
+                                break;
+                            }
+                        }
+                    });
+                    richTextBox1.AppendText("\n" + "Cleaned Windows.old directory!" + "\n" + "\n", Color.Green);
+                    windowsOldCleaned = true;
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "No Windows.old directory found. Skipping...", Color.Green);
+                    windowsOldCleaned = false;
+                }
+            }
+            #endregion
+            #region Windows Defender Log Files Removal
+            // Windows Defender Log Files Removal.
+            if (checkBox11.Checked)
+            {
+                richTextBox1.AppendText("Deleting Windows Defender Log Files..." + "\n", Color.Green);
+                ScrollToOutputBottom();
+
+                // Create an array that contain paths to search for log files.
+                string[] directoryPath = new string[2] 
+                { 
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Network Inspection System\\Support\\", 
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Service\\" 
+                };
+
+                // Create an array that contains the directory paths for Defender Logs.
+                string[] defenderLogDirectoryPaths = new string[6] 
+                {
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\ReportLatency\\Latency", 
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Resource", 
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Quick",
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\CacheManager",
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\MetaStore", 
+                    programDataDirectory + "\\Microsoft\\Windows Defender\\Support"
+                };
+
+                // Remove the logfiles.
+                await Task.Run(() =>
+                {
+                    foreach (string directory in directoryPath)
+                    {
+                        DirectoryInfo dir = new DirectoryInfo(directory);
+                        foreach (FileInfo f in dir.GetFiles())
+                        {
+                            if (f.Name.Contains(".log"))
+                                try
+                                {
+                                    File.Delete(f.FullName);
+                                    if (isVerboseMode)
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("Removed " + f.Name + "\n", Color.Green);
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("x", Color.Green);
+                                        }));
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (isVerboseMode)
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText(ex.Message + " Skipping..." + "\n", Color.Red);
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("x" + f.Name + "\n", Color.Red);
+                                        }));
+                                    }
+                                }
+                        }
+                    }
+                });
+
+                // Remove the directories.
+                foreach (string logFileDirectory in defenderLogDirectoryPaths)
+                {
+                    if (Directory.Exists(logFileDirectory))
+                    {
+                        try
+                        {
+                            Directory.Delete(logFileDirectory, true);
+                            if (isVerboseMode)
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("Removed " + logFileDirectory + "\n", Color.Green);
+                                }));
+                            }
+                            else
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("x", Color.Green);
+                                }));
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (isVerboseMode)
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText(ex.Message + "Skipping..." + "\n", Color.Red);
+                                }));
+                            }
+                            else
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("x", Color.Red);
+                                }));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (isVerboseMode)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                richTextBox1.AppendText("Directory already removed: " + logFileDirectory + "\n", Color.Red);
+                            }));
+                        }
+                    }
+                }
+                richTextBox1.AppendText("Removed Windows Defender Logs!" + "\n" + "\n", Color.Green);
+                windowsDefenderLogsCleared = true;
+            }
+            #endregion
+            //#region Microsoft Office Cache Removal
+            //#endregion
+            //#region Microsoft Edge Cache Removal
+            //#endregion
+            //#region Chrome Data Removal
+            //#endregion
+            //#region Windows Installer Cache Removal
+            //#endregion
+            //#region Windows Log Files Removal
+            //#endregion
+            //#region Windows Shadow Copies Removal
+            //#endregion
+            //#region Windows Update Logs Removal
+            //#endregion
+
 
             #region Calculate Space Saved
             richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
@@ -656,7 +1008,7 @@ namespace CleanSweep2
             }
             else
             {
-                richTextBox1.AppendText("<1MB recovered from Temporary Files..." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "<1MB recovered from Temporary Files..." + "\n", Color.Green);
             }
             ScrollToOutputBottom();
 
@@ -681,16 +1033,7 @@ namespace CleanSweep2
             }
             catch (Exception ex)
             {
-                // Skip files we don't have privileges to.
-                if (isVerboseMode)
-                {
-                    richTextBox1.AppendText(ex.Message + "Skipping..." + "\n", Color.Red);
-                }
-                else
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                ScrollToOutputBottom();
+                Console.WriteLine(ex.Message);
             }
             tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
             long newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
@@ -754,6 +1097,32 @@ namespace CleanSweep2
             }
             ScrollToOutputBottom();
 
+            if (thumbnailCacheCleared)
+            {
+                thumbnailCacheCleared = false;
+                richTextBox1.AppendText("Thumbnail cache was cleared." + "\n", Color.Green);
+            }
+
+            if (deletedFileHistory)
+            {
+                deletedFileHistory = false;
+                richTextBox1.AppendText("Removed file history older than latest snapshot." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            if (windowsOldCleaned)
+            {
+                windowsOldCleaned = false;
+                richTextBox1.AppendText("Old versions of Windows were removed." + "\n", Color.Green);
+            }
+            ScrollToOutputBottom();
+
+            if (windowsDefenderLogsCleared)
+            {
+                windowsDefenderLogsCleared = false;
+                richTextBox1.AppendText("Windows Defender Logs were removed." + "\n", Color.Green);
+            }
+
             // Output the total space saved from the entire operation and other important completed actions.
             long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize + newDeliveryOptimizationSize;
             if (totalSpaceSaved > 0)
@@ -799,6 +1168,8 @@ namespace CleanSweep2
 
         }
 
+        // Checkbox Checked Functions
+        #region
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             ToggleCleanableStatus(checkBox1.Checked, 0);
@@ -834,7 +1205,62 @@ namespace CleanSweep2
             ToggleCleanableStatus(checkBox7.Checked, 6);
         }
 
-        // Check each checkboxe's status and update the cleanable status immediately.
+        private void CheckBox8_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox8.Checked, 7);
+        }
+        private void CheckBox9_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox9.Checked, 8);
+        }
+
+        private void CheckBox10_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox10.Checked, 9);
+        }
+
+        private void CheckBox11_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox11.Checked, 10);
+        }
+
+        private void CheckBox12_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox12.Checked, 11);
+        }
+
+        private void CheckBox13_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox13.Checked, 12);
+        }
+
+        private void CheckBox14_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox14.Checked, 13);
+        }
+
+        private void CheckBox15_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox15.Checked, 14);
+        }
+
+        private void CheckBox16_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox16.Checked, 15);
+        }
+
+        private void CheckBox17_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox17.Checked, 16);
+        }
+
+        private void CheckBox18_CheckedChanged(object sender, EventArgs e)
+        {
+            ToggleCleanableStatus(checkBox18.Checked, 17);
+        }
+        #endregion
+
+        // Check each checkbox's status and update the cleanable status immediately.
         private void ToggleCleanableStatus(bool boxCheckedOperationPosition, int indexPosition)
         {
             if (boxCheckedOperationPosition)
@@ -863,9 +1289,9 @@ namespace CleanSweep2
 
         private void LockCleaning(bool isEnabled)
         {
+            // Lock or unlock all checkboxes depending on whether cleaning operation is in progress.
             if (isEnabled)
             {
-                // Lock all checkboxes so we can't stop the operation.
                 checkBox1.Enabled = false;
                 checkBox2.Enabled = false;
                 checkBox3.Enabled = false;
@@ -873,11 +1299,24 @@ namespace CleanSweep2
                 checkBox5.Enabled = false;
                 checkBox6.Enabled = false;
                 checkBox7.Enabled = false;
+                checkBox8.Enabled = false;
+                checkBox9.Enabled = false;
+                checkBox10.Enabled = false;
+                checkBox11.Enabled = false;
+
+                // Disabled cleaning solutions:
+                //checkBox12.Enabled = false;
+                //checkBox13.Enabled = false;
+                //checkBox14.Enabled = false;
+                //checkBox15.Enabled = false;
+                //checkBox16.Enabled = false;
+                //checkBox17.Enabled = false;
+                //checkBox18.Checked = false;
+                
                 button1.Enabled = false;
             }
             else
             {
-                // Unlock all checkboxes so we can start the operation.
                 checkBox1.Enabled = true;
                 checkBox2.Enabled = true;
                 checkBox3.Enabled = true;
@@ -885,6 +1324,20 @@ namespace CleanSweep2
                 checkBox5.Enabled = true;
                 checkBox6.Enabled = true;
                 checkBox7.Enabled = true;
+                checkBox8.Enabled = true;
+                checkBox9.Enabled = true;
+                checkBox10.Enabled = true;
+                checkBox11.Enabled = true;
+
+                // Disabled cleaning solutions:
+                //checkBox12.Enabled = true;
+                //checkBox13.Enabled = true;
+                //checkBox14.Enabled = true;
+                //checkBox15.Enabled = true;
+                //checkBox16.Enabled = true;
+                //checkBox17.Enabled = true;
+                //checkBox18.Checked = true;
+
                 button1.Enabled = true;
             }
         }
@@ -947,7 +1400,7 @@ namespace CleanSweep2
         {
             var result = MessageBox.Show("CleanSweep will always be free!\n"
             + "If you'd like to buy me a beer anyway, I won't tell you no!\n"
-            + "Would you like to open the donation page now?", "Slackord is free, but beer is not!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            + "Would you like to open the donation page now?", "CleanSweep is free, but beer is not!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
             if (result == DialogResult.Yes)
             {
                 System.Diagnostics.Process.Start("https://paypal.me/thomasloupe");
