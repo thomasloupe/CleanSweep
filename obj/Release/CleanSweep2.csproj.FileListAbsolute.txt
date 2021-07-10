@@ -33,6 +33,7 @@ Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.pdb
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\Microsoft.Management.Infrastructure.Native.dll
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.xml
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\System.Management.Automation.xml
+\\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.AssemblyReference.cache
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Form1.resources
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Properties.Resources.resources
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.GenerateResource.cache

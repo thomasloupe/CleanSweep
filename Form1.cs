@@ -12,11 +12,12 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.7";
+        private const string CurrentVersion = "v2.0.8";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
         readonly string programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        readonly string localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         bool isVerboseMode;
         bool eventLogsCleared = false;
@@ -26,6 +27,7 @@ namespace CleanSweep2
         bool deletedFileHistory = false;
         bool windowsOldCleaned = false;
         bool windowsDefenderLogsCleared = false;
+        bool sweptChromeCache = false;
         bool[] checkedArrayBool;
         CheckBox[] checkedArray;
 
@@ -58,6 +60,10 @@ namespace CleanSweep2
         long deliveryOptimizationFilesDirSize;
         long deliveryOptimizationFilesDirSizeInMegabytes;
         long deliveryOptimizationFilesDirSizeBeforeDelete;
+
+        // Chrome Directories
+        string[] chromeCacheDirectories = new string[6];
+        long totalChromeDirSize = 0;
         #endregion
 
         public Form1()
@@ -110,11 +116,10 @@ namespace CleanSweep2
             // Disable incomplete cleaning solutions:
             checkBox12.Enabled = false;
             checkBox13.Enabled = false;
-            checkBox14.Enabled = false;
             checkBox15.Enabled = false;
             checkBox16.Enabled = false;
             checkBox17.Enabled = false;
-            checkBox18.Checked = false;
+            checkBox18.Enabled = false;
 
             checkedArray = new CheckBox[18] 
             { 
@@ -160,6 +165,14 @@ namespace CleanSweep2
                 checkBox18.Checked
             };
 
+            // Load Chrome Cache Directories.
+            chromeCacheDirectories[0] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Cache";
+            chromeCacheDirectories[1] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Media Cache";
+            chromeCacheDirectories[2] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\GPUCache";
+            chromeCacheDirectories[3] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Storage\\ext";
+            chromeCacheDirectories[4] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Service Worker";
+            chromeCacheDirectories[5] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\ShaderCache";
+
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
             tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
@@ -193,9 +206,19 @@ namespace CleanSweep2
             deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
 
+            foreach (string chromeDirectory in chromeCacheDirectories)
+            {
+                if (Directory.Exists(chromeDirectory))
+                {
+                    long thisChromeDirSize = 0;
+                    thisChromeDirSize = Directory.GetFiles(chromeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    totalChromeDirSize += thisChromeDirSize;
+                }
+            }
+
             // Show potential reclamation, then each individual category.
             richTextBox1.AppendText("Potential space to reclaim: " + 
-                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + deliveryOptimizationFilesDirSizeInMegabytes) +
+                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + deliveryOptimizationFilesDirSizeInMegabytes + totalChromeDirSize) +
                 "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
                 "----------------------------------------------------------------------------------------------------------------------------------------" + "\n");
 
@@ -204,7 +227,8 @@ namespace CleanSweep2
             richTextBox1.AppendText("Temporary Setup Files directory size: " + tempSetupSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n");
-            richTextBox1.AppendText("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n" + "\n");
+            richTextBox1.AppendText("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n");
+            richTextBox1.AppendText("Chrome Data Size: " + totalChromeDirSize + "MB" + "\n" + "\n");
         }
         #endregion
 
@@ -982,8 +1006,121 @@ namespace CleanSweep2
             //#endregion
             //#region Microsoft Edge Cache Removal
             //#endregion
-            //#region Chrome Data Removal
-            //#endregion
+            #region Chrome Cache Removal
+            // Chrome Cache Removal
+            if (checkBox14.Checked)
+            {
+                richTextBox1.AppendText("Sweeping Chome cache..." + "\n", Color.Green);
+                ScrollToOutputBottom();
+                if (isVerboseMode)
+                {
+                    richTextBox1.AppendText("Ending any Chrome processes", Color.Green);
+                    ScrollToOutputBottom();
+                }
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    if (isVerboseMode)
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    }
+                    else
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    }
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.Arguments = "/C TASKKILL Chrome.exe";
+                    startInfo.Verb = "runas";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Thread.Sleep(200);
+                        if (isVerboseMode)
+                        {
+                            AddWaitText();
+                        }
+                        if (process.HasExited)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                ScrollToOutputBottom();
+                            }));
+                            break;
+                        }
+                    }
+                    Invoke(new Action(() =>
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText("\n" + "Stopped Chrome processes." + "\n", Color.Green);
+                            ScrollToOutputBottom();
+                        }
+                    }));
+                    foreach (string chromeDirectory in chromeCacheDirectories)
+                    {
+                        if (Directory.Exists(chromeDirectory))
+                        {
+                            try
+                            {
+                                Directory.Delete(chromeDirectory, true);
+                                if (!Directory.Exists(chromeDirectory))
+                                {
+                                    if (isVerboseMode)
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("Removed: " + chromeDirectory + "." + "\n", Color.Green);
+                                            ScrollToOutputBottom();
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("x", Color.Green);
+                                            ScrollToOutputBottom();
+                                        }));
+                                    }
+                                }
+                            }
+                            catch (IOException ex)
+                            {
+                                if (isVerboseMode)
+                                {
+                                    Invoke(new Action(() =>
+                                    {
+                                        richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Green);
+                                        ScrollToOutputBottom();
+                                    }));
+                                }
+                                else
+                                {
+                                    Invoke(new Action(() =>
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                        ScrollToOutputBottom();
+                                    }));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                richTextBox1.AppendText("Directory already removed: " + chromeDirectory + "." + "\n", Color.Green);
+                                ScrollToOutputBottom();
+                            }));
+                        }
+                    }
+                });
+
+                sweptChromeCache = true;
+                richTextBox1.AppendText("\n" + "Swept Chrome cache!" + "\n" + "\n", Color.Green);
+            }
+            #endregion
             //#region Windows Installer Cache Removal
             //#endregion
             //#region Windows Log Files Removal
@@ -1121,6 +1258,11 @@ namespace CleanSweep2
             {
                 windowsDefenderLogsCleared = false;
                 richTextBox1.AppendText("Windows Defender Logs were removed." + "\n", Color.Green);
+            }
+            if (sweptChromeCache)
+            {
+                sweptChromeCache = false;
+                richTextBox1.AppendText("Chrome cache was cleared." + "\n", Color.Green);
             }
 
             // Output the total space saved from the entire operation and other important completed actions.
@@ -1307,7 +1449,7 @@ namespace CleanSweep2
                 // Disabled cleaning solutions:
                 //checkBox12.Enabled = false;
                 //checkBox13.Enabled = false;
-                //checkBox14.Enabled = false;
+                checkBox14.Enabled = false;
                 //checkBox15.Enabled = false;
                 //checkBox16.Enabled = false;
                 //checkBox17.Enabled = false;
@@ -1332,7 +1474,7 @@ namespace CleanSweep2
                 // Disabled cleaning solutions:
                 //checkBox12.Enabled = true;
                 //checkBox13.Enabled = true;
-                //checkBox14.Enabled = true;
+                checkBox14.Enabled = true;
                 //checkBox15.Enabled = true;
                 //checkBox16.Enabled = true;
                 //checkBox17.Enabled = true;
