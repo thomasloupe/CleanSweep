@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.8";
+        private const string CurrentVersion = "v2.0.8.1";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -746,7 +746,7 @@ namespace CleanSweep2
                             richTextBox1.AppendText("\n" + "Shutting down Explorer.exe process...", Color.Green);
                         }
                     }));
-                    startInfo.Arguments = "/C taskkill /f /im explorer.exe & del / f / s / q / a % LocalAppData %\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & start explorer.exe";
+                    startInfo.Arguments = "/C taskkill /f /im explorer.exe & timeout 1 & del / f / s / q / a %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & timeout 1 & start explorer.exe";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
                     process.Start();
