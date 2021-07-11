@@ -1062,40 +1062,8 @@ namespace CleanSweep2
                 ScrollToOutputBottom();
                 if (Directory.Exists(msoCacheDir))
                 {
-                    await Task.Run(() =>
-                    {
-                        System.Diagnostics.Process process = new System.Diagnostics.Process();
-                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                        if (isVerboseMode)
-                        {
-                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                        }
-                        else
-                        {
-                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                        }
-                        startInfo.FileName = "cmd.exe";
-                        startInfo.Arguments = "/C RD /S MSOCache";
-                        startInfo.Verb = "runas";
-                        process.StartInfo = startInfo;
-                        process.Start();
-
-                        while (!process.HasExited)
-                        {
-                            Thread.Sleep(200);
-                            AddWaitText();
-                            if (process.HasExited)
-                            {
-                                Invoke(new Action(() =>
-                                {
-                                    ScrollToOutputBottom();
-                                }));
-                                break;
-                            }
-                        }
-                    });
-
-                    eventLogsCleared = true;
+                    Directory.Delete(msoCacheDir, true);
+                    msoCacheCleared = true;
                     richTextBox1.AppendText("\n" + "Swept MSO Cache!" + "\n" + "\n", Color.Green);
                 }
                 else
