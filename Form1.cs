@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.10";
+        private const string CurrentVersion = "v2.0.11";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -341,18 +341,18 @@ namespace CleanSweep2
                         }
                         ScrollToOutputBottom();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed files.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't delete " + file.Name + ": " + ex.Message + " Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
                 foreach (DirectoryInfo dir in di.GetDirectories())
@@ -365,26 +365,26 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed directories.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't delete " + dir.Name + ": " + ex.Message + " Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
                 richTextBox1.AppendText("\n" + "Swept Temporary Files!" + "\n" + "\n", Color.Green);
@@ -410,26 +410,26 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed files.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't delete " + file.Name + ": " + ex.Message + " Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
                 foreach (DirectoryInfo dir in di.GetDirectories())
@@ -442,26 +442,26 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed directories.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't delete " + dir.Name + ": " + ex.Message + " Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
                 richTextBox1.AppendText("\n" + "Swept Temporary Setup Files!" + "\n" + "\n", Color.Green);
@@ -487,26 +487,26 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed files.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't delete " + file.Name + ": " + ex.Message + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
                 foreach (DirectoryInfo dir in di.GetDirectories())
@@ -519,29 +519,29 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed directories.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't delete " + dir.Name + ": " + ex.Message + " Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
-                richTextBox1.AppendText("\n" + "Swept Temporary Internet Files!" + "\n" + "\n", Color.Green);
+                richTextBox1.AppendText("Swept Temporary Internet Files!" + "\n" + "\n", Color.Green);
                 tempInternetFilesWereRemoved = true;
             }
             #endregion
@@ -653,12 +653,12 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
                     catch (Exception)
@@ -667,12 +667,12 @@ namespace CleanSweep2
                         if (isVerboseMode)
                         {
                             richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
                 foreach (DirectoryInfo dir in di.GetDirectories())
@@ -685,29 +685,29 @@ namespace CleanSweep2
                             if (isVerboseMode)
                             {
                                 richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("o", Color.Green);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Skip all failed directories.
                         if (isVerboseMode)
                         {
-                            richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                            richTextBox1.AppendText("Couldn't remove " + dir.Name + ": " + ex.Message + ". Skipping..." + "\n", Color.Red);
+                            ScrollToOutputBottom();
                         }
                         else
                         {
                             richTextBox1.AppendText("x", Color.Red);
                         }
-                        ScrollToOutputBottom();
                     }
                 }
-                richTextBox1.AppendText("\n" + "Swept Windows Error Reports!" + "\n" + "\n", Color.Green);
+                richTextBox1.AppendText("Swept Windows Error Reports!" + "\n" + "\n", Color.Green);
                 windowsErrorReportsCleared = true;
             }
             #endregion
@@ -732,26 +732,26 @@ namespace CleanSweep2
                                 if (isVerboseMode)
                                 {
                                     richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                    ScrollToOutputBottom();
                                 }
                                 else
                                 {
                                     richTextBox1.AppendText("o", Color.Green);
                                 }
-                                ScrollToOutputBottom();
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             // Skip all failed files.
                             if (isVerboseMode)
                             {
-                                richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                                richTextBox1.AppendText("Couldn't delete " + file.Name + ": " + ex.Message + ". Skipping..." + "\n", Color.Red);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("x", Color.Red);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
                     foreach (DirectoryInfo dir in di.GetDirectories())
@@ -764,33 +764,33 @@ namespace CleanSweep2
                                 if (isVerboseMode)
                                 {
                                     richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                    ScrollToOutputBottom();
                                 }
                                 else
                                 {
                                     richTextBox1.AppendText("o", Color.Green);
                                 }
-                                ScrollToOutputBottom();
                             }
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
                             // Skip all failed directories.
                             if (isVerboseMode)
                             {
-                                richTextBox1.AppendText(dir.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
+                                richTextBox1.AppendText("Couldn't delete " + dir.Name + ": " + ex.Message + ". Skipping..." + "\n", Color.Red);
+                                ScrollToOutputBottom();
                             }
                             else
                             {
                                 richTextBox1.AppendText("x", Color.Red);
                             }
-                            ScrollToOutputBottom();
                         }
                     }
-                    richTextBox1.AppendText("\n" + "Removed Delivery Optimization Files!" + "\n" + "\n", Color.Green);
+                    richTextBox1.AppendText("Removed Delivery Optimization Files!" + "\n" + "\n", Color.Green);
                 }
                 else
                 {
-                    richTextBox1.AppendText("\n" + "No Delivery Optimization Files needed to be cleaned." + "\n" + "\n", Color.Green);
+                    richTextBox1.AppendText("No Delivery Optimization Files needed to be cleaned." + "\n" + "\n", Color.Green);
                 }
                 wereDeliveryOptimizationFilesRemoved = true;
             }
@@ -992,13 +992,14 @@ namespace CleanSweep2
                                         Invoke(new Action(() =>
                                         {
                                             richTextBox1.AppendText("Removed " + f.Name + "\n", Color.Green);
+                                            ScrollToOutputBottom();
                                         }));
                                     }
                                     else
                                     {
                                         Invoke(new Action(() =>
                                         {
-                                            richTextBox1.AppendText("x", Color.Green);
+                                            richTextBox1.AppendText("o", Color.Green);
                                         }));
                                     }
                                 }
@@ -1009,6 +1010,7 @@ namespace CleanSweep2
                                         Invoke(new Action(() =>
                                         {
                                             richTextBox1.AppendText(ex.Message + " Skipping..." + "\n", Color.Red);
+                                            ScrollToOutputBottom();
                                         }));
                                     }
                                     else
@@ -1042,7 +1044,7 @@ namespace CleanSweep2
                             {
                                 Invoke(new Action(() =>
                                 {
-                                    richTextBox1.AppendText("x", Color.Green);
+                                    richTextBox1.AppendText("o", Color.Green);
                                 }));
                             }
                         }
@@ -1053,6 +1055,7 @@ namespace CleanSweep2
                                 Invoke(new Action(() =>
                                 {
                                     richTextBox1.AppendText(ex.Message + "Skipping..." + "\n", Color.Red);
+
                                 }));
                             }
                             else
@@ -1174,7 +1177,6 @@ namespace CleanSweep2
                                         Invoke(new Action(() =>
                                         {
                                             richTextBox1.AppendText("x", Color.Green);
-                                            ScrollToOutputBottom();
                                         }));
                                     }
                                 }
@@ -1194,7 +1196,6 @@ namespace CleanSweep2
                                     Invoke(new Action(() =>
                                     {
                                         richTextBox1.AppendText("x", Color.Red);
-                                        ScrollToOutputBottom();
                                     }));
                                 }
                             }
@@ -1209,19 +1210,28 @@ namespace CleanSweep2
                                     ScrollToOutputBottom();
                                 }));
                             }
+                            else
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("x", Color.Red);
+                                    ScrollToOutputBottom();
+                                }));
+                            }
                         }
                     }
                 });
 
-                sweptEdgeCache = true;
                 richTextBox1.AppendText("\n" + "Swept Edge cache!" + "\n" + "\n", Color.Green);
+                ScrollToOutputBottom();
+                sweptEdgeCache = true;
             }
             #endregion
             #region Chrome Cache Removal
             // Chrome Cache Removal
             if (checkBox14.Checked)
             {
-                richTextBox1.AppendText("Sweeping Chome cache..." + "\n", Color.Green);
+                richTextBox1.AppendText("Sweeping Chrome cache..." + "\n", Color.Green);
                 ScrollToOutputBottom();
                 if (showOperationWindows)
                 {
@@ -1292,7 +1302,6 @@ namespace CleanSweep2
                                         Invoke(new Action(() =>
                                         {
                                             richTextBox1.AppendText("x", Color.Green);
-                                            ScrollToOutputBottom();
                                         }));
                                     }
                                 }
@@ -1312,7 +1321,6 @@ namespace CleanSweep2
                                     Invoke(new Action(() =>
                                     {
                                         richTextBox1.AppendText("x", Color.Red);
-                                        ScrollToOutputBottom();
                                     }));
                                 }
                             }
@@ -1325,6 +1333,13 @@ namespace CleanSweep2
                                 {
                                     richTextBox1.AppendText("Directory already removed: " + chromeDirectory + "." + "\n", Color.Green);
                                     ScrollToOutputBottom();
+                                }));
+                            }
+                            else
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("x", Color.Red);
                                 }));
                             }
                         }
@@ -1545,11 +1560,11 @@ namespace CleanSweep2
             // Output the total space saved from the entire operation and other important completed actions.
             if (totalSpaceSaved > 0)
             {
-                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: " + totalSpaceSaved + "MB", Color.Green);
             }
             else
             {
-                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: <1MB" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: <1MB", Color.Green);
             }
             totalSpaceSaved = 0;
             ScrollToOutputBottom();
