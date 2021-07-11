@@ -12,9 +12,10 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.8.1";
+        private const string CurrentVersion = "v2.0.9";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
+        readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
         readonly string programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         readonly string localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
@@ -28,6 +29,8 @@ namespace CleanSweep2
         bool windowsOldCleaned = false;
         bool windowsDefenderLogsCleared = false;
         bool sweptChromeCache = false;
+        bool sweptEdgeCache = false;
+        bool msoCacheCleared = false;
         bool[] checkedArrayBool;
         CheckBox[] checkedArray;
 
@@ -64,6 +67,15 @@ namespace CleanSweep2
         // Chrome Directories
         string[] chromeCacheDirectories = new string[6];
         long totalChromeDirSize = 0;
+
+        // Edge Directories
+        string[] edgeCacheDirectories = new string[12];
+        long totalEdgeDirSize = 0;
+
+        // MSO Cache Directories
+        string msoCacheDir;
+        long msoCacheDirSize = 0;
+        long newMsoCacheDirSize;
         #endregion
 
         public Form1()
@@ -114,8 +126,6 @@ namespace CleanSweep2
         private void Form1_Load(object sender, EventArgs e)
         {
             // Disable incomplete cleaning solutions:
-            checkBox12.Enabled = false;
-            checkBox13.Enabled = false;
             checkBox15.Enabled = false;
             checkBox16.Enabled = false;
             checkBox17.Enabled = false;
@@ -165,13 +175,30 @@ namespace CleanSweep2
                 checkBox18.Checked
             };
 
-            // Load Chrome Cache Directories.
+            // Set Chrome cache directories.
             chromeCacheDirectories[0] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Cache";
             chromeCacheDirectories[1] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Media Cache";
             chromeCacheDirectories[2] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\GPUCache";
             chromeCacheDirectories[3] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Storage\\ext";
             chromeCacheDirectories[4] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Service Worker";
             chromeCacheDirectories[5] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\ShaderCache";
+
+            // Set Edge cache directories.
+            edgeCacheDirectories[0] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Cache";
+            edgeCacheDirectories[1] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Media Cache";
+            edgeCacheDirectories[2] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\GPUCache";
+            edgeCacheDirectories[3] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Storage\\ext";
+            edgeCacheDirectories[4] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Service Worker";
+            edgeCacheDirectories[5] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\ShaderCache";
+            edgeCacheDirectories[6] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Cache";
+            edgeCacheDirectories[7] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Media Cache";
+            edgeCacheDirectories[8] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\GPUCache";
+            edgeCacheDirectories[9] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Storage\\ext";
+            edgeCacheDirectories[10] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Service Worker";
+            edgeCacheDirectories[11] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\ShaderCache";
+
+            // Set MSOCache Directory
+            msoCacheDir = systemDrive + "MSOCache";
 
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
@@ -206,6 +233,7 @@ namespace CleanSweep2
             deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
 
+            // Get size of Chrome cache directories.
             foreach (string chromeDirectory in chromeCacheDirectories)
             {
                 if (Directory.Exists(chromeDirectory))
@@ -214,6 +242,27 @@ namespace CleanSweep2
                     thisChromeDirSize = Directory.GetFiles(chromeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
                     totalChromeDirSize += thisChromeDirSize;
                 }
+            }
+            // Get size of Edge cache directories.
+            foreach (string edgeDirectory in edgeCacheDirectories)
+            {
+                if (Directory.Exists(edgeDirectory))
+                {
+                    long thisEdgeDirSize = 0;
+                    thisEdgeDirSize = Directory.GetFiles(edgeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    totalEdgeDirSize += thisEdgeDirSize;
+                }
+            }
+            
+            // Get size of MSOCache.
+            if (!Directory.Exists(msoCacheDir))
+            {
+                richTextBox1.AppendText("\n" + "No MSOCache directory found." + "\n", Color.Green);
+            }
+            else
+            {
+                msoCacheDirSize = 0;
+                msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
             }
 
             // Show potential reclamation, then each individual category.
@@ -228,7 +277,10 @@ namespace CleanSweep2
             richTextBox1.AppendText("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n");
-            richTextBox1.AppendText("Chrome Data Size: " + totalChromeDirSize + "MB" + "\n" + "\n");
+            richTextBox1.AppendText("Chrome Data Size: " + totalChromeDirSize + "MB" + "\n");
+            richTextBox1.AppendText("Edge Data Size: " + totalEdgeDirSize + "MB" + "\n");
+            richTextBox1.AppendText("MSO Cache size: " + msoCacheDirSize + "MB" + "\n" + "\n");
+
         }
         #endregion
 
@@ -1002,10 +1054,176 @@ namespace CleanSweep2
                 windowsDefenderLogsCleared = true;
             }
             #endregion
-            //#region Microsoft Office Cache Removal
-            //#endregion
-            //#region Microsoft Edge Cache Removal
-            //#endregion
+            #region Microsoft Office Cache Removal
+            // Microsoft Office Cache Removal.
+            if (checkBox12.Checked)
+            {
+                richTextBox1.AppendText("Sweeping MSO cache", Color.Green);
+                ScrollToOutputBottom();
+                if (Directory.Exists(msoCacheDir))
+                {
+                    await Task.Run(() =>
+                    {
+                        System.Diagnostics.Process process = new System.Diagnostics.Process();
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                        if (isVerboseMode)
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                        }
+                        else
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                        }
+                        startInfo.FileName = "cmd.exe";
+                        startInfo.Arguments = "/C RD /S MSOCache";
+                        startInfo.Verb = "runas";
+                        process.StartInfo = startInfo;
+                        process.Start();
+
+                        while (!process.HasExited)
+                        {
+                            Thread.Sleep(200);
+                            AddWaitText();
+                            if (process.HasExited)
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    ScrollToOutputBottom();
+                                }));
+                                break;
+                            }
+                        }
+                    });
+
+                    eventLogsCleared = true;
+                    richTextBox1.AppendText("\n" + "Swept MSO Cache!" + "\n" + "\n", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "No MSOCache directory found. Skipping..." + "\n" + "\n", Color.Green);
+                }
+
+                msoCacheCleared = true;
+            }
+            #endregion
+            #region Microsoft Edge Cache Removal
+            // Edge Cache Removal
+            if (checkBox13.Checked)
+            {
+                richTextBox1.AppendText("Sweeping Edge cache..." + "\n", Color.Green);
+                ScrollToOutputBottom();
+                if (isVerboseMode)
+                {
+                    richTextBox1.AppendText("Ending any Edge processes", Color.Green);
+                    ScrollToOutputBottom();
+                }
+                await Task.Run(() =>
+                {
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                    if (isVerboseMode)
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                    }
+                    else
+                    {
+                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                    }
+                    startInfo.FileName = "cmd.exe";
+                    startInfo.Arguments = "/C TASKKILL /F /IM msedge.exe";
+                    startInfo.Verb = "runas";
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Thread.Sleep(200);
+                        if (isVerboseMode)
+                        {
+                            AddWaitText();
+                        }
+                        if (process.HasExited)
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                ScrollToOutputBottom();
+                            }));
+                            break;
+                        }
+                    }
+                    Invoke(new Action(() =>
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText("\n" + "Stopped Edge processes." + "\n", Color.Green);
+                            ScrollToOutputBottom();
+                        }
+                    }));
+                    foreach (string edgeDirectory in edgeCacheDirectories)
+                    {
+                        if (Directory.Exists(edgeDirectory))
+                        {
+                            try
+                            {
+                                Directory.Delete(edgeDirectory, true);
+                                if (!Directory.Exists(edgeDirectory))
+                                {
+                                    if (isVerboseMode)
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("Removed: " + edgeDirectory + "." + "\n", Color.Green);
+                                            ScrollToOutputBottom();
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("x", Color.Green);
+                                            ScrollToOutputBottom();
+                                        }));
+                                    }
+                                }
+                            }
+                            catch (IOException ex)
+                            {
+                                if (isVerboseMode)
+                                {
+                                    Invoke(new Action(() =>
+                                    {
+                                        richTextBox1.AppendText("Skipping: " + edgeDirectory + ". " + ex.Message + "\n", Color.Green);
+                                        ScrollToOutputBottom();
+                                    }));
+                                }
+                                else
+                                {
+                                    Invoke(new Action(() =>
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                        ScrollToOutputBottom();
+                                    }));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (isVerboseMode) 
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("Directory already removed: " + edgeDirectory + "." + "\n", Color.Green);
+                                    ScrollToOutputBottom();
+                                }));
+                            }
+                        }
+                    }
+                });
+
+                sweptEdgeCache = true;
+                richTextBox1.AppendText("\n" + "Swept Edge cache!" + "\n" + "\n", Color.Green);
+            }
+            #endregion
             #region Chrome Cache Removal
             // Chrome Cache Removal
             if (checkBox14.Checked)
@@ -1108,11 +1326,14 @@ namespace CleanSweep2
                         }
                         else
                         {
-                            Invoke(new Action(() =>
+                            if (isVerboseMode)
                             {
-                                richTextBox1.AppendText("Directory already removed: " + chromeDirectory + "." + "\n", Color.Green);
-                                ScrollToOutputBottom();
-                            }));
+                                Invoke(new Action(() =>
+                                {
+                                    richTextBox1.AppendText("Directory already removed: " + chromeDirectory + "." + "\n", Color.Green);
+                                    ScrollToOutputBottom();
+                                }));
+                            }
                         }
                     }
                 });
@@ -1265,8 +1486,40 @@ namespace CleanSweep2
                 richTextBox1.AppendText("Chrome cache was cleared." + "\n", Color.Green);
             }
 
+            if (sweptEdgeCache)
+            {
+                sweptEdgeCache = false;
+                richTextBox1.AppendText("Edge cache was cleared." + "\n", Color.Green);
+            }
+
+            if (msoCacheCleared)
+            {
+                msoCacheCleared = false;
+                // Get size of MSOCache.
+                if (!Directory.Exists(msoCacheDir))
+                {
+                    richTextBox1.AppendText("Recovered " + msoCacheDirSize + "MB from removing MSO Cache." + "\n", Color.Green);
+                }
+                else
+                {
+                    long oldMsoCacheSize = msoCacheDirSize;
+                    msoCacheDirSize = 0;
+                    msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    newMsoCacheDirSize = oldMsoCacheSize - msoCacheDirSize;
+                    
+                    if (newMsoCacheDirSize > 0)
+                    {
+                        richTextBox1.AppendText("Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache." + "\n", Color.Green);
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("<1MB recovered from MSO Cache..." + "\n", Color.Green);
+                    }
+                }
+            }
+
             // Output the total space saved from the entire operation and other important completed actions.
-            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize + newDeliveryOptimizationSize;
+            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize + newDeliveryOptimizationSize + newMsoCacheDirSize;
             if (totalSpaceSaved > 0)
             {
                 richTextBox1.AppendText("\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
@@ -1445,16 +1698,16 @@ namespace CleanSweep2
                 checkBox9.Enabled = false;
                 checkBox10.Enabled = false;
                 checkBox11.Enabled = false;
-
-                // Disabled cleaning solutions:
-                //checkBox12.Enabled = false;
-                //checkBox13.Enabled = false;
+                checkBox12.Enabled = false;
+                checkBox13.Enabled = false;
                 checkBox14.Enabled = false;
+                
+                // Disabled cleaning solutions:
                 //checkBox15.Enabled = false;
                 //checkBox16.Enabled = false;
                 //checkBox17.Enabled = false;
                 //checkBox18.Checked = false;
-                
+
                 button1.Enabled = false;
             }
             else
@@ -1470,11 +1723,11 @@ namespace CleanSweep2
                 checkBox9.Enabled = true;
                 checkBox10.Enabled = true;
                 checkBox11.Enabled = true;
+                checkBox12.Enabled = true;
+                checkBox13.Enabled = true;
+                checkBox14.Enabled = true;
 
                 // Disabled cleaning solutions:
-                //checkBox12.Enabled = true;
-                //checkBox13.Enabled = true;
-                checkBox14.Enabled = true;
                 //checkBox15.Enabled = true;
                 //checkBox16.Enabled = true;
                 //checkBox17.Enabled = true;
