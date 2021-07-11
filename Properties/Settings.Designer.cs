@@ -82,5 +82,17 @@ namespace CleanSweep2.Properties {
                 this["Verbosity"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OperationWindows {
+            get {
+                return ((bool)(this["OperationWindows"]));
+            }
+            set {
+                this["OperationWindows"] = value;
+            }
+        }
     }
 }

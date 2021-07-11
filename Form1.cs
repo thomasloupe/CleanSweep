@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.9";
+        private const string CurrentVersion = "v2.0.10";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -21,9 +21,14 @@ namespace CleanSweep2
         readonly string localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         bool isVerboseMode;
+        bool showOperationWindows;
+        bool tempFilesWereRemoved = false;
+        bool tempSetupFilesWereRemoved = false;
+        bool tempInternetFilesWereRemoved = false;
         bool eventLogsCleared = false;
         bool isRecycleBinEmpty = false;
         bool windowsErrorReportsCleared = false;
+        bool wereDeliveryOptimizationFilesRemoved = false;
         bool thumbnailCacheCleared = false;
         bool deletedFileHistory = false;
         bool windowsOldCleaned = false;
@@ -32,6 +37,7 @@ namespace CleanSweep2
         bool sweptEdgeCache = false;
         bool msoCacheCleared = false;
         bool[] checkedArrayBool;
+        long totalSpaceSaved;
         CheckBox[] checkedArray;
 
         // Temporary Files
@@ -39,30 +45,35 @@ namespace CleanSweep2
         long tempDirSize;
         long tempDirSizeInMegaBytes;
         long tempSizeBeforeDelete;
+        long newTempDirSize;
 
         // Temporary Setup Files
         string tempSetupDirectory;
         long tempSetupDirSize;
         long tempSetupSizeInMegabytes;
         long tempSetupFilesSizeBeforeDelete;
+        long newTempSetupDirSize;
 
         // Temporary Internet Files
         string tempInternetFilesDirectory;
         long tempInternetFilesDirSize;
         long tempInternetSizeInMegabytes;
         long tempInternetFilesBeforeDelete;
+        long newTempInternetFilesDirSize;
 
         // Windows Error Reports
         string windowsErrorReportsDirectory;
         long windowsErrorReportsDirSize;
         long windowsErrorReportsDirSizeInMegabytes;
         long windowsErrorReportsDirSizeBeforeDelete;
+        long newWindowsErrorReportsDirSize;
 
         // Delivery Optimization Files
         string deliveryOptimizationFilesDirectory;
         long deliveryOptimizationFilesDirSize;
         long deliveryOptimizationFilesDirSizeInMegabytes;
         long deliveryOptimizationFilesDirSizeBeforeDelete;
+        long newDeliveryOptimizationSize;
 
         // Chrome Directories
         string[] chromeCacheDirectories = new string[6];
@@ -83,6 +94,7 @@ namespace CleanSweep2
             InitializeComponent();
             SetWindowSizeAndLocation();
             SetVerbosity();
+            SetOperationWindows();
             button1.Enabled = false;
         }
 
@@ -107,6 +119,21 @@ namespace CleanSweep2
             {
                 verboseModeToolStripMenuItem.Checked = false;
                 isVerboseMode = false;
+            }
+        }
+
+        private void SetOperationWindows()
+        {
+            // Set value of Show Operation Windows equal to what's stored in the application's setting.
+            if (Properties.Settings.Default.OperationWindows)
+            {
+                showOperationWindowsToolStripMenuItem.Checked = true;
+                showOperationWindows = true;
+            }
+            else
+            {
+                showOperationWindowsToolStripMenuItem.Checked = false;
+                showOperationWindows = false;
             }
         }
 
@@ -255,19 +282,14 @@ namespace CleanSweep2
             }
             
             // Get size of MSOCache.
-            if (!Directory.Exists(msoCacheDir))
+            if (Directory.Exists(msoCacheDir))
             {
-                richTextBox1.AppendText("\n" + "No MSOCache directory found." + "\n", Color.Green);
-            }
-            else
-            {
-                msoCacheDirSize = 0;
                 msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
             }
 
             // Show potential reclamation, then each individual category.
             richTextBox1.AppendText("Potential space to reclaim: " + 
-                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + deliveryOptimizationFilesDirSizeInMegabytes + totalChromeDirSize) +
+                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + deliveryOptimizationFilesDirSizeInMegabytes + totalChromeDirSize + totalEdgeDirSize + msoCacheDirSize) +
                 "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
                 "----------------------------------------------------------------------------------------------------------------------------------------" + "\n");
 
@@ -365,7 +387,8 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
-                richTextBox1.AppendText("\n" + "\n");
+                richTextBox1.AppendText("\n" + "Swept Temporary Files!" + "\n" + "\n", Color.Green);
+                tempFilesWereRemoved = true;
             }
             #endregion
             #region Temporary Setup Files Removal
@@ -441,7 +464,8 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
-                richTextBox1.AppendText("\n" + "\n");
+                richTextBox1.AppendText("\n" + "Swept Temporary Setup Files!" + "\n" + "\n", Color.Green);
+                tempSetupFilesWereRemoved = true;
             }
             #endregion
             #region Temporary Internet Files Removal
@@ -517,7 +541,8 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
-                richTextBox1.AppendText("\n" + "\n");
+                richTextBox1.AppendText("\n" + "Swept Temporary Internet Files!" + "\n" + "\n", Color.Green);
+                tempInternetFilesWereRemoved = true;
             }
             #endregion
             #region Event Viewer Logs Removal
@@ -532,7 +557,7 @@ namespace CleanSweep2
                 {
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    if (isVerboseMode)
+                    if (showOperationWindows)
                     {
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                     }
@@ -561,8 +586,8 @@ namespace CleanSweep2
                     }
                 });
                 
-                eventLogsCleared = true;
                 richTextBox1.AppendText("\n" + "Swept Event Viewer Logs!" + "\n" + "\n", Color.Green);
+                eventLogsCleared = true;
             }
             #endregion
             #region Empty Recycle Bin
@@ -576,7 +601,7 @@ namespace CleanSweep2
                 {
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    if (isVerboseMode)
+                    if (showOperationWindows)
                     {
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                     }
@@ -585,7 +610,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
-                    startInfo.Arguments = "/C rd /s /q %systemdrive%\\$Recycle.bin";
+                    startInfo.Arguments = "/C echo y| rd /s %systemdrive%\\$Recycle.bin";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
                     process.Start();
@@ -682,7 +707,7 @@ namespace CleanSweep2
                         ScrollToOutputBottom();
                     }
                 }
-                richTextBox1.AppendText("Swept Windows Error Reports!" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Swept Windows Error Reports!" + "\n" + "\n", Color.Green);
                 windowsErrorReportsCleared = true;
             }
             #endregion
@@ -761,13 +786,13 @@ namespace CleanSweep2
                             ScrollToOutputBottom();
                         }
                     }
-                    richTextBox1.AppendText("Removed Delivery Optimization Files!" + "\n", Color.Green);
+                    richTextBox1.AppendText("\n" + "Removed Delivery Optimization Files!" + "\n" + "\n", Color.Green);
                 }
                 else
                 {
-                    richTextBox1.AppendText("No Delivery Optimization Files needed to be cleaned." + "\n", Color.Green);
+                    richTextBox1.AppendText("\n" + "No Delivery Optimization Files needed to be cleaned." + "\n" + "\n", Color.Green);
                 }
-                richTextBox1.AppendText("\n" + "\n");
+                wereDeliveryOptimizationFilesRemoved = true;
             }
             #endregion
             #region Thumbnail Cache Removal
@@ -782,7 +807,7 @@ namespace CleanSweep2
                 {
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    if (isVerboseMode)
+                    if (showOperationWindows)
                     {
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                     }
@@ -798,7 +823,7 @@ namespace CleanSweep2
                             richTextBox1.AppendText("\n" + "Shutting down Explorer.exe process...", Color.Green);
                         }
                     }));
-                    startInfo.Arguments = "/C taskkill /f /im explorer.exe & timeout 1 & del / f / s / q / a %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & timeout 1 & start explorer.exe";
+                    startInfo.Arguments = "/C taskkill /f /im explorer.exe & timeout 1 & del / f / s / q / a %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & timeout 1 & start %windir%\\explorer.exe";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
                     process.Start();
@@ -840,7 +865,7 @@ namespace CleanSweep2
                 {
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    if (isVerboseMode)
+                    if (showOperationWindows)
                     {
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                     }
@@ -849,7 +874,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
-                    startInfo.Arguments = "/C FhManagew.exe -cleanup 0 -quiet";
+                    startInfo.Arguments = "/C FhManagew.exe -cleanup 0";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
                     process.Start();
@@ -886,7 +911,7 @@ namespace CleanSweep2
                     {
                         System.Diagnostics.Process process = new System.Diagnostics.Process();
                         System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                        if (isVerboseMode)
+                        if (showOperationWindows)
                         {
                             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                         }
@@ -920,7 +945,7 @@ namespace CleanSweep2
                 }
                 else
                 {
-                    richTextBox1.AppendText("\n" + "No Windows.old directory found. Skipping...", Color.Green);
+                    richTextBox1.AppendText("\n" + "No Windows.old directory found. Skipping..." + "\n" + "\n", Color.Green);
                     windowsOldCleaned = false;
                 }
             }
@@ -1050,7 +1075,7 @@ namespace CleanSweep2
                         }
                     }
                 }
-                richTextBox1.AppendText("Removed Windows Defender Logs!" + "\n" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Removed Windows Defender Logs!" + "\n" + "\n", Color.Green);
                 windowsDefenderLogsCleared = true;
             }
             #endregion
@@ -1089,7 +1114,7 @@ namespace CleanSweep2
                 {
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    if (isVerboseMode)
+                    if (showOperationWindows)
                     {
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                     }
@@ -1198,7 +1223,7 @@ namespace CleanSweep2
             {
                 richTextBox1.AppendText("Sweeping Chome cache..." + "\n", Color.Green);
                 ScrollToOutputBottom();
-                if (isVerboseMode)
+                if (showOperationWindows)
                 {
                     richTextBox1.AppendText("Ending any Chrome processes", Color.Green);
                     ScrollToOutputBottom();
@@ -1324,140 +1349,162 @@ namespace CleanSweep2
             richTextBox1.AppendText("\n" + "\n" + "Recovery results:", Color.Green);
             richTextBox1.AppendText("\n" + "----------------------------------------------------------------------------------------------------------------------------------------", Color.Green);
 
-            // Get new Temporary Files size and output what was saved.
-            tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
-            long newTempDirSize = tempSizeBeforeDelete - tempDirSizeInMegaBytes;
-            if (newTempDirSize > 0)
+            if (tempFilesWereRemoved)
             {
-                richTextBox1.AppendText("\n" + "Recovered " + newTempDirSize + "MB from removing Temporary Files." + "\n", Color.Green);
+                tempFilesWereRemoved =  false;
+                // Get new Temporary Files size and output what was saved.
+                tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
+                newTempDirSize = tempSizeBeforeDelete - tempDirSizeInMegaBytes;
+                totalSpaceSaved += newTempDirSize;
+                if (newTempDirSize > 0)
+                {
+                    richTextBox1.AppendText("\n" + "Recovered " + newTempDirSize + "MB from removing Temporary Files.", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "<1MB recovered from Temporary Files...", Color.Green);
+                }
+                ScrollToOutputBottom();
             }
-            else
-            {
-                richTextBox1.AppendText("\n" + "<1MB recovered from Temporary Files..." + "\n", Color.Green);
-            }
-            ScrollToOutputBottom();
 
-            // Get new Temporary Setup Files size and output what was saved.
-            tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
-            long newTempSetupDirSize = tempSetupFilesSizeBeforeDelete - tempSetupSizeInMegabytes;
-            if (newTempSetupDirSize > 0)
+            if (tempSetupFilesWereRemoved)
             {
-                richTextBox1.AppendText("Recovered " + newTempSetupDirSize + "MB from removing Temporary Setup Files." + "\n", Color.Green);
+                tempSetupFilesWereRemoved = false;
+                // Get new Temporary Setup Files size and output what was saved.
+                tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
+                newTempSetupDirSize = tempSetupFilesSizeBeforeDelete - tempSetupSizeInMegabytes;
+                totalSpaceSaved += newTempSetupDirSize;
+                if (newTempSetupDirSize > 0)
+                {
+                    richTextBox1.AppendText("\n" + "Recovered " + newTempSetupDirSize + "MB from removing Temporary Setup Files.", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "<1MB recovered from Temporary Setup Files...", Color.Green);
+                }
+                ScrollToOutputBottom();
             }
-            else
-            {
-                richTextBox1.AppendText("<1MB recovered from Temporary Setup Files..." + "\n", Color.Green);
-            }
-            ScrollToOutputBottom();
 
-            // Get new Temporary Internet Files size and output what was saved.
-            try
+            if (tempInternetFilesWereRemoved)
             {
-                tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                tempInternetFilesWereRemoved = false;
+                // Get new Temporary Internet Files size and output what was saved.
+                try
+                {
+                    tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
+                newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
+                totalSpaceSaved += newTempInternetFilesDirSize;
+                if (newTempInternetFilesDirSize > 0)
+                {
+                    richTextBox1.AppendText("\n" + "Recovered " + newTempInternetFilesDirSize + "MB from removing Temporary Internet Files.", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "<1MB recovered from Temporary Internet Files...", Color.Green);
+                }
+                ScrollToOutputBottom();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
-            long newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
-            if (newTempInternetFilesDirSize > 0)
-            {
-                richTextBox1.AppendText("Recovered " + newTempInternetFilesDirSize + "MB from removing Temporary Internet Files." + "\n", Color.Green);
-            }
-            else
-            {
-                richTextBox1.AppendText("<1MB recovered from Temporary Internet Files..." + "\n", Color.Green);
-            }
-            ScrollToOutputBottom();
 
             if (eventLogsCleared)
             {
                 // Mark the sweeping of Event Logs as completed to allow re-sweeping.
                 eventLogsCleared = false;
-                richTextBox1.AppendText("Event Logs were cleared." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Event Logs were cleared.", Color.Green);
+                ScrollToOutputBottom();
             }
-            ScrollToOutputBottom();
 
             if (isRecycleBinEmpty)
             {
                 isRecycleBinEmpty = false;
-                richTextBox1.AppendText("Recycle Bin was emptied." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Recycle Bin was emptied.", Color.Green);
+                ScrollToOutputBottom();
             }
-            ScrollToOutputBottom();
 
             if (windowsErrorReportsCleared)
             {
                 windowsErrorReportsCleared = false;
-                richTextBox1.AppendText("Windows Error Reports were cleared." + "\n", Color.Green);
+                // Get new Windows Error Reports Directory Size and output what was saved.
+                windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
+                newWindowsErrorReportsDirSize = windowsErrorReportsDirSizeBeforeDelete - windowsErrorReportsDirSizeInMegabytes;
+                totalSpaceSaved += newWindowsErrorReportsDirSize;
+                if (newWindowsErrorReportsDirSize > 0)
+                {
+                    richTextBox1.AppendText("\n" + "Recovered " + newWindowsErrorReportsDirSize + "MB from removing Windows Error Reports.", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "<1MB recovered from removing Windows Error Reports...", Color.Green);
+                }
+                ScrollToOutputBottom();
             }
-            ScrollToOutputBottom();
 
-            // Get new Windows Error Reports Directory Size and output what was saved.
-            windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
-            long newWindowsErrorReportsDirSize = windowsErrorReportsDirSizeBeforeDelete - windowsErrorReportsDirSizeInMegabytes;
-            if (newWindowsErrorReportsDirSize > 0)
+            if (wereDeliveryOptimizationFilesRemoved)
             {
-                richTextBox1.AppendText("Recovered " + newWindowsErrorReportsDirSize + "MB from removing Windows Error Reports." + "\n", Color.Green);
+                wereDeliveryOptimizationFilesRemoved = false;
+                // Get new Windows Delivery Optimization directory size and output what was saved.
+                deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
+                newDeliveryOptimizationSize = deliveryOptimizationFilesDirSizeBeforeDelete - deliveryOptimizationFilesDirSizeInMegabytes;
+                totalSpaceSaved += newDeliveryOptimizationSize;
+                if (newDeliveryOptimizationSize > 0)
+                {
+                    richTextBox1.AppendText("\n" + "Recovered " + newDeliveryOptimizationSize + "MB from removing Windows Delivery Optimization Files.", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "<1MB recovered from Windows Delivery Optimization Files...", Color.Green);
+                }
+                ScrollToOutputBottom();
             }
-            else
-            {
-                richTextBox1.AppendText("<1MB recovered from removing Windows Error Reports..." + "\n", Color.Green);
-            }
-            ScrollToOutputBottom();
-
-            // Get new Windows Delivery Optimization directory size and output what was saved.
-            deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
-            long newDeliveryOptimizationSize = deliveryOptimizationFilesDirSizeBeforeDelete - deliveryOptimizationFilesDirSizeInMegabytes;
-            if (newDeliveryOptimizationSize > 0)
-            {
-                richTextBox1.AppendText("Recovered " + newDeliveryOptimizationSize + "MB from removing Windows Delivery Optimization Files." + "\n", Color.Green);
-            }
-            else
-            {
-                richTextBox1.AppendText("<1MB recovered from Windows Delivery Optimization Files..." + "\n", Color.Green);
-            }
-            ScrollToOutputBottom();
 
             if (thumbnailCacheCleared)
             {
                 thumbnailCacheCleared = false;
-                richTextBox1.AppendText("Thumbnail cache was cleared." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Thumbnail cache was cleared.", Color.Green);
+                ScrollToOutputBottom();
             }
 
             if (deletedFileHistory)
             {
                 deletedFileHistory = false;
-                richTextBox1.AppendText("Removed file history older than latest snapshot." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Removed file history older than latest snapshot.", Color.Green);
+                ScrollToOutputBottom();
             }
-            ScrollToOutputBottom();
 
             if (windowsOldCleaned)
             {
                 windowsOldCleaned = false;
-                richTextBox1.AppendText("Old versions of Windows were removed." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Old versions of Windows were removed.", Color.Green);
+                ScrollToOutputBottom();
             }
-            ScrollToOutputBottom();
 
             if (windowsDefenderLogsCleared)
             {
                 windowsDefenderLogsCleared = false;
-                richTextBox1.AppendText("Windows Defender Logs were removed." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Windows Defender Logs were removed.", Color.Green);
+                ScrollToOutputBottom();
             }
             if (sweptChromeCache)
             {
                 sweptChromeCache = false;
-                richTextBox1.AppendText("Chrome cache was cleared." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Chrome cache was cleared.", Color.Green);
+                ScrollToOutputBottom();
             }
 
             if (sweptEdgeCache)
             {
                 sweptEdgeCache = false;
-                richTextBox1.AppendText("Edge cache was cleared." + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Edge cache was cleared.", Color.Green);
+                ScrollToOutputBottom();
             }
 
             if (msoCacheCleared)
@@ -1466,7 +1513,15 @@ namespace CleanSweep2
                 // Get size of MSOCache.
                 if (!Directory.Exists(msoCacheDir))
                 {
-                    richTextBox1.AppendText("Recovered " + msoCacheDirSize + "MB from removing MSO Cache." + "\n", Color.Green);
+                    if (newMsoCacheDirSize > 0)
+                    {
+                        richTextBox1.AppendText("\n" + "Recovered " + msoCacheDirSize + "MB from removing MSO Cache.", Color.Green);
+                        totalSpaceSaved += msoCacheDirSize;
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("\n" + "<1MB recovered from MSO Cache...", Color.Green);
+                    }
                 }
                 else
                 {
@@ -1474,30 +1529,30 @@ namespace CleanSweep2
                     msoCacheDirSize = 0;
                     msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
                     newMsoCacheDirSize = oldMsoCacheSize - msoCacheDirSize;
-                    
+                    totalSpaceSaved += newMsoCacheDirSize;
                     if (newMsoCacheDirSize > 0)
                     {
-                        richTextBox1.AppendText("Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache." + "\n", Color.Green);
+                        richTextBox1.AppendText("\n" + "Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache.", Color.Green);
                     }
                     else
                     {
-                        richTextBox1.AppendText("<1MB recovered from MSO Cache..." + "\n", Color.Green);
+                        richTextBox1.AppendText("\n" + "<1MB recovered from MSO Cache...", Color.Green);
                     }
                 }
+                ScrollToOutputBottom();
             }
 
             // Output the total space saved from the entire operation and other important completed actions.
-            long totalSpaceSaved = newTempDirSize + newTempSetupDirSize + newTempInternetFilesDirSize + newWindowsErrorReportsDirSize + newDeliveryOptimizationSize + newMsoCacheDirSize;
             if (totalSpaceSaved > 0)
             {
-                richTextBox1.AppendText("\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
             }
             else
             {
-                richTextBox1.AppendText("\n" + "Total space recovered: <1MB" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: <1MB" + "\n", Color.Green);
             }
+            totalSpaceSaved = 0;
             ScrollToOutputBottom();
-
             LockCleaning(false);
             CanCleanStatus();
             RemoveAllChecks();
@@ -1790,6 +1845,21 @@ namespace CleanSweep2
             {
                 Properties.Settings.Default.Verbosity = false;
                 isVerboseMode = false;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        private void ShowOperationWindowsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (showOperationWindowsToolStripMenuItem.Checked)
+            {
+                Properties.Settings.Default.OperationWindows = true;
+                showOperationWindows = true;
+            }
+            else
+            {
+                Properties.Settings.Default.OperationWindows = false;
+                showOperationWindows = false;
             }
             Properties.Settings.Default.Save();
         }

@@ -39,10 +39,11 @@ namespace CleanSweep2
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verboseModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showOperationWindowsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -150,42 +151,53 @@ namespace CleanSweep2
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.verboseModeToolStripMenuItem,
+            this.showOperationWindowsToolStripMenuItem,
             this.checkForUpdatesToolStripMenuItem,
-            this.donateToolStripMenuItem,
             this.aboutToolStripMenuItem,
-            this.verboseModeToolStripMenuItem});
+            this.donateToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
-            // 
-            // checkForUpdatesToolStripMenuItem
-            // 
-            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.checkForUpdatesToolStripMenuItem.Text = "Check For Updates";
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdatesToolStripMenuItem_Click);
-            // 
-            // donateToolStripMenuItem
-            // 
-            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
-            this.donateToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.donateToolStripMenuItem.Text = "Donate";
-            this.donateToolStripMenuItem.Click += new System.EventHandler(this.DonateToolStripMenuItem_Click);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // verboseModeToolStripMenuItem
             // 
             this.verboseModeToolStripMenuItem.CheckOnClick = true;
             this.verboseModeToolStripMenuItem.Name = "verboseModeToolStripMenuItem";
-            this.verboseModeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.verboseModeToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.verboseModeToolStripMenuItem.Text = "Verbose Mode";
+            this.verboseModeToolStripMenuItem.ToolTipText = "Output additional information about operations to the log window.";
             this.verboseModeToolStripMenuItem.Click += new System.EventHandler(this.VerboseModeToolStripMenuItem_Click);
+            // 
+            // showOperationWindowsToolStripMenuItem
+            // 
+            this.showOperationWindowsToolStripMenuItem.CheckOnClick = true;
+            this.showOperationWindowsToolStripMenuItem.Name = "showOperationWindowsToolStripMenuItem";
+            this.showOperationWindowsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.showOperationWindowsToolStripMenuItem.Text = "Show Operation Windows";
+            this.showOperationWindowsToolStripMenuItem.ToolTipText = "Show Windows command prompt Windows while operations are being performed.";
+            this.showOperationWindowsToolStripMenuItem.Click += new System.EventHandler(this.ShowOperationWindowsToolStripMenuItem_Click);
+            // 
+            // checkForUpdatesToolStripMenuItem
+            // 
+            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
+            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.checkForUpdatesToolStripMenuItem.Text = "Check For Updates";
+            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdatesToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
+            // 
+            // donateToolStripMenuItem
+            // 
+            this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
+            this.donateToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.donateToolStripMenuItem.Text = "Donate";
+            this.donateToolStripMenuItem.Click += new System.EventHandler(this.DonateToolStripMenuItem_Click);
             // 
             // richTextBox1
             // 
@@ -710,6 +722,7 @@ namespace CleanSweep2
         private System.Windows.Forms.CheckBox checkBox17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.CheckBox checkBox18;
+        private System.Windows.Forms.ToolStripMenuItem showOperationWindowsToolStripMenuItem;
     }
 }
 
