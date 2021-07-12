@@ -12,11 +12,12 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.0.11";
+        private const string CurrentVersion = "v2.0.12";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        readonly string programFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
         readonly string programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         readonly string localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -36,6 +37,8 @@ namespace CleanSweep2
         bool sweptChromeCache = false;
         bool sweptEdgeCache = false;
         bool msoCacheCleared = false;
+        bool windowsInstallerCacheCleared = false;
+        bool windowsUpdateLogsCleared = false;
         bool[] checkedArrayBool;
         long totalSpaceSaved;
         CheckBox[] checkedArray;
@@ -87,6 +90,17 @@ namespace CleanSweep2
         string msoCacheDir;
         long msoCacheDirSize = 0;
         long newMsoCacheDirSize;
+
+        // Windows Installer Cache Directories
+        string windowsInstallerCacheDir;
+        long windowsInstallerCacheDirSize;
+        long newWindowsInstallerCacheDirSize;
+
+        // Windows Update Log Directories.
+        string windowsUpdateLogDir;
+        long windowsUpdateLogDirSize;
+        long newWindowsUpdateLogDirSize;
+
         #endregion
 
         public Form1()
@@ -152,13 +166,7 @@ namespace CleanSweep2
         #region Calculate Space To Regain
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Disable incomplete cleaning solutions:
-            checkBox15.Enabled = false;
-            checkBox16.Enabled = false;
-            checkBox17.Enabled = false;
-            checkBox18.Enabled = false;
-
-            checkedArray = new CheckBox[18] 
+            checkedArray = new CheckBox[16] 
             { 
                 checkBox1, 
                 checkBox2, 
@@ -175,12 +183,10 @@ namespace CleanSweep2
                 checkBox13, 
                 checkBox14, 
                 checkBox15, 
-                checkBox16, 
-                checkBox17, 
                 checkBox18
             };
 
-            checkedArrayBool = new bool[18] 
+            checkedArrayBool = new bool[16] 
             { 
                 checkBox1.Checked, 
                 checkBox2.Checked, 
@@ -197,8 +203,6 @@ namespace CleanSweep2
                 checkBox13.Checked, 
                 checkBox14.Checked, 
                 checkBox15.Checked, 
-                checkBox16.Checked, 
-                checkBox17.Checked, 
                 checkBox18.Checked
             };
 
@@ -224,8 +228,14 @@ namespace CleanSweep2
             edgeCacheDirectories[10] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Service Worker";
             edgeCacheDirectories[11] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\ShaderCache";
 
-            // Set MSOCache Directory
+            // Set MSOCache Directory.
             msoCacheDir = systemDrive + "MSOCache";
+
+            // Set Windows Installer Cache Directory.
+            windowsInstallerCacheDir = windowsDirectory + "\\Installer\\$PatchCache$\\Managed";
+
+            // Set Windows Log Directory.
+            windowsUpdateLogDir = windowsDirectory + "\\Logs\\WindowsUpdate";
 
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
@@ -243,9 +253,8 @@ namespace CleanSweep2
             {
                 tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine(ex.Message);
                 ScrollToOutputBottom();
             }
             tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
@@ -287,10 +296,25 @@ namespace CleanSweep2
                 msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
             }
 
+            // Get size of Windows Installer Cache.
+            if (Directory.Exists(windowsInstallerCacheDir))
+            {
+                windowsInstallerCacheDirSize = Directory.GetFiles(windowsInstallerCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+            }
+
+            // Get size of Windows Update Logs directory.
+            if (Directory.Exists(windowsUpdateLogDir))
+            {
+                windowsUpdateLogDirSize = Directory.GetFiles(windowsUpdateLogDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+            }
+
+            ScrollToOutputBottom();
+
             // Show potential reclamation, then each individual category.
             richTextBox1.AppendText("Potential space to reclaim: " + 
-                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + deliveryOptimizationFilesDirSizeInMegabytes + totalChromeDirSize + totalEdgeDirSize + msoCacheDirSize) +
-                "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
+                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes + 
+                deliveryOptimizationFilesDirSizeInMegabytes + totalChromeDirSize + totalEdgeDirSize + msoCacheDirSize + windowsInstallerCacheDirSize + 
+                windowsUpdateLogDirSize) + "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" + 
                 "----------------------------------------------------------------------------------------------------------------------------------------" + "\n");
 
             // List out total space reclamation per category.
@@ -301,7 +325,9 @@ namespace CleanSweep2
             richTextBox1.AppendText("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n");
             richTextBox1.AppendText("Chrome Data Size: " + totalChromeDirSize + "MB" + "\n");
             richTextBox1.AppendText("Edge Data Size: " + totalEdgeDirSize + "MB" + "\n");
-            richTextBox1.AppendText("MSO Cache size: " + msoCacheDirSize + "MB" + "\n" + "\n");
+            richTextBox1.AppendText("MSO Cache size: " + msoCacheDirSize + "MB" + "\n");
+            richTextBox1.AppendText("Windows Installer Cache size: " + windowsInstallerCacheDirSize + "MB" + "\n");
+            richTextBox1.AppendText("Windows Update Logs size: " + windowsUpdateLogDirSize + "MB" + "\n" + "\n");
 
         }
         #endregion
@@ -389,6 +415,7 @@ namespace CleanSweep2
                 }
                 richTextBox1.AppendText("\n" + "Swept Temporary Files!" + "\n" + "\n", Color.Green);
                 tempFilesWereRemoved = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Temporary Setup Files Removal
@@ -466,6 +493,7 @@ namespace CleanSweep2
                 }
                 richTextBox1.AppendText("\n" + "Swept Temporary Setup Files!" + "\n" + "\n", Color.Green);
                 tempSetupFilesWereRemoved = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Temporary Internet Files Removal
@@ -543,6 +571,7 @@ namespace CleanSweep2
                 }
                 richTextBox1.AppendText("Swept Temporary Internet Files!" + "\n" + "\n", Color.Green);
                 tempInternetFilesWereRemoved = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Event Viewer Logs Removal
@@ -588,6 +617,7 @@ namespace CleanSweep2
                 
                 richTextBox1.AppendText("\n" + "Swept Event Viewer Logs!" + "\n" + "\n", Color.Green);
                 eventLogsCleared = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Empty Recycle Bin
@@ -632,6 +662,7 @@ namespace CleanSweep2
                 
                 richTextBox1.AppendText("\n" + "Emptied Recycle Bin!" + "\n" + "\n", Color.Green);
                 isRecycleBinEmpty = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Windows Error Reports Removal
@@ -709,6 +740,7 @@ namespace CleanSweep2
                 }
                 richTextBox1.AppendText("Swept Windows Error Reports!" + "\n" + "\n", Color.Green);
                 windowsErrorReportsCleared = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Delivery Optimization Files
@@ -793,6 +825,7 @@ namespace CleanSweep2
                     richTextBox1.AppendText("No Delivery Optimization Files needed to be cleaned." + "\n" + "\n", Color.Green);
                 }
                 wereDeliveryOptimizationFilesRemoved = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Thumbnail Cache Removal
@@ -851,6 +884,7 @@ namespace CleanSweep2
                 }));
                 richTextBox1.AppendText("\n" + "Cleared Thumbnail Cache!" + "\n" + "\n", Color.Green);
                 thumbnailCacheCleared = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region User File History Removal
@@ -895,6 +929,7 @@ namespace CleanSweep2
                 });
                 richTextBox1.AppendText("\n" + "If file history was enabled, all versions except latest were removed." + "\n" + "\n", Color.Green);
                 deletedFileHistory = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Windows.old Directory Removal
@@ -948,6 +983,7 @@ namespace CleanSweep2
                     richTextBox1.AppendText("\n" + "No Windows.old directory found. Skipping..." + "\n" + "\n", Color.Green);
                     windowsOldCleaned = false;
                 }
+                ScrollToOutputBottom();
             }
             #endregion
             #region Windows Defender Log Files Removal
@@ -1080,6 +1116,7 @@ namespace CleanSweep2
                 }
                 richTextBox1.AppendText("\n" + "Removed Windows Defender Logs!" + "\n" + "\n", Color.Green);
                 windowsDefenderLogsCleared = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Microsoft Office Cache Removal
@@ -1091,7 +1128,6 @@ namespace CleanSweep2
                 if (Directory.Exists(msoCacheDir))
                 {
                     Directory.Delete(msoCacheDir, true);
-                    msoCacheCleared = true;
                     richTextBox1.AppendText("\n" + "Swept MSO Cache!" + "\n" + "\n", Color.Green);
                 }
                 else
@@ -1100,6 +1136,7 @@ namespace CleanSweep2
                 }
 
                 msoCacheCleared = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Microsoft Edge Cache Removal
@@ -1223,8 +1260,8 @@ namespace CleanSweep2
                 });
 
                 richTextBox1.AppendText("\n" + "Swept Edge cache!" + "\n" + "\n", Color.Green);
-                ScrollToOutputBottom();
                 sweptEdgeCache = true;
+                ScrollToOutputBottom();
             }
             #endregion
             #region Chrome Cache Removal
@@ -1348,16 +1385,56 @@ namespace CleanSweep2
 
                 sweptChromeCache = true;
                 richTextBox1.AppendText("\n" + "Swept Chrome cache!" + "\n" + "\n", Color.Green);
+                ScrollToOutputBottom();
             }
             #endregion
-            //#region Windows Installer Cache Removal
-            //#endregion
-            //#region Windows Log Files Removal
-            //#endregion
-            //#region Windows Shadow Copies Removal
-            //#endregion
-            //#region Windows Update Logs Removal
-            //#endregion
+            #region Windows Installer Cache Removal
+            // Windows Installer Cache Removal
+            if (checkBox15.Checked)
+            {
+                richTextBox1.AppendText("Sweeping Windows Installer cache", Color.Green);
+                ScrollToOutputBottom();
+                if (Directory.Exists(windowsInstallerCacheDir))
+                {
+                    try
+                    {
+                        Directory.Delete(windowsInstallerCacheDir, true);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                    richTextBox1.AppendText("\n" + "Swept Windows Installer Cache!" + "\n" + "\n", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "No Windows Installer directory found. Skipping..." + "\n" + "\n", Color.Green);
+                }
+                
+                ScrollToOutputBottom();
+                windowsInstallerCacheCleared = true;
+            }
+            #endregion
+            #region Windows Update Logs Removal
+            // Windows Update Logs Removal
+            if (checkBox18.Checked)
+            {
+                richTextBox1.AppendText("Sweeping Windows Update Logs", Color.Green);
+                ScrollToOutputBottom();
+                if (Directory.Exists(windowsUpdateLogDir))
+                {
+                    Directory.Delete(windowsUpdateLogDir, true);
+                    richTextBox1.AppendText("\n" + "Swept Windows Update Logs!" + "\n" + "\n", Color.Green);
+                }
+                else
+                {
+                    richTextBox1.AppendText("\n" + "No Windows Update Logs directory found. Skipping..." + "\n" + "\n", Color.Green);
+                }
+
+                ScrollToOutputBottom();
+                windowsUpdateLogsCleared = true;
+            }
+            #endregion
 
 
             #region Calculate Space Saved
@@ -1557,6 +1634,76 @@ namespace CleanSweep2
                 ScrollToOutputBottom();
             }
 
+            if (windowsInstallerCacheCleared)
+            {
+                windowsInstallerCacheCleared = false;
+                // Get size of Windows Installer Cache.
+                if (!Directory.Exists(windowsInstallerCacheDir))
+                {
+                    if (newWindowsInstallerCacheDirSize > 0)
+                    {
+                        richTextBox1.AppendText("\n" + "Recovered " + windowsInstallerCacheDirSize + "MB from removing MSO Cache.", Color.Green);
+                        totalSpaceSaved += windowsInstallerCacheDirSize;
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("\n" + "<1MB recovered from removing Windows Installer Cache...", Color.Green);
+                    }
+                }
+                else
+                {
+                    long oldWindowsInstallerCacheDirSize = windowsInstallerCacheDirSize;
+                    windowsInstallerCacheDirSize = 0;
+                    windowsInstallerCacheDirSize = Directory.GetFiles(windowsInstallerCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    newWindowsInstallerCacheDirSize = oldWindowsInstallerCacheDirSize - windowsInstallerCacheDirSize;
+                    totalSpaceSaved += newWindowsInstallerCacheDirSize;
+                    if (newWindowsInstallerCacheDirSize > 0)
+                    {
+                        richTextBox1.AppendText("\n" + "Recovered " + newWindowsInstallerCacheDirSize + "MB from removing Windows Installer Cache.", Color.Green);
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("\n" + "<1MB recovered from Windows Installer Cache...", Color.Green);
+                    }
+                }
+                ScrollToOutputBottom();
+            }
+
+            if (windowsUpdateLogsCleared)
+            {
+                windowsUpdateLogsCleared = false;
+                // Get size of Windows Update Logs.
+                if (!Directory.Exists(windowsUpdateLogDir))
+                {
+                    if (newWindowsUpdateLogDirSize > 0)
+                    {
+                        richTextBox1.AppendText("\n" + "Recovered " + windowsUpdateLogDirSize + "MB from removing Windows Update Logs.", Color.Green);
+                        totalSpaceSaved += windowsUpdateLogDirSize;
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("\n" + "<1MB recovered from removing Windows Update Logs...", Color.Green);
+                    }
+                }
+                else
+                {
+                    long oldWindowsUpdateLogDirSize = windowsUpdateLogDirSize;
+                    windowsUpdateLogDirSize = 0;
+                    windowsUpdateLogDirSize = Directory.GetFiles(windowsUpdateLogDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    newWindowsUpdateLogDirSize = oldWindowsUpdateLogDirSize - windowsUpdateLogDirSize;
+                    totalSpaceSaved += newWindowsUpdateLogDirSize;
+                    if (newWindowsUpdateLogDirSize > 0)
+                    {
+                        richTextBox1.AppendText("\n" + "Recovered " + newWindowsUpdateLogDirSize + "MB from removing Windows Update Logs.", Color.Green);
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("\n" + "<1MB recovered from Windows Update Logs...", Color.Green);
+                    }
+                }
+                ScrollToOutputBottom();
+            }
+            
             // Output the total space saved from the entire operation and other important completed actions.
             if (totalSpaceSaved > 0)
             {
@@ -1602,7 +1749,7 @@ namespace CleanSweep2
         }
 
         // Checkbox Checked Functions
-        #region
+        #region Checkboxes
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             ToggleCleanableStatus(checkBox1.Checked, 0);
@@ -1677,19 +1824,9 @@ namespace CleanSweep2
             ToggleCleanableStatus(checkBox15.Checked, 14);
         }
 
-        private void CheckBox16_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox18_CheckedChanged_1(object sender, EventArgs e)
         {
-            ToggleCleanableStatus(checkBox16.Checked, 15);
-        }
-
-        private void CheckBox17_CheckedChanged(object sender, EventArgs e)
-        {
-            ToggleCleanableStatus(checkBox17.Checked, 16);
-        }
-
-        private void CheckBox18_CheckedChanged(object sender, EventArgs e)
-        {
-            ToggleCleanableStatus(checkBox18.Checked, 17);
+            ToggleCleanableStatus(checkBox18.Checked, 15);
         }
         #endregion
 
@@ -1739,12 +1876,8 @@ namespace CleanSweep2
                 checkBox12.Enabled = false;
                 checkBox13.Enabled = false;
                 checkBox14.Enabled = false;
-                
-                // Disabled cleaning solutions:
-                //checkBox15.Enabled = false;
-                //checkBox16.Enabled = false;
-                //checkBox17.Enabled = false;
-                //checkBox18.Checked = false;
+                checkBox15.Enabled = false;
+                checkBox18.Enabled = false;
 
                 button1.Enabled = false;
             }
@@ -1764,12 +1897,8 @@ namespace CleanSweep2
                 checkBox12.Enabled = true;
                 checkBox13.Enabled = true;
                 checkBox14.Enabled = true;
-
-                // Disabled cleaning solutions:
-                //checkBox15.Enabled = true;
-                //checkBox16.Enabled = true;
-                //checkBox17.Enabled = true;
-                //checkBox18.Checked = true;
+                checkBox15.Enabled = true;
+                checkBox18.Enabled = true;
 
                 button1.Enabled = true;
             }

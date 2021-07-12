@@ -81,8 +81,6 @@ namespace CleanSweep2
             this.checkBox14 = new System.Windows.Forms.CheckBox();
             this.label15 = new System.Windows.Forms.Label();
             this.checkBox15 = new System.Windows.Forms.CheckBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.checkBox16 = new System.Windows.Forms.CheckBox();
             this.label17 = new System.Windows.Forms.Label();
             this.checkBox17 = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
@@ -365,7 +363,7 @@ namespace CleanSweep2
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(376, 147);
+            this.label6.Location = new System.Drawing.Point(376, 88);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(116, 13);
             this.label6.TabIndex = 22;
@@ -374,7 +372,7 @@ namespace CleanSweep2
             // checkBox6
             // 
             this.checkBox6.AutoSize = true;
-            this.checkBox6.Location = new System.Drawing.Point(355, 147);
+            this.checkBox6.Location = new System.Drawing.Point(355, 88);
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Size = new System.Drawing.Size(15, 14);
             this.checkBox6.TabIndex = 21;
@@ -384,7 +382,7 @@ namespace CleanSweep2
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(376, 178);
+            this.label7.Location = new System.Drawing.Point(376, 119);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(152, 13);
             this.label7.TabIndex = 24;
@@ -393,7 +391,7 @@ namespace CleanSweep2
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(355, 178);
+            this.checkBox7.Location = new System.Drawing.Point(355, 119);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(15, 14);
             this.checkBox7.TabIndex = 23;
@@ -552,48 +550,24 @@ namespace CleanSweep2
             this.checkBox15.UseVisualStyleBackColor = true;
             this.checkBox15.CheckedChanged += new System.EventHandler(this.CheckBox15_CheckedChanged);
             // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(376, 59);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(96, 13);
-            this.label16.TabIndex = 42;
-            this.label16.Text = "Windows Log Files";
-            // 
-            // checkBox16
-            // 
-            this.checkBox16.AutoSize = true;
-            this.checkBox16.Location = new System.Drawing.Point(355, 59);
-            this.checkBox16.Name = "checkBox16";
-            this.checkBox16.Size = new System.Drawing.Size(15, 14);
-            this.checkBox16.TabIndex = 41;
-            this.checkBox16.UseVisualStyleBackColor = true;
-            this.checkBox16.CheckedChanged += new System.EventHandler(this.CheckBox16_CheckedChanged);
-            // 
             // label17
             // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(376, 88);
+            this.label17.Location = new System.Drawing.Point(0, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(128, 13);
-            this.label17.TabIndex = 44;
-            this.label17.Text = "Windows Shadow Copies";
+            this.label17.Size = new System.Drawing.Size(100, 23);
+            this.label17.TabIndex = 0;
             // 
             // checkBox17
             // 
-            this.checkBox17.AutoSize = true;
-            this.checkBox17.Location = new System.Drawing.Point(355, 88);
+            this.checkBox17.Location = new System.Drawing.Point(0, 0);
             this.checkBox17.Name = "checkBox17";
-            this.checkBox17.Size = new System.Drawing.Size(15, 14);
-            this.checkBox17.TabIndex = 43;
-            this.checkBox17.UseVisualStyleBackColor = true;
-            this.checkBox17.CheckedChanged += new System.EventHandler(this.CheckBox17_CheckedChanged);
+            this.checkBox17.Size = new System.Drawing.Size(104, 24);
+            this.checkBox17.TabIndex = 0;
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(376, 118);
+            this.label18.Location = new System.Drawing.Point(376, 58);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(115, 13);
             this.label18.TabIndex = 46;
@@ -602,24 +576,20 @@ namespace CleanSweep2
             // checkBox18
             // 
             this.checkBox18.AutoSize = true;
-            this.checkBox18.Location = new System.Drawing.Point(355, 118);
+            this.checkBox18.Location = new System.Drawing.Point(355, 58);
             this.checkBox18.Name = "checkBox18";
             this.checkBox18.Size = new System.Drawing.Size(15, 14);
-            this.checkBox18.TabIndex = 45;
+            this.checkBox18.TabIndex = 47;
             this.checkBox18.UseVisualStyleBackColor = true;
-            this.checkBox18.CheckedChanged += new System.EventHandler(this.CheckBox18_CheckedChanged);
+            this.checkBox18.CheckedChanged += new System.EventHandler(this.CheckBox18_CheckedChanged_1);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 561);
-            this.Controls.Add(this.label18);
             this.Controls.Add(this.checkBox18);
-            this.Controls.Add(this.label17);
-            this.Controls.Add(this.checkBox17);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.checkBox16);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.checkBox15);
             this.Controls.Add(this.label14);
@@ -716,8 +686,6 @@ namespace CleanSweep2
         private System.Windows.Forms.CheckBox checkBox14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.CheckBox checkBox15;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.CheckBox checkBox16;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.CheckBox checkBox17;
         private System.Windows.Forms.Label label18;
