@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.0";
+        private const string CurrentVersion = "v2.1.1";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -569,7 +569,7 @@ namespace CleanSweep2
                         }
                     }
                 }
-                richTextBox1.AppendText("Swept Temporary Internet Files!" + "\n" + "\n", Color.Green);
+                richTextBox1.AppendText("\n" + "Swept Temporary Internet Files!" + "\n" + "\n", Color.Green);
                 tempInternetFilesWereRemoved = true;
                 ScrollToOutputBottom();
             }
@@ -818,7 +818,7 @@ namespace CleanSweep2
                             }
                         }
                     }
-                    richTextBox1.AppendText("Removed Delivery Optimization Files!" + "\n" + "\n", Color.Green);
+                    richTextBox1.AppendText("\n" + "Removed Delivery Optimization Files!" + "\n" + "\n", Color.Green);
                 }
                 else
                 {
