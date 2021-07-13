@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.2";
+        private const string CurrentVersion = "v2.1.3";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -1392,25 +1392,48 @@ namespace CleanSweep2
             // Windows Installer Cache Removal
             if (checkBox15.Checked)
             {
-                richTextBox1.AppendText("Sweeping Windows Installer cache", Color.Green);
+                richTextBox1.AppendText("Removing Windows Installer Cache", Color.Green);
                 ScrollToOutputBottom();
-                if (Directory.Exists(windowsInstallerCacheDir))
+                if (Directory.Exists(windowsDirectory + "\\Installer\\$PatchCache$\\Managed"))
                 {
-                    try
+                    richTextBox1.AppendText("\n" + "Found Windows Installer Cache. Cleaning", Color.Green);
+                    AddWaitText();
+                    await Task.Run(() =>
                     {
-                        Directory.Delete(windowsInstallerCacheDir, true);
-                    }
-                    catch (Exception)
-                    {
+                        System.Diagnostics.Process process = new System.Diagnostics.Process();
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                        if (showOperationWindows)
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                        }
+                        else
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                        }
+                        startInfo.FileName = "cmd.exe";
+                        startInfo.UseShellExecute = true;
+                        startInfo.WorkingDirectory = "C:\\Windows\\";
+                        startInfo.Arguments = "/C rmdir /q /s %WINDIR%\\Installer\\$PatchCache$\\Managed";
+                        startInfo.Verb = "runas";
+                        process.StartInfo = startInfo;
+                        process.Start();
 
-                    }
-                    richTextBox1.AppendText("\n" + "Swept Windows Installer Cache!" + "\n" + "\n", Color.Green);
+                        while (!process.HasExited)
+                        {
+                            Thread.Sleep(200);
+                            AddWaitText();
+                            if (process.HasExited)
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    ScrollToOutputBottom();
+                                }));
+                                break;
+                            }
+                        }
+                    });
+                    richTextBox1.AppendText("\n" + "Cleaned Windows Installer Cache!" + "\n" + "\n", Color.Green);
                 }
-                else
-                {
-                    richTextBox1.AppendText("\n" + "No Windows Installer directory found. Skipping..." + "\n" + "\n", Color.Green);
-                }
-                
                 ScrollToOutputBottom();
                 windowsInstallerCacheCleared = true;
             }
@@ -1638,33 +1661,20 @@ namespace CleanSweep2
             {
                 windowsInstallerCacheCleared = false;
                 // Get size of Windows Installer Cache.
-                if (!Directory.Exists(windowsInstallerCacheDir))
-                {
-                    if (newWindowsInstallerCacheDirSize > 0)
-                    {
-                        richTextBox1.AppendText("\n" + "Recovered " + windowsInstallerCacheDirSize + "MB from removing MSO Cache.", Color.Green);
-                        totalSpaceSaved += windowsInstallerCacheDirSize;
-                    }
-                    else
-                    {
-                        richTextBox1.AppendText("\n" + "<1MB recovered from removing Windows Installer Cache...", Color.Green);
-                    }
-                }
-                else
+                if (Directory.Exists(windowsDirectory + "\\Installer\\$PatchCache$"))
                 {
                     long oldWindowsInstallerCacheDirSize = windowsInstallerCacheDirSize;
-                    windowsInstallerCacheDirSize = 0;
-                    windowsInstallerCacheDirSize = Directory.GetFiles(windowsInstallerCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                    newWindowsInstallerCacheDirSize = oldWindowsInstallerCacheDirSize - windowsInstallerCacheDirSize;
-                    totalSpaceSaved += newWindowsInstallerCacheDirSize;
-                    if (newWindowsInstallerCacheDirSize > 0)
+                    Console.WriteLine(oldWindowsInstallerCacheDirSize);
+                    if (Directory.Exists(windowsInstallerCacheDir))
                     {
-                        richTextBox1.AppendText("\n" + "Recovered " + newWindowsInstallerCacheDirSize + "MB from removing Windows Installer Cache.", Color.Green);
+                        windowsInstallerCacheDirSize = Directory.GetFiles(windowsInstallerCacheDir + "\\Managed", "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                        newWindowsInstallerCacheDirSize = oldWindowsInstallerCacheDirSize - windowsInstallerCacheDirSize;
                     }
                     else
                     {
-                        richTextBox1.AppendText("\n" + "<1MB recovered from Windows Installer Cache...", Color.Green);
+                        richTextBox1.AppendText("\n" + "Recovered " + oldWindowsInstallerCacheDirSize + "MB from removing Windows Installer Cache.", Color.Green);
                     }
+                    totalSpaceSaved += newWindowsInstallerCacheDirSize;
                 }
                 ScrollToOutputBottom();
             }
