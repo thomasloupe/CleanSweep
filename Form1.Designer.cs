@@ -142,8 +142,9 @@ namespace CleanSweep2
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.ToolTipText = "Exit CleanSweep";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
@@ -164,7 +165,7 @@ namespace CleanSweep2
             this.verboseModeToolStripMenuItem.Name = "verboseModeToolStripMenuItem";
             this.verboseModeToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.verboseModeToolStripMenuItem.Text = "Verbose Mode";
-            this.verboseModeToolStripMenuItem.ToolTipText = "Output additional information about operations to the log window.";
+            this.verboseModeToolStripMenuItem.ToolTipText = "Output additional information about operations to the log window";
             this.verboseModeToolStripMenuItem.Click += new System.EventHandler(this.VerboseModeToolStripMenuItem_Click);
             // 
             // showOperationWindowsToolStripMenuItem
@@ -173,7 +174,7 @@ namespace CleanSweep2
             this.showOperationWindowsToolStripMenuItem.Name = "showOperationWindowsToolStripMenuItem";
             this.showOperationWindowsToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.showOperationWindowsToolStripMenuItem.Text = "Show Operation Windows";
-            this.showOperationWindowsToolStripMenuItem.ToolTipText = "Show Windows command prompt Windows while operations are being performed.";
+            this.showOperationWindowsToolStripMenuItem.ToolTipText = "Show Windows command prompt Windows while operations are being performed";
             this.showOperationWindowsToolStripMenuItem.Click += new System.EventHandler(this.ShowOperationWindowsToolStripMenuItem_Click);
             // 
             // checkForUpdatesToolStripMenuItem
@@ -181,6 +182,7 @@ namespace CleanSweep2
             this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
             this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.checkForUpdatesToolStripMenuItem.Text = "Check For Updates";
+            this.checkForUpdatesToolStripMenuItem.ToolTipText = "Check the CleanSweep Github release page for the latest version and new features";
             this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdatesToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
@@ -188,6 +190,7 @@ namespace CleanSweep2
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.ToolTipText = "Show the version number and other relevant information about CleanSweep";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // donateToolStripMenuItem
@@ -195,6 +198,7 @@ namespace CleanSweep2
             this.donateToolStripMenuItem.Name = "donateToolStripMenuItem";
             this.donateToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.donateToolStripMenuItem.Text = "Donate";
+            this.donateToolStripMenuItem.ToolTipText = "Open a browser window to say thanks for CleanSweep";
             this.donateToolStripMenuItem.Click += new System.EventHandler(this.DonateToolStripMenuItem_Click);
             // 
             // richTextBox1
