@@ -12,12 +12,11 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.3";
+        private const string CurrentVersion = "v2.1.4";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
         readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-        readonly string programFilesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
         readonly string programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         readonly string localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -79,11 +78,11 @@ namespace CleanSweep2
         long newDeliveryOptimizationSize;
 
         // Chrome Directories
-        string[] chromeCacheDirectories = new string[6];
+        readonly string[] chromeCacheDirectories = new string[6];
         long totalChromeDirSize = 0;
 
         // Edge Directories
-        string[] edgeCacheDirectories = new string[12];
+        readonly string[] edgeCacheDirectories = new string[12];
         long totalEdgeDirSize = 0;
 
         // MSO Cache Directories
@@ -1343,22 +1342,34 @@ namespace CleanSweep2
                                     }
                                 }
                             }
-                            catch (IOException ex)
+                            catch (SystemException ex)
                             {
-                                if (isVerboseMode)
+                                if (ex.GetType() == typeof(IOException))
                                 {
-                                    Invoke(new Action(() =>
+                                    if (isVerboseMode)
                                     {
-                                        richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Green);
-                                        ScrollToOutputBottom();
-                                    }));
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                            ScrollToOutputBottom();
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("x", Color.Red);
+                                        }));
+                                    }
+                                }
+                                else if (ex.GetType() == typeof(UnauthorizedAccessException))
+                                {
+                                    richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                    ScrollToOutputBottom();
                                 }
                                 else
                                 {
-                                    Invoke(new Action(() =>
-                                    {
-                                        richTextBox1.AppendText("x", Color.Red);
-                                    }));
+                                    richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
                                 }
                             }
                         }
@@ -1872,43 +1883,19 @@ namespace CleanSweep2
             // Lock or unlock all checkboxes depending on whether cleaning operation is in progress.
             if (isEnabled)
             {
-                checkBox1.Enabled = false;
-                checkBox2.Enabled = false;
-                checkBox3.Enabled = false;
-                checkBox4.Enabled = false;
-                checkBox5.Enabled = false;
-                checkBox6.Enabled = false;
-                checkBox7.Enabled = false;
-                checkBox8.Enabled = false;
-                checkBox9.Enabled = false;
-                checkBox10.Enabled = false;
-                checkBox11.Enabled = false;
-                checkBox12.Enabled = false;
-                checkBox13.Enabled = false;
-                checkBox14.Enabled = false;
-                checkBox15.Enabled = false;
-                checkBox18.Enabled = false;
+                foreach (var box in checkedArray)
+                {
+                    box.Enabled = false;
+                }
 
                 button1.Enabled = false;
             }
             else
             {
-                checkBox1.Enabled = true;
-                checkBox2.Enabled = true;
-                checkBox3.Enabled = true;
-                checkBox4.Enabled = true;
-                checkBox5.Enabled = true;
-                checkBox6.Enabled = true;
-                checkBox7.Enabled = true;
-                checkBox8.Enabled = true;
-                checkBox9.Enabled = true;
-                checkBox10.Enabled = true;
-                checkBox11.Enabled = true;
-                checkBox12.Enabled = true;
-                checkBox13.Enabled = true;
-                checkBox14.Enabled = true;
-                checkBox15.Enabled = true;
-                checkBox18.Enabled = true;
+                foreach (var box in checkedArray)
+                {
+                    box.Enabled = true;
+                }
 
                 button1.Enabled = true;
             }
@@ -1919,6 +1906,14 @@ namespace CleanSweep2
             foreach (CheckBox box in checkedArray)
             {
                 box.Checked = false;
+            }
+        }
+
+        private void PlaceAllChecks()
+        {
+            foreach (CheckBox box in checkedArray)
+            {
+                box.Checked = true;
             }
         }
 
@@ -2054,6 +2049,16 @@ namespace CleanSweep2
         private void ToolStripButton2_Click_2(object sender, EventArgs e)
         {
             richTextBox1.Text = "";
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            PlaceAllChecks();
+        }
+
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            RemoveAllChecks();
         }
     }
 }

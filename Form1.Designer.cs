@@ -85,6 +85,10 @@ namespace CleanSweep2
             this.checkBox17 = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
             this.checkBox18 = new System.Windows.Forms.CheckBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label19 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -121,6 +125,7 @@ namespace CleanSweep2
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.Color.LightGray;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem});
@@ -136,6 +141,8 @@ namespace CleanSweep2
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.fileToolStripMenuItem.ShowShortcutKeys = false;
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
@@ -156,6 +163,9 @@ namespace CleanSweep2
             this.aboutToolStripMenuItem,
             this.donateToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.ShortcutKeyDisplayString = "";
+            this.optionsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.optionsToolStripMenuItem.ShowShortcutKeys = false;
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             // 
@@ -296,12 +306,13 @@ namespace CleanSweep2
             // toolStrip1
             // 
             this.toolStrip1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.toolStrip1.BackColor = System.Drawing.Color.LightGray;
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripButton1,
             this.ToolStripButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(7, 234);
+            this.toolStrip1.Location = new System.Drawing.Point(5, 237);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(83, 28);
             this.toolStrip1.TabIndex = 14;
@@ -587,11 +598,49 @@ namespace CleanSweep2
             this.checkBox18.UseVisualStyleBackColor = true;
             this.checkBox18.CheckedChanged += new System.EventHandler(this.CheckBox18_CheckedChanged_1);
             // 
+            // label16
+            // 
+            this.label16.Location = new System.Drawing.Point(0, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(100, 23);
+            this.label16.TabIndex = 0;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(355, 166);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 49;
+            this.button2.Text = "Select All";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(436, 166);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 50;
+            this.button3.Text = "Deselect All";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
+            // 
+            // label19
+            // 
+            this.label19.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label19.Location = new System.Drawing.Point(0, 203);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(540, 2);
+            this.label19.TabIndex = 52;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 561);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.checkBox18);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label15);
@@ -696,6 +745,10 @@ namespace CleanSweep2
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.CheckBox checkBox18;
         private System.Windows.Forms.ToolStripMenuItem showOperationWindowsToolStripMenuItem;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label label19;
     }
 }
 
