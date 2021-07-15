@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.4";
+        private const string CurrentVersion = "v2.1.5";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -292,7 +292,27 @@ namespace CleanSweep2
             // Get size of MSOCache.
             if (Directory.Exists(msoCacheDir))
             {
-                msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                try
+                {
+                    msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                }
+                catch (Exception ex)
+                {
+                    if (ex.GetType() == typeof(IOException))
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(ex.Message + "\n", Color.Red);
+                        }
+                    }
+                    else if (ex.GetType() == typeof(UnauthorizedAccessException)) 
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText(ex.Message + "\n", Color.Red);
+                        }
+                    }
+                }
             }
 
             // Get size of Windows Installer Cache.
@@ -1364,12 +1384,26 @@ namespace CleanSweep2
                                 }
                                 else if (ex.GetType() == typeof(UnauthorizedAccessException))
                                 {
-                                    richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
-                                    ScrollToOutputBottom();
+                                    if (isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                        ScrollToOutputBottom();
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                    }
                                 }
                                 else
                                 {
-                                    richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                    if (isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText("Skipping: " + chromeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                    }
                                 }
                             }
                         }
@@ -1637,35 +1671,41 @@ namespace CleanSweep2
             {
                 msoCacheCleared = false;
                 // Get size of MSOCache.
-                if (!Directory.Exists(msoCacheDir))
+                try
                 {
-                    if (newMsoCacheDirSize > 0)
+                    if (!Directory.Exists(msoCacheDir))
                     {
                         richTextBox1.AppendText("\n" + "Recovered " + msoCacheDirSize + "MB from removing MSO Cache.", Color.Green);
-                        totalSpaceSaved += msoCacheDirSize;
+                        totalSpaceSaved += msoCacheDirSize; 
                     }
-                    else
+                    else if (Directory.Exists(msoCacheDir))
                     {
-                        richTextBox1.AppendText("\n" + "<1MB recovered from MSO Cache...", Color.Green);
+                        long oldMsoCacheSize = msoCacheDirSize;
+                        msoCacheDirSize = 0;
+                        try
+                        {
+                            msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                            newMsoCacheDirSize = oldMsoCacheSize - msoCacheDirSize;
+                            totalSpaceSaved += newMsoCacheDirSize;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex.GetType() == typeof(IOException))
+                            {
+                                richTextBox1.AppendText("\n" + "Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache.", Color.Green);
+                            }
+                            else if (ex.GetType() == typeof(UnauthorizedAccessException))
+                            {
+                                richTextBox1.AppendText("\n" + "Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache.", Color.Green);
+                            }
+                        }
                     }
+                    ScrollToOutputBottom();
                 }
-                else
+                catch
                 {
-                    long oldMsoCacheSize = msoCacheDirSize;
-                    msoCacheDirSize = 0;
-                    msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                    newMsoCacheDirSize = oldMsoCacheSize - msoCacheDirSize;
-                    totalSpaceSaved += newMsoCacheDirSize;
-                    if (newMsoCacheDirSize > 0)
-                    {
-                        richTextBox1.AppendText("\n" + "Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache.", Color.Green);
-                    }
-                    else
-                    {
-                        richTextBox1.AppendText("\n" + "<1MB recovered from MSO Cache...", Color.Green);
-                    }
+
                 }
-                ScrollToOutputBottom();
             }
 
             if (windowsInstallerCacheCleared)
@@ -1756,12 +1796,6 @@ namespace CleanSweep2
             {
                 richTextBox1.AppendText(".", Color.Green);
             }));
-        }
-
-        private void RichTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            richTextBox1.SelectionStart = richTextBox1.Text.Length;
-            richTextBox1.ScrollToCaret();
         }
 
         private void MenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -2013,28 +2047,9 @@ namespace CleanSweep2
             Properties.Settings.Default.Save();
         }
 
-        private void ToolStripButton2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void ToolStripContainer1_TopToolStripPanel_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void ToolStripButton1_Click(object sender, EventArgs e)
-        {
-            if (richTextBox1.SelectionLength == 0)
-            {
-                richTextBox1.SelectAll();
-                richTextBox1.Copy();
-            }
-        }
-
-        private void ToolStripButton2_Click_1(object sender, EventArgs e)
-        {
-            richTextBox1.Text = "";
         }
 
         private void ToolStripButton1_Click_1(object sender, EventArgs e)
