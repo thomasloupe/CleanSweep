@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.5";
+        private const string CurrentVersion = "v2.1.6";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -234,7 +234,7 @@ namespace CleanSweep2
             windowsInstallerCacheDir = windowsDirectory + "\\Installer\\$PatchCache$\\Managed";
 
             // Set Windows Log Directory.
-            windowsUpdateLogDir = windowsDirectory + "\\Logs\\WindowsUpdate";
+            windowsUpdateLogDir = windowsDirectory + "\\Logs\\";
 
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
@@ -614,6 +614,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
+                    startInfo.UseShellExecute = true;
                     startInfo.Arguments = "/C for /F \"tokens=*\" %1 in ('wevtutil.exe el') DO wevtutil.exe cl \"%1\"";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
@@ -659,6 +660,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
+                    startInfo.UseShellExecute = true;
                     startInfo.Arguments = "/C echo y| rd /s %systemdrive%\\$Recycle.bin";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
@@ -876,6 +878,7 @@ namespace CleanSweep2
                         }
                     }));
                     startInfo.Arguments = "/C taskkill /f /im explorer.exe & timeout 1 & del / f / s / q / a %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & timeout 1 & start %windir%\\explorer.exe";
+                    startInfo.UseShellExecute = true;
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
                     process.Start();
@@ -927,6 +930,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
+                    startInfo.UseShellExecute = true;
                     startInfo.Arguments = "/C FhManagew.exe -cleanup 0";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
@@ -974,6 +978,7 @@ namespace CleanSweep2
                             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                         }
                         startInfo.FileName = "cmd.exe";
+                        startInfo.UseShellExecute = true;
                         startInfo.WorkingDirectory = "C:\\Windows\\";
                         startInfo.Arguments = "/C takeown /F C:\\Windows.old* /R /A /D Y & cacls C:\\Windows.old*.* /T /grant administrators:F & rmdir /S /Q C:\\Windows.old";
                         startInfo.Verb = "runas";
@@ -1182,6 +1187,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
+                    startInfo.UseShellExecute = true;
                     startInfo.Arguments = "/C TASKKILL /F /IM msedge.exe";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
@@ -1307,6 +1313,7 @@ namespace CleanSweep2
                         startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                     }
                     startInfo.FileName = "cmd.exe";
+                    startInfo.UseShellExecute = true;
                     startInfo.Arguments = "/C TASKKILL Chrome.exe";
                     startInfo.Verb = "runas";
                     process.StartInfo = startInfo;
@@ -1487,20 +1494,90 @@ namespace CleanSweep2
             // Windows Update Logs Removal
             if (checkBox18.Checked)
             {
-                richTextBox1.AppendText("Sweeping Windows Update Logs", Color.Green);
+                richTextBox1.AppendText("Sweeping Windows Update Logs" + "\n", Color.Green);
                 ScrollToOutputBottom();
-                if (Directory.Exists(windowsUpdateLogDir))
+                try
                 {
-                    Directory.Delete(windowsUpdateLogDir, true);
-                    richTextBox1.AppendText("\n" + "Swept Windows Update Logs!" + "\n" + "\n", Color.Green);
-                }
-                else
-                {
-                    richTextBox1.AppendText("\n" + "No Windows Update Logs directory found. Skipping..." + "\n" + "\n", Color.Green);
-                }
+                    if (Directory.Exists(windowsUpdateLogDir))
+                    {
+                        DirectoryInfo di = new DirectoryInfo(tempDirectory);
 
-                ScrollToOutputBottom();
-                windowsUpdateLogsCleared = true;
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            try
+                            {
+                                file.Delete();
+                                // If file no longer exists, append success to rich text box.
+                                if (!File.Exists(file.Name))
+                                {
+                                    if (isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("o", Color.Green);
+                                    }
+                                }
+                                else
+                                {
+                                    richTextBox1.AppendText("x", Color.Red);
+                                }
+                                ScrollToOutputBottom();
+                            }
+                            catch (Exception ex)
+                            {
+                                if (ex.GetType() == typeof(IOException))
+                                {
+                                    if (isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText("\n" + ex.Message, Color.Red);
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                    }
+                                }
+                                else if (ex.GetType() == typeof(UnauthorizedAccessException))
+                                {
+                                    if (isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText("\n" + ex.Message, Color.Red);
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                    }
+                                }
+                            }
+                        }
+                        richTextBox1.AppendText("\n" + "Swept Windows Update Logs!" + "\n" + "\n", Color.Green);
+                    }
+                    else
+                    {
+                        richTextBox1.AppendText("\n" + "No Windows Update Logs directory found. Skipping..." + "\n" + "\n", Color.Green);
+                    }
+
+                    ScrollToOutputBottom();
+                    windowsUpdateLogsCleared = true;
+                }
+                catch (Exception ex)
+                {
+                    if (ex.GetType() == typeof(IOException))
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText("\n" + ex.Message, Color.Red);
+                        }
+                    }
+                    else if (ex.GetType() == typeof(UnauthorizedAccessException))
+                    {
+                        if (isVerboseMode)
+                        {
+                            richTextBox1.AppendText("\n" + ex.Message, Color.Red);
+                        }
+                    }
+                }
             }
             #endregion
 
@@ -1557,7 +1634,10 @@ namespace CleanSweep2
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    if (isVerboseMode)
+                    {
+                        richTextBox1.AppendText("\n" + ex.Message, Color.Red);
+                    }
                 }
                 tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
                 newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
@@ -1702,9 +1782,12 @@ namespace CleanSweep2
                     }
                     ScrollToOutputBottom();
                 }
-                catch
+                catch (Exception ex)
                 {
-
+                    if (isVerboseMode)
+                    {
+                        richTextBox1.AppendText("\n" + ex.Message, Color.Red);
+                    }
                 }
             }
 
@@ -1736,15 +1819,8 @@ namespace CleanSweep2
                 // Get size of Windows Update Logs.
                 if (!Directory.Exists(windowsUpdateLogDir))
                 {
-                    if (newWindowsUpdateLogDirSize > 0)
-                    {
-                        richTextBox1.AppendText("\n" + "Recovered " + windowsUpdateLogDirSize + "MB from removing Windows Update Logs.", Color.Green);
-                        totalSpaceSaved += windowsUpdateLogDirSize;
-                    }
-                    else
-                    {
-                        richTextBox1.AppendText("\n" + "<1MB recovered from removing Windows Update Logs...", Color.Green);
-                    }
+                    richTextBox1.AppendText("\n" + "Recovered " + windowsUpdateLogDirSize + "MB from removing Windows Update Logs.", Color.Green);
+                    totalSpaceSaved += windowsUpdateLogDirSize;
                 }
                 else
                 {
