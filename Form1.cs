@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.6";
+        private const string CurrentVersion = "v2.1.7";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
