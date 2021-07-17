@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.6";
+        private const string CurrentVersion = "v2.1.7";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -1999,6 +1999,8 @@ namespace CleanSweep2
                 }
 
                 button1.Enabled = false;
+                button2.Enabled = false;
+                button3.Enabled = false;
             }
             else
             {
@@ -2008,6 +2010,8 @@ namespace CleanSweep2
                 }
 
                 button1.Enabled = true;
+                button2.Enabled = true;
+                button3.Enabled = true;
             }
         }
 

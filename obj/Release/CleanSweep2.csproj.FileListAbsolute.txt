@@ -30,7 +30,6 @@ Z:\Development\Git Repositories\CleanSweep2\bin\Release\System.Management.Automa
 Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.AssemblyReference.cache
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe.config
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe
-\\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.pdb
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.dll
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.xml
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Form1.resources
@@ -39,4 +38,3 @@ Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.Assem
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CoreCompileInputs.cache
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CopyComplete
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.exe
-\\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.pdb
