@@ -1999,6 +1999,8 @@ namespace CleanSweep2
                 }
 
                 button1.Enabled = false;
+                button2.Enabled = false;
+                button3.Enabled = false;
             }
             else
             {
@@ -2008,6 +2010,8 @@ namespace CleanSweep2
                 }
 
                 button1.Enabled = true;
+                button2.Enabled = true;
+                button3.Enabled = true;
             }
         }
 
