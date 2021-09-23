@@ -11,23 +11,6 @@ C:\Users\acid_rain\Desktop\CleanSweep2\bin\Release\Octokit.xml
 C:\Users\acid_rain\Desktop\CleanSweep2\obj\Release\CleanSweep2.csproj.CopyComplete
 C:\Users\acid_rain\Desktop\CleanSweep2\obj\Release\CleanSweep2.exe
 C:\Users\acid_rain\Desktop\CleanSweep2\obj\Release\CleanSweep2.pdb
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe.config
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.pdb
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.xml
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Form1.resources
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Properties.Resources.resources
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.GenerateResource.cache
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CoreCompileInputs.cache
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CopyComplete
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.exe
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.pdb
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\System.Management.Automation.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\Microsoft.Management.Infrastructure.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\Microsoft.Management.Infrastructure.Native.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Release\System.Management.Automation.xml
-Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.AssemblyReference.cache
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe.config
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.dll
@@ -38,3 +21,14 @@ Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.Assem
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CoreCompileInputs.cache
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CopyComplete
 \\Athena\Backup\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.exe
+Z:\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe.config
+Z:\Development\Git Repositories\CleanSweep2\bin\Release\CleanSweep2.exe
+Z:\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.dll
+Z:\Development\Git Repositories\CleanSweep2\bin\Release\Octokit.xml
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.SuggestedBindingRedirects.cache
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Form1.resources
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.Properties.Resources.resources
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.GenerateResource.cache
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CoreCompileInputs.cache
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.csproj.CopyComplete
+Z:\Development\Git Repositories\CleanSweep2\obj\Release\CleanSweep2.exe

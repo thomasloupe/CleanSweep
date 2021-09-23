@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.7";
+        private const string CurrentVersion = "v2.1.8";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -260,8 +260,15 @@ namespace CleanSweep2
 
             // Get size of Windows Error Reports
             windowsErrorReportsDirectory = programDataDirectory + "\\Microsoft\\Windows\\WER\\ReportArchive";
-            windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
+            if(Directory.Exists(windowsErrorReportsDirectory))
+            {
+                windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
+            }
+            else
+            {
+                windowsErrorReportsDirSizeInMegabytes = 0;
+            }
 
             // Get size of Windows Delivery Optimization Files
             deliveryOptimizationFilesDirectory = windowsDirectory + "\\SoftwareDistribution\\";
@@ -693,73 +700,79 @@ namespace CleanSweep2
                 windowsErrorReportsDirSizeBeforeDelete = windowsErrorReportsDirSizeInMegabytes;
 
                 richTextBox1.AppendText("Sweeping Windows Error Reports" + "\n", Color.Green);
-                DirectoryInfo di = new DirectoryInfo(windowsErrorReportsDirectory);
-
-                foreach (FileInfo file in di.GetFiles())
+                if (Directory.Exists(windowsErrorReportsDirectory))
                 {
-                    try
+                    DirectoryInfo di = new DirectoryInfo(windowsErrorReportsDirectory);
+                    foreach (FileInfo file in di.GetFiles())
                     {
-                        file.Delete();
-                        if (!File.Exists(file.Name))
+                        try
                         {
+                            file.Delete();
+                            if (!File.Exists(file.Name))
+                            {
+                                if (isVerboseMode)
+                                {
+                                    richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                    ScrollToOutputBottom();
+                                }
+                                else
+                                {
+                                    richTextBox1.AppendText("o", Color.Green);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // Skip all failed files.
                             if (isVerboseMode)
                             {
-                                richTextBox1.AppendText("Deleted: " + file.Name + "\n", Color.Green);
+                                richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
                                 ScrollToOutputBottom();
                             }
                             else
                             {
-                                richTextBox1.AppendText("o", Color.Green);
+                                richTextBox1.AppendText("x", Color.Red);
                             }
                         }
                     }
-                    catch (Exception)
+                    foreach (DirectoryInfo dir in di.GetDirectories())
                     {
-                        // Skip all failed files.
-                        if (isVerboseMode)
+                        try
                         {
-                            richTextBox1.AppendText(file.Name + " appears to be in use or locked. Skipping..." + "\n", Color.Red);
-                            ScrollToOutputBottom();
+                            dir.Delete(true);
+                            if (Directory.Exists(dir.Name))
+                            {
+                                if (isVerboseMode)
+                                {
+                                    richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                    ScrollToOutputBottom();
+                                }
+                                else
+                                {
+                                    richTextBox1.AppendText("o", Color.Green);
+                                }
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            richTextBox1.AppendText("x", Color.Red);
-                        }
-                    }
-                }
-                foreach (DirectoryInfo dir in di.GetDirectories())
-                {
-                    try
-                    {
-                        dir.Delete(true);
-                        if (Directory.Exists(dir.Name))
-                        {
+                            // Skip all failed directories.
                             if (isVerboseMode)
                             {
-                                richTextBox1.AppendText("Deleted: " + dir.Name + "\n", Color.Green);
+                                richTextBox1.AppendText("Couldn't remove " + dir.Name + ": " + ex.Message + ". Skipping..." + "\n", Color.Red);
                                 ScrollToOutputBottom();
                             }
                             else
                             {
-                                richTextBox1.AppendText("o", Color.Green);
+                                richTextBox1.AppendText("x", Color.Red);
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        // Skip all failed directories.
-                        if (isVerboseMode)
-                        {
-                            richTextBox1.AppendText("Couldn't remove " + dir.Name + ": " + ex.Message + ". Skipping..." + "\n", Color.Red);
-                            ScrollToOutputBottom();
-                        }
-                        else
-                        {
-                            richTextBox1.AppendText("x", Color.Red);
-                        }
-                    }
+                    richTextBox1.AppendText("Swept Windows Error Reports!" + "\n" + "\n", Color.Green);
                 }
-                richTextBox1.AppendText("Swept Windows Error Reports!" + "\n" + "\n", Color.Green);
+                else
+                {
+                    richTextBox1.AppendText("Windows Error Report directory already removed. Skipping" + "\n" + "\n", Color.Green);
+                }
                 windowsErrorReportsCleared = true;
                 ScrollToOutputBottom();
             }

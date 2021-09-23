@@ -15,12 +15,8 @@ Z:\Development\Git Repositories\CleanSweep2\bin\Debug\CleanSweep2.exe.config
 Z:\Development\Git Repositories\CleanSweep2\bin\Debug\CleanSweep2.exe
 Z:\Development\Git Repositories\CleanSweep2\bin\Debug\CleanSweep2.pdb
 Z:\Development\Git Repositories\CleanSweep2\bin\Debug\Octokit.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Debug\System.Management.Automation.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Debug\Microsoft.Management.Infrastructure.dll
-Z:\Development\Git Repositories\CleanSweep2\bin\Debug\Microsoft.Management.Infrastructure.Native.dll
 Z:\Development\Git Repositories\CleanSweep2\bin\Debug\Octokit.xml
-Z:\Development\Git Repositories\CleanSweep2\bin\Debug\System.Management.Automation.xml
-Z:\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.csproj.AssemblyReference.cache
+Z:\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.csproj.SuggestedBindingRedirects.cache
 Z:\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.Form1.resources
 Z:\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.Properties.Resources.resources
 Z:\Development\Git Repositories\CleanSweep2\obj\Debug\CleanSweep2.csproj.GenerateResource.cache
