@@ -1857,14 +1857,14 @@ namespace CleanSweep2
             // Output the total space saved from the entire operation and other important completed actions.
             if (totalSpaceSaved > 0)
             {
-                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: " + totalSpaceSaved + "MB", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n", Color.Green);
             }
             else
             {
-                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: <1MB", Color.Green);
+                richTextBox1.AppendText("\n" + "\n" + "Total space recovered: <1MB" + "\n", Color.Green);
             }
-            totalSpaceSaved = 0;
             ScrollToOutputBottom();
+            totalSpaceSaved = 0;
             LockCleaning(false);
             CanCleanStatus();
             RemoveAllChecks();
