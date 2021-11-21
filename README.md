@@ -1,8 +1,8 @@
-# CleanSweep2 ![CleanSweep2 Logo](https://i.imgur.com/NxZNLiC.png)
+# CleanSweep2 ![CleanSweep2 Logo](https://i.imgur.com/5yPQazn.png)
 The easiest and quickest Windows junk file remover on the planet.
 
-## Demonstration (at half of actual speed)
-![CleanSweep2](https://i.imgur.com/5yPQazn.png)
+## Demonstration
+![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
 
 ## Supported Operating Systems
 * Windows 11
