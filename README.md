@@ -12,7 +12,7 @@ The easiest and quickest Windows junk file remover on the planet.
 * Previous Windows OS's *may* work, but some features may be incompatible or produce undesired results.
 
 ## Potential Data Loss Warning and Disclaimer:
-Due to the nature of CleanSweep2 being an application that removes data from a Windows machine, it is imperative to note that potential or undesired data loss can potentially occur. Please do not select options in which you wish to keep data for, especially for Windows .Old folders, and previous Windows installs. These are unrecoverable once removed, as are most options in this application.
+Due to the nature of CleanSweep2 being an application that removes data from a Windows machine, it is imperative to note that potential or undesired data loss can potentially occur. Please do not select options in which you wish to keep data for, especially for Windows .Old folders, and previous Windows installs. These are unrecoverable once removed, as are most options in this application. Please use CleanSweep2 at your own risk.
 
 ## Cleaning Features
 * Temporary Files
