@@ -1,4 +1,4 @@
-# CleanSweep2 ![CleanSweep2 Logo](https://i.imgur.com/5yPQazn.png)
+# CleanSweep2 ![CleanSweep2 Logo](https://i.imgur.com/mdSoQbh.png)
 The easiest and quickest Windows junk file remover on the planet.
 
 ## Demonstration
