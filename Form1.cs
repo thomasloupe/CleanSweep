@@ -12,7 +12,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.1.9";
+        private const string CurrentVersion = "v2.2.0";
         private octo.GitHubClient _octoClient;
         readonly string userName = Environment.UserName;
         readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -108,7 +108,6 @@ namespace CleanSweep2
             SetWindowSizeAndLocation();
             SetVerbosity();
             SetOperationWindows();
-            button1.Enabled = false;
         }
 
         private void SetWindowSizeAndLocation()
@@ -150,6 +149,26 @@ namespace CleanSweep2
             }
         }
 
+        private void RestoreSavedChecks() 
+        {
+            checkBox1.Checked = Properties.Settings.Default.Box1Checked;
+            checkBox2.Checked = Properties.Settings.Default.Box2Checked;
+            checkBox3.Checked = Properties.Settings.Default.Box3Checked;
+            checkBox4.Checked = Properties.Settings.Default.Box4Checked;
+            checkBox5.Checked = Properties.Settings.Default.Box5Checked;
+            checkBox6.Checked = Properties.Settings.Default.Box6Checked;
+            checkBox7.Checked = Properties.Settings.Default.Box7Checked;
+            checkBox8.Checked = Properties.Settings.Default.Box8Checked;
+            checkBox9.Checked = Properties.Settings.Default.Box9Checked;
+            checkBox10.Checked = Properties.Settings.Default.Box10Checked;
+            checkBox11.Checked = Properties.Settings.Default.Box11Checked;
+            checkBox12.Checked = Properties.Settings.Default.Box12Checked;
+            checkBox13.Checked = Properties.Settings.Default.Box13Checked;
+            checkBox14.Checked = Properties.Settings.Default.Box14Checked;
+            checkBox15.Checked = Properties.Settings.Default.Box15Checked;
+            checkBox18.Checked = Properties.Settings.Default.Box18Checked;
+        }
+
         private void SaveSettingsEventHandler(object sender, FormClosingEventArgs e)
         {
             Properties.Settings.Default.FormHeight = this.Height;
@@ -167,43 +186,45 @@ namespace CleanSweep2
         {
             checkedArray = new CheckBox[16] 
             { 
-                checkBox1, 
-                checkBox2, 
-                checkBox3, 
-                checkBox4, 
-                checkBox5, 
-                checkBox6, 
-                checkBox7, 
-                checkBox8, 
-                checkBox9, 
-                checkBox10, 
-                checkBox11, 
-                checkBox12, 
-                checkBox13, 
-                checkBox14, 
-                checkBox15, 
+                checkBox1,
+                checkBox2,
+                checkBox3,
+                checkBox4,
+                checkBox5,
+                checkBox6,
+                checkBox7,
+                checkBox8,
+                checkBox9,
+                checkBox10,
+                checkBox11,
+                checkBox12,
+                checkBox13,
+                checkBox14,
+                checkBox15,
                 checkBox18
             };
 
             checkedArrayBool = new bool[16] 
             { 
-                checkBox1.Checked, 
-                checkBox2.Checked, 
-                checkBox3.Checked, 
-                checkBox4.Checked, 
-                checkBox5.Checked, 
-                checkBox6.Checked, 
-                checkBox7.Checked, 
-                checkBox8.Checked, 
-                checkBox9.Checked, 
-                checkBox10.Checked, 
-                checkBox11.Checked, 
-                checkBox12.Checked, 
-                checkBox13.Checked, 
-                checkBox14.Checked, 
-                checkBox15.Checked, 
+                checkBox1.Checked,
+                checkBox2.Checked,
+                checkBox3.Checked,
+                checkBox4.Checked,
+                checkBox5.Checked,
+                checkBox6.Checked,
+                checkBox7.Checked,
+                checkBox8.Checked,
+                checkBox9.Checked,
+                checkBox10.Checked,
+                checkBox11.Checked,
+                checkBox12.Checked,
+                checkBox13.Checked,
+                checkBox14.Checked,
+                checkBox15.Checked,
                 checkBox18.Checked
             };
+
+            RestoreSavedChecks();
 
             // Set Chrome cache directories.
             chromeCacheDirectories[0] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Cache";
@@ -238,7 +259,14 @@ namespace CleanSweep2
 
             // Get size of Temporary Files.
             tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
-            tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            try
+            {
+                tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            }
+            catch (Exception)
+            {
+                ScrollToOutputBottom();
+            }
             tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
 
             // Get size of Temporary Setup Files.
@@ -1867,6 +1895,7 @@ namespace CleanSweep2
             totalSpaceSaved = 0;
             LockCleaning(false);
             CanCleanStatus();
+            SaveUserSelectedChecks();
             RemoveAllChecks();
             #endregion
         }
@@ -2087,6 +2116,7 @@ namespace CleanSweep2
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Dispose();
+            SaveUserSelectedChecks();
             Application.Exit();
         }
 
@@ -2167,6 +2197,139 @@ namespace CleanSweep2
         private void Button3_Click(object sender, EventArgs e)
         {
             RemoveAllChecks();
+        }
+
+        private void SaveUserSelectedChecks()
+        {
+            // Capture which options are selected
+            if (checkBox1.Checked)
+            {
+                Properties.Settings.Default.Box1Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box1Checked = false;
+            }
+            if (checkBox2.Checked)
+            {
+                Properties.Settings.Default.Box2Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box2Checked = false;
+            }
+            if (checkBox3.Checked)
+            {
+                Properties.Settings.Default.Box3Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box3Checked = false;
+            }
+            if (checkBox4.Checked)
+            {
+                Properties.Settings.Default.Box4Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box4Checked = false;
+            }
+            if (checkBox5.Checked)
+            {
+                Properties.Settings.Default.Box5Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box5Checked = false;
+            }
+            if (checkBox6.Checked)
+            {
+                Properties.Settings.Default.Box6Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box6Checked = false;
+            }
+            if (checkBox7.Checked)
+            {
+                Properties.Settings.Default.Box7Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box7Checked = false;
+            }
+            if (checkBox8.Checked)
+            {
+                Properties.Settings.Default.Box8Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box8Checked = false;
+            }
+            if (checkBox9.Checked)
+            {
+                Properties.Settings.Default.Box9Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box9Checked = false;
+            }
+            if (checkBox10.Checked)
+            {
+                Properties.Settings.Default.Box10Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box10Checked = false;
+            }
+            if (checkBox11.Checked)
+            {
+                Properties.Settings.Default.Box11Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box11Checked = false;
+            }
+            if (checkBox12.Checked)
+            {
+                Properties.Settings.Default.Box12Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box12Checked = false;
+            }
+            if (checkBox13.Checked)
+            {
+                Properties.Settings.Default.Box13Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box13Checked = false;
+            }
+            if (checkBox14.Checked)
+            {
+                Properties.Settings.Default.Box14Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box14Checked = false;
+            }
+            if (checkBox15.Checked)
+            {
+                Properties.Settings.Default.Box15Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box15Checked = false;
+            }
+            if (checkBox18.Checked)
+            {
+                Properties.Settings.Default.Box18Checked = true;
+            }
+            else
+            {
+                Properties.Settings.Default.Box18Checked = false;
+            }
         }
     }
 }
