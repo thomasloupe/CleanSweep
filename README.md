@@ -1,7 +1,7 @@
 # ![CleanSweep2 Logo](https://i.imgur.com/mdSoQbh.png) CleanSweep2
 The easiest and quickest Windows junk file remover on the planet.
 
-## Demonstration
+## CleanSweep2 Demonstration
 ![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
 
 ## Supported Operating Systems
@@ -10,9 +10,6 @@ The easiest and quickest Windows junk file remover on the planet.
 * Windows 8/8.1
 * Windows 7
 * Previous Windows OS's *may* work, but some features may be incompatible or produce undesired results.
-
-## Potential Data Loss Warning and Disclaimer:
-Due to the nature of CleanSweep2 being an application that removes data from a Windows machine, it is imperative to note that potential or undesired data loss can potentially occur. Please do not select options in which you wish to keep data for, especially for Windows .Old folders, and previous Windows installs. These are unrecoverable once removed, as are most options in this application. Please use CleanSweep2 at your own risk.
 
 ## Cleaning Features
 * Temporary Files
@@ -79,6 +76,9 @@ CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers al
 ``-v1`` *(Sets the verbosity to low)*  
 ``-v2`` *(Sets the verbosity to high)*  
 ``-visible`` *(Makes the CleanSweep2_CLI console window visible. By default, CleanSweep2_CLI runs hidden.)*  
+
+## Potential Data Loss Warning and Disclaimer:
+Due to the nature of CleanSweep2 being an application that removes data from a Windows machine, it is imperative to note that potential or undesired data loss can potentially occur. Please do not select options in which you wish to keep data for, especially for Windows .Old folders, and previous Windows installs. These are unrecoverable once removed, as are most options in this application. Please use CleanSweep2 at your own risk.
 
 # Important: Please Read!
 * If you need help, please feel free to get in touch with me on [Twitter](https://twitter.com/acid_rain), or open a new issue if it doesn't already exist.
