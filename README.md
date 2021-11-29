@@ -52,7 +52,7 @@ CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers al
 
 ## Getting Started with CleanSweep2_CLI
 1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents.
-1. For non-automated cleaning, create a shortcut to the executable, and modify the arguments in the "Target" properties field, then run CleanSweep2_CLI.
+1. For manual cleaning, create a shortcut to the executable, and modify the arguments in the "Target" properties field, then run CleanSweep2_CLI.
 1. For automated cleaning, launch Task Scheduler in Windows, click "Create Basic Task". Enter a name for the task (example: CleanSweep2_CLI) and give a description if desired. Select a scheduled time for CleanSweep2_CLI to run. On the "Action" page, select "Start a program". Select the CleanSweep2_CLI executable, and pass desired arguments. For a list of arguments, see below.
 
 ## CleanSweep2_CLI Arguments
