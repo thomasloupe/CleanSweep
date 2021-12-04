@@ -61,7 +61,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;1MB recovered from removing Windows Error Reports....
+        ///   Looks up a localized string similar to &lt;1MB recovered from removing Windows Error Reports..
         /// </summary>
         internal static string _1MB_recovered_from_removing_Windows_Error_Reports {
             get {
@@ -70,7 +70,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;1MB recovered from Temporary Files....
+        ///   Looks up a localized string similar to &lt;1MB recovered from Temporary Files..
         /// </summary>
         internal static string _1MB_recovered_from_Temporary_Files {
             get {
@@ -79,7 +79,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;1MB recovered from Temporary Internet Files....
+        ///   Looks up a localized string similar to &lt;1MB recovered from Temporary Internet Files..
         /// </summary>
         internal static string _1MB_recovered_from_Temporary_Internet_Files {
             get {
@@ -88,7 +88,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;1MB recovered from Temporary Setup Files....
+        ///   Looks up a localized string similar to &lt;1MB recovered from Temporary Setup Files..
         /// </summary>
         internal static string _1MB_recovered_from_Temporary_Setup_Files {
             get {
@@ -97,7 +97,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;1MB recovered from Windows Delivery Optimization Files....
+        ///   Looks up a localized string similar to &lt;1MB recovered from Windows Delivery Optimization Files..
         /// </summary>
         internal static string _1MB_recovered_from_Windows_Delivery_Optimization_Files {
             get {
@@ -106,7 +106,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;1MB recovered from Windows Update Logs....
+        ///   Looks up a localized string similar to &lt;1MB recovered from Windows Update Logs..
         /// </summary>
         internal static string _1MB_recovered_from_Windows_Update_Logs {
             get {
@@ -165,24 +165,6 @@ namespace CleanSweep2_CLI.Properties {
         internal static string Chrome_Data_Size {
             get {
                 return ResourceManager.GetString("Chrome_Data_Size", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cleaned Windows Installer Cache!.
-        /// </summary>
-        internal static string Cleaned_Windows_Installer_Cache {
-            get {
-                return ResourceManager.GetString("Cleaned_Windows_Installer_Cache", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cleaned Windows.old directory!.
-        /// </summary>
-        internal static string Cleaned_Windows_old_directory {
-            get {
-                return ResourceManager.GetString("Cleaned_Windows_old_directory", resourceCulture);
             }
         }
         
@@ -358,6 +340,24 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [o].
+        /// </summary>
+        internal static string Folder_o {
+            get {
+                return ResourceManager.GetString("Folder_o", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [x].
+        /// </summary>
+        internal static string Folder_x {
+            get {
+                return ResourceManager.GetString("Folder_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Found Windows Installer Cache. Cleaning....
         /// </summary>
         internal static string Found_Windows_Installer_Cache__Cleaning {
@@ -511,16 +511,6 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///.
-        /// </summary>
-        internal static string NewLine {
-            get {
-                return ResourceManager.GetString("NewLine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No arguments given. Please re-run CleanSweep2_CLI with arguments..
         /// </summary>
         internal static string No_Arguments_Given {
@@ -638,7 +628,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removed Delivery Optimization Files!.
+        ///   Looks up a localized string similar to Swept Delivery Optimization Files!.
         /// </summary>
         internal static string Removed_Delivery_Optimization_Files {
             get {
@@ -647,7 +637,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removed file history older than latest snapshot..
+        ///   Looks up a localized string similar to Swept file history older than latest snapshot..
         /// </summary>
         internal static string Removed_file_history_older_than_latest_snapshot {
             get {
@@ -656,7 +646,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removed Windows Defender Logs!.
+        ///   Looks up a localized string similar to Swept Windows Defender Logs!.
         /// </summary>
         internal static string Removed_Windows_Defender_Logs {
             get {
@@ -665,7 +655,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing old versions of Windows....
+        ///   Looks up a localized string similar to Sweeping old versions of Windows....
         /// </summary>
         internal static string Removing_old_versions_of_Windows {
             get {
@@ -674,7 +664,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removing Windows Installer Cache....
+        ///   Looks up a localized string similar to Sweeping Windows Installer Cache....
         /// </summary>
         internal static string Removing_Windows_Installer_Cache {
             get {
@@ -810,7 +800,7 @@ namespace CleanSweep2_CLI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sweeping Windows Error Reports.
+        ///   Looks up a localized string similar to Sweeping Windows Error Reports....
         /// </summary>
         internal static string Sweeping_Windows_Error_Reports {
             get {
@@ -896,6 +886,24 @@ namespace CleanSweep2_CLI.Properties {
         internal static string Swept_Windows_Error_Reports {
             get {
                 return ResourceManager.GetString("Swept_Windows_Error_Reports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swept Windows Installer Cache!.
+        /// </summary>
+        internal static string Swept_Windows_Installer_Cache {
+            get {
+                return ResourceManager.GetString("Swept_Windows_Installer_Cache", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swept Windows.old directory!.
+        /// </summary>
+        internal static string Swept_Windows_old_directory {
+            get {
+                return ResourceManager.GetString("Swept_Windows_old_directory", resourceCulture);
             }
         }
         

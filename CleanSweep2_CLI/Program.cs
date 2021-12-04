@@ -1,5 +1,6 @@
 ﻿using Octokit;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,8 +18,6 @@ namespace CleanSweep2_CLI
         readonly string _windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
         readonly string _programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         readonly string _localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        private string _logPath;
-
         private bool _isVerboseMode;
         private bool _showOperationWindows;
         private bool _tempFilesWereRemoved = false;
@@ -104,9 +103,13 @@ namespace CleanSweep2_CLI
             ShowApplicationInfo();
             CheckForUpdates();
             cs2cli.GetSizeInformation();
-            
-            // TODO: Disable verbosity level 1/2 dependent on which was already selected in args.
 
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Logging is currently not implemented in this version.");
+
+
+            // TODO: Disable verbosity level 1/2 dependent on which was already selected in args.
             foreach (string arg in args)
             {
                 switch (arg)
@@ -194,11 +197,11 @@ namespace CleanSweep2_CLI
                     case "-log":
                         {
                             // Set the path for logging.
-                            foreach (Match match in Regex.Matches(cs2cli._logPath, "\"([^\"]*)\""))
-                            {
-                                var tempLogPath = cs2cli._logPath.Replace(@"""", "");
-                                cs2cli._logPath = tempLogPath;
-                            }
+                            //foreach (Match match in Regex.Matches(cs2cli._logPath, "\"([^\"]*)\""))
+                            //{
+                            //    var tempLogPath = cs2cli._logPath.Replace(@"""", "");
+                            //    cs2cli._logPath = tempLogPath;
+                            //}
                             break;
                         }
                     case "-v1":
@@ -222,7 +225,9 @@ namespace CleanSweep2_CLI
                     default:
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(Resources.No_Arguments_Given);
+                            Console.WriteLine();
+                            Console.WriteLine(Resources.No_Arguments_Given);
+                            Console.WriteLine();
                             break;
                         }
                 }
@@ -374,23 +379,25 @@ namespace CleanSweep2_CLI
 
             // Show potential reclamation, then each individual category.
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(Resources.Potential_space_to_reclaim +
-                (_tempDirSizeInMegaBytes + _tempSetupSizeInMegabytes + _tempInternetSizeInMegabytes + _windowsErrorReportsDirSizeInMegabytes +
-                 _deliveryOptimizationFilesDirSizeInMegabytes + _totalChromeDirSize + _totalEdgeDirSize + _msoCacheDirSize + _windowsInstallerCacheDirSize +
-                 _windowsUpdateLogDirSize) + Resources.MB + Resources.NewLine + Resources.NewLine + Resources.Categorical_breakdown + Resources.NewLine +
-                Resources.LineSeparator + Resources.NewLine);
+            Console.WriteLine(Resources.Potential_space_to_reclaim +
+                              (_tempDirSizeInMegaBytes + _tempSetupSizeInMegabytes + _tempInternetSizeInMegabytes + 
+                               _windowsErrorReportsDirSizeInMegabytes + _deliveryOptimizationFilesDirSizeInMegabytes + 
+                               _totalChromeDirSize + _totalEdgeDirSize + _msoCacheDirSize + _windowsInstallerCacheDirSize + 
+                               _windowsUpdateLogDirSize) + Resources.MB);
+            Console.WriteLine(Resources.Categorical_breakdown);
+            Console.WriteLine(Resources.LineSeparator);
 
             // List out total space reclamation per category.
-            Console.Write(Resources.Temporary_Directory_size + _tempDirSizeInMegaBytes + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Temporary_Setup_Files_directory_size + _tempSetupSizeInMegabytes + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Temporary_Internet_Files_directory_size + _tempInternetSizeInMegabytes + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Windows_Error_Reports_size + _windowsErrorReportsDirSizeInMegabytes + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Windows_Delivery_Optimization_File_size + _deliveryOptimizationFilesDirSizeInMegabytes + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Chrome_Data_Size + _totalChromeDirSize + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Edge_Data_Size + _totalEdgeDirSize + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.MSO_Cache_size + _msoCacheDirSize + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Windows_Installer_Cache_size + _windowsInstallerCacheDirSize + Resources.MB + Resources.NewLine);
-            Console.Write(Resources.Windows_Update_Logs_size + _windowsUpdateLogDirSize + Resources.MB + Resources.NewLine + Resources.NewLine);
+            Console.WriteLine(Resources.Temporary_Directory_size + _tempDirSizeInMegaBytes + Resources.MB);
+            Console.WriteLine(Resources.Temporary_Setup_Files_directory_size + _tempSetupSizeInMegabytes + Resources.MB);
+            Console.WriteLine(Resources.Temporary_Internet_Files_directory_size + _tempInternetSizeInMegabytes + Resources.MB);
+            Console.WriteLine(Resources.Windows_Error_Reports_size + _windowsErrorReportsDirSizeInMegabytes + Resources.MB);
+            Console.WriteLine(Resources.Windows_Delivery_Optimization_File_size + _deliveryOptimizationFilesDirSizeInMegabytes + Resources.MB);
+            Console.WriteLine(Resources.Chrome_Data_Size + _totalChromeDirSize + Resources.MB);
+            Console.WriteLine(Resources.Edge_Data_Size + _totalEdgeDirSize + Resources.MB);
+            Console.WriteLine(Resources.MSO_Cache_size + _msoCacheDirSize + Resources.MB);
+            Console.WriteLine(Resources.Windows_Installer_Cache_size + _windowsInstallerCacheDirSize + Resources.MB);
+            Console.WriteLine(Resources.Windows_Update_Logs_size + _windowsUpdateLogDirSize + Resources.MB);
         }
         #endregion
 
@@ -414,7 +421,8 @@ namespace CleanSweep2_CLI
                     {
                         if (_isVerboseMode)
                         {
-                            Console.Write(Resources.Deleted + file.Name + Resources.NewLine, ConsoleColor.Green);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine(Resources.Deleted + file.Name);
                         }
                         else
                         {
@@ -429,7 +437,7 @@ namespace CleanSweep2_CLI
                     if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping + Resources.NewLine);
+                        Console.WriteLine(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                     }
                     else
                     {
@@ -448,12 +456,12 @@ namespace CleanSweep2_CLI
                         if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(Resources.Deleted + dir.Name + Resources.NewLine);
+                            Console.WriteLine(Resources.Deleted + dir.Name);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(Resources.o);
+                            Console.Write(Resources.Folder_o);
                         }
                     }
                 }
@@ -463,12 +471,12 @@ namespace CleanSweep2_CLI
                     if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping + Resources.NewLine);
+                        Console.WriteLine(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.x);
+                        Console.Write(Resources.Folder_x);
                     }
                 }
             }
@@ -502,8 +510,7 @@ namespace CleanSweep2_CLI
                         if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(Resources.Deleted + file.Name);
-                            Console.WriteLine();
+                            Console.WriteLine(Resources.Deleted + file.Name);
                         }
                         else
                         {
@@ -518,12 +525,11 @@ namespace CleanSweep2_CLI
                     if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
-                        Console.WriteLine();
+                        Console.WriteLine(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(Resources.x);
                     }
                 }
@@ -544,7 +550,7 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(Resources.o);
+                            Console.Write(Resources.Folder_o);
                         }
                     }
                 }
@@ -554,20 +560,18 @@ namespace CleanSweep2_CLI
                     if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
-                        Console.WriteLine();
+                        Console.WriteLine(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.x);
+                        Console.Write(Resources.Folder_x);
                     }
                 }
             }
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine();
             Console.WriteLine(Resources.Swept_Temporary_Setup_Files);
-            Console.WriteLine();
             Console.WriteLine();
             _tempSetupFilesWereRemoved = true;
         }
@@ -632,7 +636,7 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(Resources.o);
+                            Console.Write(Resources.Folder_o);
                         }
                     }
                 }
@@ -647,17 +651,16 @@ namespace CleanSweep2_CLI
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.x);
+                        Console.Write(Resources.Folder_x);
 
                     }
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
-                    Console.Write(Resources.Swept_Temporary_Internet_Files);
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    _tempInternetFilesWereRemoved = true;
                 }
             }
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(Resources.Swept_Temporary_Internet_Files);
+            Console.WriteLine();
+            _tempInternetFilesWereRemoved = true;
         }
         #endregion
 
@@ -708,7 +711,7 @@ namespace CleanSweep2_CLI
         {
             // Empty Recycle Bin.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(Resources.Emptying_Recycle_Bin);
+            Console.Write(Resources.Emptying_Recycle_Bin);
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
             if (_showOperationWindows)
@@ -752,7 +755,6 @@ namespace CleanSweep2_CLI
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(Resources.Sweeping_Windows_Error_Reports);
-            Console.WriteLine();
             if (Directory.Exists(_windowsErrorReportsDirectory))
             {
                 var di = new DirectoryInfo(_windowsErrorReportsDirectory);
@@ -806,7 +808,7 @@ namespace CleanSweep2_CLI
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(Resources.o);
+                                Console.Write(Resources.Folder_o);
                             }
                         }
                     }
@@ -821,7 +823,7 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(Resources.x);
+                            Console.Write(Resources.Folder_x);
                         }
                     }
                 }
@@ -900,7 +902,7 @@ namespace CleanSweep2_CLI
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(Resources.o);
+                                Console.Write(Resources.Folder_o);
                             }
                         }
                     }
@@ -915,7 +917,7 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(Resources.x);
+                            Console.Write(Resources.Folder_x);
                         }
                     }
                 }
@@ -981,7 +983,7 @@ namespace CleanSweep2_CLI
             }
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine();
-            Console.Write(Resources.Cleared_Thumbnail_Cache);
+            Console.WriteLine(Resources.Cleared_Thumbnail_Cache);
             Console.WriteLine();
             _thumbnailCacheCleared = true;
         }
@@ -1022,7 +1024,7 @@ namespace CleanSweep2_CLI
             }
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine();
-            Console.Write(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed);
+            Console.WriteLine(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed);
             Console.WriteLine();
             _deletedFileHistory = true;
         }
@@ -1067,16 +1069,14 @@ namespace CleanSweep2_CLI
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
-                Console.WriteLine(Resources.Cleaned_Windows_old_directory);
+                Console.WriteLine(Resources.Swept_Windows_old_directory);
                 Console.WriteLine();
                 _windowsOldCleaned = true;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
-                Console.Write(Resources.No_Windows_old_directory_found__Skipping);
+                Console.WriteLine(Resources.No_Windows_old_directory_found__Skipping);
                 Console.WriteLine();
                 _windowsOldCleaned = false;
             }
@@ -1161,7 +1161,7 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write(Resources.o);
+                            Console.Write(Resources.Folder_o);
                         }
                     }
                     catch (Exception ex)
@@ -1174,7 +1174,7 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(Resources.x);
+                            Console.Write(Resources.Folder_x);
                         }
                     }
                 }
@@ -1205,15 +1205,13 @@ namespace CleanSweep2_CLI
             {
                 Directory.Delete(_msoCacheDir, true);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
-                Console.Write(Resources.Swept_MSO_Cache);
+                Console.WriteLine(Resources.Swept_MSO_Cache);
                 Console.WriteLine();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
-                Console.Write(Resources.No_MSOCache_directory_found__Skipping);
+                Console.WriteLine(Resources.No_MSOCache_directory_found__Skipping);
                 Console.WriteLine();
             }
 
@@ -1263,9 +1261,7 @@ namespace CleanSweep2_CLI
                 if (_isVerboseMode)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.Write(Resources.Stopped_Edge_processes);
-                    Console.WriteLine();
                 }
                 foreach (string edgeDirectory in _edgeCacheDirectories)
                 {
@@ -1284,7 +1280,7 @@ namespace CleanSweep2_CLI
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.Write(Resources.x);
+                                    Console.Write(Resources.Folder_o);
                                 }
                             }
                         }
@@ -1298,7 +1294,7 @@ namespace CleanSweep2_CLI
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write(Resources.x);
+                                Console.Write(Resources.Folder_x);
                             }
                         }
                     }
@@ -1312,13 +1308,12 @@ namespace CleanSweep2_CLI
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(Resources.x);
+                            Console.Write(Resources.Folder_x);
                         }
                     }
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine();
             Console.WriteLine(Resources.Swept_Edge_cache);
             Console.WriteLine();
             _sweptEdgeCache = true;
@@ -1387,8 +1382,8 @@ namespace CleanSweep2_CLI
                             }
                             else
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(Resources.x);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write(Resources.Folder_x);
                             }
                         }
                     }
@@ -1404,7 +1399,7 @@ namespace CleanSweep2_CLI
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write(Resources.x);
+                                Console.Write(Resources.Folder_x);
                             }
                         }
                         else if (ex.GetType() == typeof(UnauthorizedAccessException))
@@ -1417,7 +1412,7 @@ namespace CleanSweep2_CLI
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write(Resources.x);
+                                Console.Write(Resources.Folder_x);
                             }
                         }
                         else
@@ -1430,7 +1425,7 @@ namespace CleanSweep2_CLI
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write(Resources.x);
+                                Console.Write(Resources.Folder_x);
                             }
                         }
                     }
@@ -1445,7 +1440,7 @@ namespace CleanSweep2_CLI
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write(Resources.x);
+                        Console.Write(Resources.Folder_x);
                     }
                 }
             }
@@ -1495,11 +1490,10 @@ namespace CleanSweep2_CLI
                         break;
                     }
                 }
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
-                Console.WriteLine(Resources.Cleaned_Windows_Installer_Cache);
-                Console.WriteLine();
             }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(Resources.Swept_Windows_Installer_Cache);
+            Console.WriteLine();
             _windowsInstallerCacheCleared = true;
         }
         #endregion
@@ -1575,7 +1569,7 @@ namespace CleanSweep2_CLI
                     }
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine();
-                    Console.Write(Resources.Swept_Windows_Update_Logs);
+                    Console.WriteLine(Resources.Swept_Windows_Update_Logs);
                     Console.WriteLine();
                 }
                 else
@@ -1630,13 +1624,11 @@ namespace CleanSweep2_CLI
                 if (_newTempDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources.Recovered + _newTempDirSize + Resources.MB_from_removing_Temporary_Files_);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources._1MB_recovered_from_Temporary_Files);
                 }
             }
@@ -1652,13 +1644,11 @@ namespace CleanSweep2_CLI
                 if (_newTempSetupDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources.Recovered + _newTempSetupDirSize + Resources.MB_from_removing_Temporary_Setup_Files);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources._1MB_recovered_from_Temporary_Setup_Files);
                 }
             }
@@ -1676,7 +1666,6 @@ namespace CleanSweep2_CLI
                     if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine();
                         Console.WriteLine(ex.Message);
                     }
                 }
@@ -1686,13 +1675,11 @@ namespace CleanSweep2_CLI
                 if (_newTempInternetFilesDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.Write(Resources.Recovered + _newTempInternetFilesDirSize + Resources.MB_from_removing_Temporary_Internet_Files_);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources._1MB_recovered_from_Temporary_Internet_Files);
                 }
             }
@@ -1702,7 +1689,6 @@ namespace CleanSweep2_CLI
                 // Mark the sweeping of Event Logs as completed to allow re-sweeping.
                 _eventLogsCleared = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Event_Logs_were_cleared);
             }
 
@@ -1710,7 +1696,6 @@ namespace CleanSweep2_CLI
             {
                 _isRecycleBinEmpty = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Recycle_Bin_was_emptied);
             }
 
@@ -1725,13 +1710,11 @@ namespace CleanSweep2_CLI
                 if (_newWindowsErrorReportsDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources.Recovered + _newWindowsErrorReportsDirSize + Resources.MB_from_removing_Windows_Error_Reports);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources._1MB_recovered_from_removing_Windows_Error_Reports);
                 }
             }
@@ -1747,13 +1730,11 @@ namespace CleanSweep2_CLI
                 if (_newDeliveryOptimizationSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources.Recovered + _newDeliveryOptimizationSize + Resources.MB_from_removing_Windows_Delivery_Optimization_Files_);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources._1MB_recovered_from_Windows_Delivery_Optimization_Files);
                 }
             }
@@ -1762,7 +1743,6 @@ namespace CleanSweep2_CLI
             {
                 _thumbnailCacheCleared = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Thumbnail_cache_was_cleared);
             }
 
@@ -1770,7 +1750,6 @@ namespace CleanSweep2_CLI
             {
                 _deletedFileHistory = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Removed_file_history_older_than_latest_snapshot);
             }
 
@@ -1778,7 +1757,6 @@ namespace CleanSweep2_CLI
             {
                 _windowsOldCleaned = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Old_versions_of_Windows_were_removed);
             }
 
@@ -1786,14 +1764,12 @@ namespace CleanSweep2_CLI
             {
                 _windowsDefenderLogsCleared = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Windows_Defender_Logs_were_removed);
             }
             if (_sweptChromeCache)
             {
                 _sweptChromeCache = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Chrome_cache_was_cleared);
             }
 
@@ -1801,7 +1777,6 @@ namespace CleanSweep2_CLI
             {
                 _sweptEdgeCache = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine(Resources.Edge_cache_was_cleared);
             }
 
@@ -1814,8 +1789,7 @@ namespace CleanSweep2_CLI
                     if (!Directory.Exists(_msoCacheDir))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine();
-                        Console.Write(Resources.Recovered + _msoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
+                        Console.WriteLine(Resources.Recovered + _msoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
                         _totalSpaceSaved += _msoCacheDirSize;
                     }
                     else if (Directory.Exists(_msoCacheDir))
@@ -1833,13 +1807,11 @@ namespace CleanSweep2_CLI
                             if (ex.GetType() == typeof(IOException))
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine();
                                 Console.WriteLine(Resources.Recovered + _newMsoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
                             }
                             else if (ex.GetType() == typeof(UnauthorizedAccessException))
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine();
                                 Console.WriteLine(Resources.Recovered + _newMsoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
                             }
                         }
@@ -1850,7 +1822,6 @@ namespace CleanSweep2_CLI
                     if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine();
                         Console.WriteLine(ex.Message);
                     }
                 }
@@ -1863,7 +1834,6 @@ namespace CleanSweep2_CLI
                 if (Directory.Exists(_windowsDirectory + "\\Installer\\$PatchCache$"))
                 {
                     long oldWindowsInstallerCacheDirSize = _windowsInstallerCacheDirSize;
-                    Console.WriteLine(oldWindowsInstallerCacheDirSize);
                     if (Directory.Exists(_windowsInstallerCacheDir))
                     {
                         _windowsInstallerCacheDirSize = Directory.GetFiles(_windowsInstallerCacheDir + "\\Managed", "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
@@ -1872,7 +1842,6 @@ namespace CleanSweep2_CLI
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine();
                         Console.WriteLine(Resources.Recovered + oldWindowsInstallerCacheDirSize + Resources.MB_from_removing_Windows_Installer_Cache);
                     }
                     _totalSpaceSaved += _newWindowsInstallerCacheDirSize;
@@ -1886,7 +1855,6 @@ namespace CleanSweep2_CLI
                 if (!Directory.Exists(_windowsUpdateLogDir))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine();
                     Console.WriteLine(Resources.Recovered + _windowsUpdateLogDirSize + Resources.MB_from_removing_Windows_Update_Logs);
                     _totalSpaceSaved += _windowsUpdateLogDirSize;
                 }
@@ -1900,14 +1868,13 @@ namespace CleanSweep2_CLI
                     if (_newWindowsUpdateLogDirSize > 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine();
                         Console.WriteLine(Resources.Recovered + _newWindowsUpdateLogDirSize + Resources.MB_from_removing_Windows_Update_Logs);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine();
                         Console.WriteLine(Resources._1MB_recovered_from_Windows_Update_Logs);
+                        Console.WriteLine(Resources.LineSeparator);
                     }
                 }
             }
@@ -1917,13 +1884,11 @@ namespace CleanSweep2_CLI
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine();
-                Console.WriteLine();
                 Console.WriteLine(Resources.Total_space_recovered + _totalSpaceSaved + Resources.MB);
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine();
                 Console.WriteLine();
                 Console.WriteLine(Resources.Total_space_recovered___1MB);
             }
@@ -1951,6 +1916,7 @@ namespace CleanSweep2_CLI
             Console.WriteLine(Resources.CleanSweep_is__and_will_always_be_free__but_beer_is_not);
             Console.WriteLine(Resources.If_you_d_like_to_buy_me_a_beer_anyway__I_won_t_tell_you_not_to);
             Console.WriteLine(Resources.Visit_https___paypal_me_thomasloupe_if_you_d_like_to_donate);
+            Console.WriteLine();
         }
         #endregion
 
@@ -1970,6 +1936,7 @@ namespace CleanSweep2_CLI
             else if (CurrentVersion != latest.TagName)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine();
                 Console.WriteLine(Resources.A_new_version_of_CleanSweep2_CLI_is_available);
                 Console.WriteLine(Resources.Current_version);
                 Console.WriteLine(Resources.Latest_version + latest.TagName);

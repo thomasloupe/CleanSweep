@@ -126,10 +126,6 @@
   <data name="MB" xml:space="preserve">
     <value>MB</value>
   </data>
-  <data name="NewLine" xml:space="preserve">
-    <value>
-</value>
-  </data>
   <data name="Categorical_breakdown" xml:space="preserve">
     <value>Categorical breakdown:</value>
   </data>
@@ -189,270 +185,276 @@
     <value>Swept Temporary Files!</value>
   </data>
   <data name="Sweeping_Temporary_Setup_Files" xml:space="preserve">
-	  <value>Sweeping Temporary Setup Files...</value>
+    <value>Sweeping Temporary Setup Files...</value>
   </data>
   <data name="x" xml:space="preserve">
-	  <value>x</value>
+    <value>x</value>
   </data>
   <data name="Swept_Temporary_Setup_Files" xml:space="preserve">
-	  <value>Swept Temporary Setup Files!</value>
+    <value>Swept Temporary Setup Files!</value>
   </data>
   <data name="Sweeping_Temporary_Internet_Files" xml:space="preserve">
-	  <value>Sweeping Temporary Internet Files...</value>
+    <value>Sweeping Temporary Internet Files...</value>
   </data>
   <data name="Swept_Temporary_Internet_Files" xml:space="preserve">
-	  <value>Swept Temporary Internet Files!</value>
+    <value>Swept Temporary Internet Files!</value>
   </data>
   <data name="Sweeping_Event_Viewer_Logs" xml:space="preserve">
-	  <value>Sweeping Event Viewer Logs</value>
+    <value>Sweeping Event Viewer Logs</value>
   </data>
   <data name="Swept_Event_Viewer_Logs" xml:space="preserve">
-	  <value>Swept Event Viewer Logs!</value>
+    <value>Swept Event Viewer Logs!</value>
   </data>
   <data name="Emptying_Recycle_Bin" xml:space="preserve">
-	  <value>Emptying Recycle Bin</value>
+    <value>Emptying Recycle Bin</value>
   </data>
   <data name="Emptied_Recycle_Bin" xml:space="preserve">
-	  <value>Emptied Recycle Bin!</value>
+    <value>Emptied Recycle Bin!</value>
   </data>
   <data name="Sweeping_Windows_Error_Reports" xml:space="preserve">
-	  <value>Sweeping Windows Error Reports</value>
+    <value>Sweeping Windows Error Reports...</value>
   </data>
   <data name="appears_to_be_in_use_or_locked__Skipping" xml:space="preserve">
-	  <value> appears to be in use or locked. Skipping...</value>
+    <value> appears to be in use or locked. Skipping...</value>
   </data>
   <data name="Couldn_t_remove" xml:space="preserve">
-	  <value>Couldn't remove </value>
+    <value>Couldn't remove </value>
   </data>
   <data name="Swept_Windows_Error_Reports" xml:space="preserve">
-	  <value>Swept Windows Error Reports!</value>
+    <value>Swept Windows Error Reports!</value>
   </data>
   <data name="Windows_Error_Report_directory_already_removed__Skipping" xml:space="preserve">
-	  <value>Windows Error Report directory already removed. Skipping</value>
+    <value>Windows Error Report directory already removed. Skipping</value>
   </data>
   <data name="Sweeping_Delivery_Optimization_Files" xml:space="preserve">
-	  <value>Sweeping Delivery Optimization Files...</value>
+    <value>Sweeping Delivery Optimization Files...</value>
   </data>
   <data name="Removed_Delivery_Optimization_Files" xml:space="preserve">
-	  <value>Removed Delivery Optimization Files!</value>
+    <value>Swept Delivery Optimization Files!</value>
   </data>
   <data name="No_Delivery_Optimization_Files_needed_to_be_cleaned" xml:space="preserve">
-	  <value>No Delivery Optimization Files needed to be cleaned.</value>
+    <value>No Delivery Optimization Files needed to be cleaned.</value>
   </data>
   <data name="Clearing_Thumbnail_Cache" xml:space="preserve">
-	  <value>Clearing Thumbnail Cache</value>
+    <value>Clearing Thumbnail Cache</value>
   </data>
   <data name="Shutting_down_Explorer_exe_process" xml:space="preserve">
-	  <value>Shutting down Explorer.exe process...</value>
+    <value>Shutting down Explorer.exe process...</value>
   </data>
   <data name="Restarted_Explorer_exe_process" xml:space="preserve">
-	  <value>Restarted Explorer.exe process.</value>
+    <value>Restarted Explorer.exe process.</value>
   </data>
   <data name="Cleared_Thumbnail_Cache" xml:space="preserve">
-	  <value>Cleared Thumbnail Cache!</value>
+    <value>Cleared Thumbnail Cache!</value>
   </data>
   <data name="Attempting_to_remove_all_file_history_snapshots_except_latest" xml:space="preserve">
-	  <value>Attempting to remove all file history snapshots except latest</value>
+    <value>Attempting to remove all file history snapshots except latest</value>
   </data>
   <data name="If_file_history_was_enabled__all_versions_except_latest_were_removed" xml:space="preserve">
-	  <value>If file history was enabled, all versions except latest were removed.</value>
+    <value>If file history was enabled, all versions except latest were removed.</value>
   </data>
   <data name="Removing_old_versions_of_Windows" xml:space="preserve">
-	  <value>Removing old versions of Windows...</value>
+    <value>Sweeping old versions of Windows...</value>
   </data>
   <data name="Found_Windows_old_directory__Cleaning" xml:space="preserve">
-	  <value>Found Windows.old directory. Cleaning...</value>
+    <value>Found Windows.old directory. Cleaning...</value>
   </data>
-  <data name="Cleaned_Windows_old_directory" xml:space="preserve">
-	  <value>Cleaned Windows.old directory!</value>
+  <data name="Swept_Windows_old_directory" xml:space="preserve">
+    <value>Swept Windows.old directory!</value>
   </data>
   <data name="No_Windows_old_directory_found__Skipping" xml:space="preserve">
-	  <value>No Windows.old directory found. Skipping...</value>
+    <value>No Windows.old directory found. Skipping...</value>
   </data>
   <data name="Deleting_Windows_Defender_Log_Files" xml:space="preserve">
-	  <value>Deleting Windows Defender Log Files...</value>
+    <value>Deleting Windows Defender Log Files...</value>
   </data>
   <data name="Removed" xml:space="preserve">
-	  <value>Removed </value>
+    <value>Removed </value>
   </data>
   <data name="Skipping___" xml:space="preserve">
-	  <value>Skipping...</value>
+    <value>Skipping...</value>
   </data>
   <data name="Directory_already_removed" xml:space="preserve">
-	  <value>Directory already removed: </value>
+    <value>Directory already removed: </value>
   </data>
   <data name="Removed_Windows_Defender_Logs" xml:space="preserve">
-	  <value>Removed Windows Defender Logs!</value>
+    <value>Swept Windows Defender Logs!</value>
   </data>
   <data name="Sweeping_MSO_cache" xml:space="preserve">
-	  <value>Sweeping MSO cache...</value>
+    <value>Sweeping MSO cache...</value>
   </data>
   <data name="Swept_MSO_Cache" xml:space="preserve">
-	  <value>Swept MSO Cache!</value>
+    <value>Swept MSO Cache!</value>
   </data>
   <data name="No_MSOCache_directory_found__Skipping" xml:space="preserve">
-	  <value>No MSOCache directory found. Skipping...</value>
+    <value>No MSOCache directory found. Skipping...</value>
   </data>
   <data name="Sweeping_Edge_cache" xml:space="preserve">
-	  <value>Sweeping Edge cache...</value>
+    <value>Sweeping Edge cache...</value>
   </data>
   <data name="Ending_any_Edge_processes" xml:space="preserve">
-	  <value>Ending any Edge processes...</value>
+    <value>Ending any Edge processes...</value>
   </data>
   <data name="Stopped_Edge_processes" xml:space="preserve">
-	  <value>Stopped Edge processes.</value>
+    <value>Stopped Edge processes.</value>
   </data>
   <data name="Period" xml:space="preserve">
-	  <value>.</value>
+    <value>.</value>
   </data>
   <data name="Swept_Edge_cache" xml:space="preserve">
-	  <value>Swept Edge cache!</value>
+    <value>Swept Edge cache!</value>
   </data>
   <data name="Sweeping_Chrome_cache" xml:space="preserve">
-	  <value>Sweeping Chrome cache...</value>
+    <value>Sweeping Chrome cache...</value>
   </data>
   <data name="Ending_any_Chrome_processes" xml:space="preserve">
-	  <value>Ending any Chrome processes...</value>
+    <value>Ending any Chrome processes...</value>
   </data>
   <data name="Stopped_Chrome_processes" xml:space="preserve">
-	  <value>Stopped Chrome processes.</value>
+    <value>Stopped Chrome processes.</value>
   </data>
   <data name="Swept_Chrome_cache" xml:space="preserve">
-	  <value>Swept Chrome cache!</value>
+    <value>Swept Chrome cache!</value>
   </data>
   <data name="Removing_Windows_Installer_Cache" xml:space="preserve">
-	  <value>Removing Windows Installer Cache...</value>
+    <value>Sweeping Windows Installer Cache...</value>
   </data>
   <data name="Found_Windows_Installer_Cache__Cleaning" xml:space="preserve">
-	  <value>Found Windows Installer Cache. Cleaning...</value>
+    <value>Found Windows Installer Cache. Cleaning...</value>
   </data>
-  <data name="Cleaned_Windows_Installer_Cache" xml:space="preserve">
-	  <value>Cleaned Windows Installer Cache!</value>
+  <data name="Swept_Windows_Installer_Cache" xml:space="preserve">
+    <value>Swept Windows Installer Cache!</value>
   </data>
   <data name="Sweeping_Windows_Update_Logs" xml:space="preserve">
-	  <value>Sweeping Windows Update Logs...</value>
+    <value>Sweeping Windows Update Logs...</value>
   </data>
   <data name="Swept_Windows_Update_Logs" xml:space="preserve">
-	  <value>Swept Windows Update Logs!</value>
+    <value>Swept Windows Update Logs!</value>
   </data>
   <data name="No_Windows_Update_Logs_directory_found__Skipping" xml:space="preserve">
-	  <value>No Windows Update Logs directory found. Skipping...</value>
+    <value>No Windows Update Logs directory found. Skipping...</value>
   </data>
   <data name="Recovery_results" xml:space="preserve">
-	  <value>Recovery results:</value>
+    <value>Recovery results:</value>
   </data>
   <data name="Recovered" xml:space="preserve">
-	  <value>Recovered </value>
+    <value>Recovered </value>
   </data>
   <data name="MB_from_removing_Temporary_Files_" xml:space="preserve">
-	  <value>MB from removing Temporary Files.</value>
+    <value>MB from removing Temporary Files.</value>
   </data>
   <data name="1MB_recovered_from_Temporary_Files" xml:space="preserve">
-	  <value>&lt;1MB recovered from Temporary Files...</value>
+    <value>&lt;1MB recovered from Temporary Files.</value>
   </data>
   <data name="MB_from_removing_Temporary_Setup_Files" xml:space="preserve">
-	  <value>MB from removing Temporary Setup Files.</value>
+    <value>MB from removing Temporary Setup Files.</value>
   </data>
   <data name="_1MB_recovered_from_Temporary_Setup_Files" xml:space="preserve">
-	  <value>&lt;1MB recovered from Temporary Setup Files...</value>
+    <value>&lt;1MB recovered from Temporary Setup Files.</value>
   </data>
   <data name="MB_from_removing_Temporary_Internet_Files_" xml:space="preserve">
-	  <value>MB from removing Temporary Internet Files.</value>
+    <value>MB from removing Temporary Internet Files.</value>
   </data>
   <data name="_1MB_recovered_from_Temporary_Internet_Files" xml:space="preserve">
-	  <value>&lt;1MB recovered from Temporary Internet Files...</value>
+    <value>&lt;1MB recovered from Temporary Internet Files.</value>
   </data>
   <data name="Event_Logs_were_cleared" xml:space="preserve">
-	  <value>Event Logs were cleared.</value>
+    <value>Event Logs were cleared.</value>
   </data>
   <data name="Recycle_Bin_was_emptied" xml:space="preserve">
-	  <value>Recycle Bin was emptied.</value>
+    <value>Recycle Bin was emptied.</value>
   </data>
   <data name="MB_from_removing_Windows_Error_Reports" xml:space="preserve">
-	  <value>MB from removing Windows Error Reports.</value>
+    <value>MB from removing Windows Error Reports.</value>
   </data>
   <data name="_1MB_recovered_from_removing_Windows_Error_Reports" xml:space="preserve">
-	  <value>&lt;1MB recovered from removing Windows Error Reports...</value>
+    <value>&lt;1MB recovered from removing Windows Error Reports.</value>
   </data>
   <data name="MB_from_removing_Windows_Delivery_Optimization_Files_" xml:space="preserve">
-	  <value>MB from removing Windows Delivery Optimization Files.</value>
+    <value>MB from removing Windows Delivery Optimization Files.</value>
   </data>
   <data name="_1MB_recovered_from_Windows_Delivery_Optimization_Files" xml:space="preserve">
-	  <value>&lt;1MB recovered from Windows Delivery Optimization Files...</value>
+    <value>&lt;1MB recovered from Windows Delivery Optimization Files.</value>
   </data>
   <data name="Thumbnail_cache_was_cleared" xml:space="preserve">
-	  <value>Thumbnail cache was cleared.</value>
+    <value>Thumbnail cache was cleared.</value>
   </data>
   <data name="Removed_file_history_older_than_latest_snapshot" xml:space="preserve">
-	  <value>Removed file history older than latest snapshot.</value>
+    <value>Swept file history older than latest snapshot.</value>
   </data>
   <data name="Old_versions_of_Windows_were_removed" xml:space="preserve">
-	  <value>Old versions of Windows were removed.</value>
+    <value>Old versions of Windows were removed.</value>
   </data>
   <data name="Windows_Defender_Logs_were_removed" xml:space="preserve">
-	  <value>Windows Defender Logs were removed.</value>
+    <value>Windows Defender Logs were removed.</value>
   </data>
   <data name="Chrome_cache_was_cleared" xml:space="preserve">
-	  <value>Chrome cache was cleared.</value>
+    <value>Chrome cache was cleared.</value>
   </data>
   <data name="Edge_cache_was_cleared" xml:space="preserve">
-	  <value>Edge cache was cleared.</value>
+    <value>Edge cache was cleared.</value>
   </data>
   <data name="MB_from_removing_MSO_Cache" xml:space="preserve">
-	  <value>MB from removing MSO Cache.</value>
+    <value>MB from removing MSO Cache.</value>
   </data>
   <data name="MB_from_removing_Windows_Installer_Cache" xml:space="preserve">
-	  <value>MB from removing Windows Installer Cache.</value>
+    <value>MB from removing Windows Installer Cache.</value>
   </data>
   <data name="MB_from_removing_Windows_Update_Logs" xml:space="preserve">
-	  <value>MB from removing Windows Update Logs.</value>
+    <value>MB from removing Windows Update Logs.</value>
   </data>
   <data name="_1MB_recovered_from_Windows_Update_Logs" xml:space="preserve">
-	  <value>&lt;1MB recovered from Windows Update Logs...</value>
+    <value>&lt;1MB recovered from Windows Update Logs.</value>
   </data>
   <data name="Total_space_recovered" xml:space="preserve">
-	  <value>Total space recovered: </value>
+    <value>Total space recovered: </value>
   </data>
   <data name="Total_space_recovered___1MB" xml:space="preserve">
-	  <value>Total space recovered: &lt;1MB</value>
+    <value>Total space recovered: &lt;1MB</value>
   </data>
   <data name="CleanSweep" xml:space="preserve">
-	  <value>CleanSweep v2.2.0</value>
+    <value>CleanSweep v2.2.0</value>
   </data>
   <data name="Created_by_Thomas_Loupe" xml:space="preserve">
-	  <value>Created by Thomas Loupe.</value>
+    <value>Created by Thomas Loupe.</value>
   </data>
   <data name="Github__https___github_com_thomasloupe" xml:space="preserve">
-	  <value>Github: https://github.com/thomasloupe</value>
+    <value>Github: https://github.com/thomasloupe</value>
   </data>
   <data name="Twitter__https___twitter_com_acid_rain" xml:space="preserve">
-	  <value>Twitter: https://twitter.com/acid_rain</value>
+    <value>Twitter: https://twitter.com/acid_rain</value>
   </data>
   <data name="Website__https___thomasloupe_com" xml:space="preserve">
-	  <value>Website: https://thomasloupe.com</value>
+    <value>Website: https://thomasloupe.com</value>
   </data>
   <data name="CleanSweep_is__and_will_always_be_free__but_beer_is_not" xml:space="preserve">
-	  <value>CleanSweep is, and will always be free, but beer is not!</value>
+    <value>CleanSweep is, and will always be free, but beer is not!</value>
   </data>
   <data name="If_you_d_like_to_buy_me_a_beer_anyway__I_won_t_tell_you_not_to" xml:space="preserve">
-	  <value>If you'd like to buy me a beer anyway, I won't tell you not to.</value>
+    <value>If you'd like to buy me a beer anyway, I won't tell you not to.</value>
   </data>
   <data name="Visit_https___paypal_me_thomasloupe_if_you_d_like_to_donate" xml:space="preserve">
-	  <value>Visit https://paypal.me/thomasloupe if you'd like to donate.</value>
+    <value>Visit https://paypal.me/thomasloupe if you'd like to donate.</value>
   </data>
   <data name="You_have_the_latest_version___0__" xml:space="preserve">
-	  <value>You have the latest version, {0}!</value>
+    <value>You have the latest version, {0}!</value>
   </data>
   <data name="A_new_version_of_CleanSweep2_CLI_is_available" xml:space="preserve">
-	  <value>A new version of CleanSweep2_CLI is available!</value>
+    <value>A new version of CleanSweep2_CLI is available!</value>
   </data>
   <data name="Current_version" xml:space="preserve">
-	  <value>Current version: v2.2.0</value>
+    <value>Current version: v2.2.0</value>
   </data>
   <data name="Latest_version" xml:space="preserve">
-	  <value>Latest version: </value>
+    <value>Latest version: </value>
   </data>
   <data name="Visit_https___github_com_thomasloupe_CleanSweep2_to_download_the_latest_version" xml:space="preserve">
-	  <value>Visit https://github.com/thomasloupe/CleanSweep2 to download the latest version.</value>
+    <value>Visit https://github.com/thomasloupe/CleanSweep2 to download the latest version.</value>
+  </data>
+  <data name="Folder_o" xml:space="preserve">
+    <value>[o]</value>
+  </data>
+  <data name="Folder_x" xml:space="preserve">
+    <value>[x]</value>
   </data>
 </root>

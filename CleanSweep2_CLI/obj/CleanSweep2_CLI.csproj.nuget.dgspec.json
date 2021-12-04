@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj": {}
+    "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj": {}
   },
   "projects": {
-    "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj": {
+    "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
+        "projectUniqueName": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
         "projectName": "CleanSweep2_CLI",
-        "projectPath": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
+        "projectPath": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
         "packagesPath": "C:\\Users\\acid_rain\\.nuget\\packages\\",
-        "outputPath": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\obj\\",
+        "outputPath": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

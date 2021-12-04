@@ -6,6 +6,7 @@ C:\Users\acid_rain\Desktop\CleanSweep2_CLI\bin\Debug\net5.0-windows\CleanSweep2_
 C:\Users\acid_rain\Desktop\CleanSweep2_CLI\bin\Debug\net5.0-windows\ref\CleanSweep2_CLI.dll
 C:\Users\acid_rain\Desktop\CleanSweep2_CLI\bin\Debug\net5.0-windows\CleanSweep2_CLI.pdb
 C:\Users\acid_rain\Desktop\CleanSweep2_CLI\bin\Debug\net5.0-windows\Octokit.dll
+C:\Users\acid_rain\Desktop\CleanSweep2_CLI\obj\Debug\net5.0-windows\CleanSweep2_CLI.csproj.AssemblyReference.cache
 C:\Users\acid_rain\Desktop\CleanSweep2_CLI\obj\Debug\net5.0-windows\CleanSweep2_CLI.Properties.Resources.resources
 C:\Users\acid_rain\Desktop\CleanSweep2_CLI\obj\Debug\net5.0-windows\CleanSweep2_CLI.csproj.GenerateResource.cache
 C:\Users\acid_rain\Desktop\CleanSweep2_CLI\obj\Debug\net5.0-windows\CleanSweep2_CLI.GeneratedMSBuildEditorConfig.editorconfig
