@@ -43,11 +43,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
+      "projectUniqueName": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
       "projectName": "CleanSweep2_CLI",
-      "projectPath": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
+      "projectPath": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
       "packagesPath": "C:\\Users\\acid_rain\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\obj\\",
+      "outputPath": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "396SWLpEJR8mhYCVtPGT9ToezA31OO93jJI8ciKKGo77sPp+mz0R+MMNuv0Adcf0RQV8HibxvxpxxuiD6JKJCw==",
+  "dgSpecHash": "aS7HVzKKYOb3cl4R8uW2TgjXn6LHCbYEx/ZmvD5v4za0OGEp4yEreuAipGlUfxWquBtPkcwawX4zlFeHtmN/4Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\acid_rain\\Desktop\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
+  "projectFilePath": "Z:\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\acid_rain\\.nuget\\packages\\octokit\\0.50.0\\octokit.0.50.0.nupkg.sha512"
   ],

@@ -4,99 +4,100 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using CleanSweep2_CLI.Properties;
 
 namespace CleanSweep2_CLI
 {
     internal class CleanSweep2_CLI
     {
         #region Declarations
-        private const string CurrentVersion = "v2.2.0";
-        readonly string userName = Environment.UserName;
-        readonly string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
-        readonly string windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-        readonly string programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-        readonly string localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        string logPath;
+        private const string CurrentVersion = "v2.3.0";
+        readonly string _userName = Environment.UserName;
+        readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
+        readonly string _windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        readonly string _programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        readonly string _localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private string _logPath;
 
-        bool isVerboseMode;
-        bool showOperationWindows;
-        bool tempFilesWereRemoved = false;
-        bool tempSetupFilesWereRemoved = false;
-        bool tempInternetFilesWereRemoved = false;
-        bool eventLogsCleared = false;
-        bool isRecycleBinEmpty = false;
-        bool windowsErrorReportsCleared = false;
-        bool wereDeliveryOptimizationFilesRemoved = false;
-        bool thumbnailCacheCleared = false;
-        bool deletedFileHistory = false;
-        bool windowsOldCleaned = false;
-        bool windowsDefenderLogsCleared = false;
-        bool sweptChromeCache = false;
-        bool sweptEdgeCache = false;
-        bool msoCacheCleared = false;
-        bool windowsInstallerCacheCleared = false;
-        bool windowsUpdateLogsCleared = false;
-        long totalSpaceSaved;
+        private bool _isVerboseMode;
+        private bool _showOperationWindows;
+        private bool _tempFilesWereRemoved = false;
+        private bool _tempSetupFilesWereRemoved = false;
+        private bool _tempInternetFilesWereRemoved = false;
+        private bool _eventLogsCleared = false;
+        private bool _isRecycleBinEmpty = false;
+        private bool _windowsErrorReportsCleared = false;
+        private bool _wereDeliveryOptimizationFilesRemoved = false;
+        private bool _thumbnailCacheCleared = false;
+        private bool _deletedFileHistory = false;
+        private bool _windowsOldCleaned = false;
+        private bool _windowsDefenderLogsCleared = false;
+        private bool _sweptChromeCache = false;
+        private bool _sweptEdgeCache = false;
+        private bool _msoCacheCleared = false;
+        private bool _windowsInstallerCacheCleared = false;
+        private bool _windowsUpdateLogsCleared = false;
+        private long _totalSpaceSaved;
 
         // Temporary Files
-        string tempDirectory;
-        long tempDirSize;
-        long tempDirSizeInMegaBytes;
-        long tempSizeBeforeDelete;
-        long newTempDirSize;
+        private string _tempDirectory;
+        private long _tempDirSize;
+        private long _tempDirSizeInMegaBytes;
+        private long _tempSizeBeforeDelete;
+        private long _newTempDirSize;
 
         // Temporary Setup Files
-        string tempSetupDirectory;
-        long tempSetupDirSize;
-        long tempSetupSizeInMegabytes;
-        long tempSetupFilesSizeBeforeDelete;
-        long newTempSetupDirSize;
+        private string _tempSetupDirectory;
+        private long _tempSetupDirSize;
+        private long _tempSetupSizeInMegabytes;
+        private long _tempSetupFilesSizeBeforeDelete;
+        private long _newTempSetupDirSize;
 
         // Temporary Internet Files
-        string tempInternetFilesDirectory;
-        long tempInternetFilesDirSize;
-        long tempInternetSizeInMegabytes;
-        long tempInternetFilesBeforeDelete;
-        long newTempInternetFilesDirSize;
+        private string _tempInternetFilesDirectory;
+        private long _tempInternetFilesDirSize;
+        private long _tempInternetSizeInMegabytes;
+        private long _tempInternetFilesBeforeDelete;
+        private long _newTempInternetFilesDirSize;
 
         // Windows Error Reports
-        string windowsErrorReportsDirectory;
-        long windowsErrorReportsDirSize;
-        long windowsErrorReportsDirSizeInMegabytes;
-        long windowsErrorReportsDirSizeBeforeDelete;
-        long newWindowsErrorReportsDirSize;
+        private string _windowsErrorReportsDirectory;
+        private long _windowsErrorReportsDirSize;
+        private long _windowsErrorReportsDirSizeInMegabytes;
+        private long _windowsErrorReportsDirSizeBeforeDelete;
+        private long _newWindowsErrorReportsDirSize;
 
         // Delivery Optimization Files
-        string deliveryOptimizationFilesDirectory;
-        long deliveryOptimizationFilesDirSize;
-        long deliveryOptimizationFilesDirSizeInMegabytes;
-        long deliveryOptimizationFilesDirSizeBeforeDelete;
-        long newDeliveryOptimizationSize;
+        private string _deliveryOptimizationFilesDirectory;
+        private long _deliveryOptimizationFilesDirSize;
+        private long _deliveryOptimizationFilesDirSizeInMegabytes;
+        private long _deliveryOptimizationFilesDirSizeBeforeDelete;
+        private long _newDeliveryOptimizationSize;
 
         // Chrome Directories
-        readonly string[] chromeCacheDirectories = new string[6];
-        long totalChromeDirSize = 0;
+        private readonly string[] _chromeCacheDirectories = new string[6];
+        private long _totalChromeDirSize = 0;
 
         // Edge Directories
-        readonly string[] edgeCacheDirectories = new string[12];
-        long totalEdgeDirSize = 0;
+        private readonly string[] _edgeCacheDirectories = new string[12];
+        private long _totalEdgeDirSize = 0;
 
         // MSO Cache Directories
-        string msoCacheDir;
-        long msoCacheDirSize = 0;
-        long newMsoCacheDirSize;
+        private string _msoCacheDir;
+        private long _msoCacheDirSize = 0;
+        private long _newMsoCacheDirSize;
 
         // Windows Installer Cache Directories
-        string windowsInstallerCacheDir;
-        long windowsInstallerCacheDirSize;
-        long newWindowsInstallerCacheDirSize;
+        private string _windowsInstallerCacheDir;
+        private long _windowsInstallerCacheDirSize;
+        private long _newWindowsInstallerCacheDirSize;
 
         // Windows Update Log Directories.
-        string windowsUpdateLogDir;
-        long windowsUpdateLogDirSize;
-        long newWindowsUpdateLogDirSize;
+        private string _windowsUpdateLogDir;
+        private long _windowsUpdateLogDirSize;
+        private long _newWindowsUpdateLogDirSize;
         #endregion
-        static void Main()
+        private static void Main()
         {
             string[] args = Environment.GetCommandLineArgs();
             var cs2cli = new CleanSweep2_CLI();
@@ -193,36 +194,35 @@ namespace CleanSweep2_CLI
                     case "-log":
                         {
                             // Set the path for logging.
-                            foreach (Match match in Regex.Matches(cs2cli.logPath, "\"([^\"]*)\""))
+                            foreach (Match match in Regex.Matches(cs2cli._logPath, "\"([^\"]*)\""))
                             {
-                                string tempLogpath = cs2cli.logPath;
-                                tempLogpath.Replace(@"""", "");
-                                cs2cli.logPath = tempLogpath;
+                                var tempLogPath = cs2cli._logPath.Replace(@"""", "");
+                                cs2cli._logPath = tempLogPath;
                             }
                             break;
                         }
                     case "-v1":
                         {
                             // Set verbosity to low.
-                            cs2cli.isVerboseMode = false;
+                            cs2cli._isVerboseMode = false;
                             break;
                         }
                     case "-v2":
                         {
                             // Set verbosity to high.
-                            cs2cli.isVerboseMode = true;
+                            cs2cli._isVerboseMode = true;
                             break;
                         }
                     case "-visible":
                         {
                             // Show CMD window via method.
-                            cs2cli.showOperationWindows = false;
+                            cs2cli._showOperationWindows = false;
                             break;
                         }
                     default:
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("No arguments given. Please re-run CleanSweep2_CLI with arguments.");
+                            Console.Write(Resources.No_Arguments_Given);
                             break;
                         }
                 }
@@ -233,161 +233,164 @@ namespace CleanSweep2_CLI
         private void GetSizeInformation()
         {
             // Set Chrome cache directories.
-            chromeCacheDirectories[0] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Cache";
-            chromeCacheDirectories[1] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Media Cache";
-            chromeCacheDirectories[2] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\GPUCache";
-            chromeCacheDirectories[3] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Storage\\ext";
-            chromeCacheDirectories[4] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Service Worker";
-            chromeCacheDirectories[5] = localAppDataDirectory + "\\Google\\Chrome\\User Data\\ShaderCache";
+            _chromeCacheDirectories[0] = _localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Cache";
+            _chromeCacheDirectories[1] = _localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Media Cache";
+            _chromeCacheDirectories[2] = _localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\GPUCache";
+            _chromeCacheDirectories[3] = _localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Storage\\ext";
+            _chromeCacheDirectories[4] = _localAppDataDirectory + "\\Google\\Chrome\\User Data\\Default\\Service Worker";
+            _chromeCacheDirectories[5] = _localAppDataDirectory + "\\Google\\Chrome\\User Data\\ShaderCache";
 
             // Set Edge cache directories.
-            edgeCacheDirectories[0] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Cache";
-            edgeCacheDirectories[1] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Media Cache";
-            edgeCacheDirectories[2] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\GPUCache";
-            edgeCacheDirectories[3] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Storage\\ext";
-            edgeCacheDirectories[4] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Service Worker";
-            edgeCacheDirectories[5] = localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\ShaderCache";
-            edgeCacheDirectories[6] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Cache";
-            edgeCacheDirectories[7] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Media Cache";
-            edgeCacheDirectories[8] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\GPUCache";
-            edgeCacheDirectories[9] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Storage\\ext";
-            edgeCacheDirectories[10] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Service Worker";
-            edgeCacheDirectories[11] = localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\ShaderCache";
+            _edgeCacheDirectories[0] = _localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Cache";
+            _edgeCacheDirectories[1] = _localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Media Cache";
+            _edgeCacheDirectories[2] = _localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\GPUCache";
+            _edgeCacheDirectories[3] = _localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Storage\\ext";
+            _edgeCacheDirectories[4] = _localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\Default\\Service Worker";
+            _edgeCacheDirectories[5] = _localAppDataDirectory + "\\Microsoft\\Edge\\User Data\\ShaderCache";
+            _edgeCacheDirectories[6] = _localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Cache";
+            _edgeCacheDirectories[7] = _localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Media Cache";
+            _edgeCacheDirectories[8] = _localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\GPUCache";
+            _edgeCacheDirectories[9] = _localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Storage\\ext";
+            _edgeCacheDirectories[10] = _localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\Default\\Service Worker";
+            _edgeCacheDirectories[11] = _localAppDataDirectory + "\\Microsoft\\Edge SxS\\User Data\\ShaderCache";
 
             // Set MSOCache Directory.
-            msoCacheDir = systemDrive + "MSOCache";
+            _msoCacheDir = _systemDrive + "MSOCache";
 
             // Set Windows Installer Cache Directory.
-            windowsInstallerCacheDir = windowsDirectory + "\\Installer\\$PatchCache$\\Managed";
+            _windowsInstallerCacheDir = _windowsDirectory + "\\Installer\\$PatchCache$\\Managed";
 
             // Set Windows Log Directory.
-            windowsUpdateLogDir = windowsDirectory + "\\Logs\\";
+            _windowsUpdateLogDir = _windowsDirectory + "\\Logs\\";
 
             // Get size of Temporary Files.
-            tempDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Temp\\";
+            _tempDirectory = "C:\\Users\\" + _userName + "\\AppData\\Local\\Temp\\";
             try
             {
-                tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _tempDirSize = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(ex.Message);
             }
-            tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
+            _tempDirSizeInMegaBytes = _tempDirSize / 1024 / 1024;
 
             // Get size of Temporary Setup Files.
-            tempSetupDirectory = windowsDirectory + "\\temp";
-            tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
+            _tempSetupDirectory = _windowsDirectory + "\\temp";
+            _tempSetupDirSize = Directory.GetFiles(_tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            _tempSetupSizeInMegabytes = _tempSetupDirSize / 1024 / 1024;
 
             // Get size of Temporary Internet Files.
-            tempInternetFilesDirectory = "C:\\Users\\" + userName + "\\AppData\\Local\\Microsoft\\Windows\\INetCache\\";
+            _tempInternetFilesDirectory = "C:\\Users\\" + _userName + "\\AppData\\Local\\Microsoft\\Windows\\INetCache\\";
             try
             {
-                tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _tempInternetFilesDirSize = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
             }
-            tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
+            _tempInternetSizeInMegabytes = _tempInternetFilesDirSize / 1024 / 1024;
 
             // Get size of Windows Error Reports
-            windowsErrorReportsDirectory = programDataDirectory + "\\Microsoft\\Windows\\WER\\ReportArchive";
-            if (Directory.Exists(windowsErrorReportsDirectory))
+            _windowsErrorReportsDirectory = _programDataDirectory + "\\Microsoft\\Windows\\WER\\ReportArchive";
+            if (Directory.Exists(_windowsErrorReportsDirectory))
             {
-                windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
+                _windowsErrorReportsDirSize = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _windowsErrorReportsDirSizeInMegabytes = _windowsErrorReportsDirSize / 1024 / 1024;
             }
             else
             {
-                windowsErrorReportsDirSizeInMegabytes = 0;
+                _windowsErrorReportsDirSizeInMegabytes = 0;
             }
 
             // Get size of Windows Delivery Optimization Files
-            deliveryOptimizationFilesDirectory = windowsDirectory + "\\SoftwareDistribution\\";
-            deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-            deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
+            _deliveryOptimizationFilesDirectory = _windowsDirectory + "\\SoftwareDistribution\\";
+            _deliveryOptimizationFilesDirSize = Directory.GetFiles(_deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+            _deliveryOptimizationFilesDirSizeInMegabytes = _deliveryOptimizationFilesDirSize / 1024 / 1024;
 
             // Get size of Chrome cache directories.
-            foreach (string chromeDirectory in chromeCacheDirectories)
+            foreach (string chromeDirectory in _chromeCacheDirectories)
             {
                 if (Directory.Exists(chromeDirectory))
                 {
                     long thisChromeDirSize = 0;
                     thisChromeDirSize = Directory.GetFiles(chromeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                    totalChromeDirSize += thisChromeDirSize;
+                    _totalChromeDirSize += thisChromeDirSize;
                 }
             }
             // Get size of Edge cache directories.
-            foreach (string edgeDirectory in edgeCacheDirectories)
+            foreach (string edgeDirectory in _edgeCacheDirectories)
             {
                 if (Directory.Exists(edgeDirectory))
                 {
                     long thisEdgeDirSize = 0;
                     thisEdgeDirSize = Directory.GetFiles(edgeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                    totalEdgeDirSize += thisEdgeDirSize;
+                    _totalEdgeDirSize += thisEdgeDirSize;
                 }
             }
 
             // Get size of MSOCache.
-            if (Directory.Exists(msoCacheDir))
+            if (Directory.Exists(_msoCacheDir))
             {
                 try
                 {
-                    msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    _msoCacheDirSize = Directory.GetFiles(_msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
                 }
                 catch (Exception ex)
                 {
                     if (ex.GetType() == typeof(IOException))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
-                            Console.Write(ex.Message + "\n", ConsoleColor.Red);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     else if (ex.GetType() == typeof(UnauthorizedAccessException))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
-                            Console.Write(ex.Message + "\n", ConsoleColor.Red);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(ex.Message);
                         }
                     }
                 }
             }
 
             // Get size of Windows Installer Cache.
-            if (Directory.Exists(windowsInstallerCacheDir))
+            if (Directory.Exists(_windowsInstallerCacheDir))
             {
-                windowsInstallerCacheDirSize = Directory.GetFiles(windowsInstallerCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                _windowsInstallerCacheDirSize = Directory.GetFiles(_windowsInstallerCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
             }
 
             // Get size of Windows Update Logs directory.
-            if (Directory.Exists(windowsUpdateLogDir))
+            if (Directory.Exists(_windowsUpdateLogDir))
             {
-                windowsUpdateLogDirSize = Directory.GetFiles(windowsUpdateLogDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                _windowsUpdateLogDirSize = Directory.GetFiles(_windowsUpdateLogDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
             }
 
             // Show potential reclamation, then each individual category.
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("Potential space to reclaim: " +
-                (tempDirSizeInMegaBytes + tempSetupSizeInMegabytes + tempInternetSizeInMegabytes + windowsErrorReportsDirSizeInMegabytes +
-                deliveryOptimizationFilesDirSizeInMegabytes + totalChromeDirSize + totalEdgeDirSize + msoCacheDirSize + windowsInstallerCacheDirSize +
-                windowsUpdateLogDirSize) + "MB" + "\n" + "\n" + "Categorical breakdown:" + "\n" +
-                "--------------------------------------------------" + "\n");
+            Console.Write(Resources.Potential_space_to_reclaim +
+                (_tempDirSizeInMegaBytes + _tempSetupSizeInMegabytes + _tempInternetSizeInMegabytes + _windowsErrorReportsDirSizeInMegabytes +
+                 _deliveryOptimizationFilesDirSizeInMegabytes + _totalChromeDirSize + _totalEdgeDirSize + _msoCacheDirSize + _windowsInstallerCacheDirSize +
+                 _windowsUpdateLogDirSize) + Resources.MB + Resources.NewLine + Resources.NewLine + Resources.Categorical_breakdown + Resources.NewLine +
+                Resources.LineSeparator + Resources.NewLine);
 
             // List out total space reclamation per category.
-            Console.Write("Temp Directory size: " + tempDirSizeInMegaBytes + "MB" + "\n");
-            Console.Write("Temporary Setup Files directory size: " + tempSetupSizeInMegabytes + "MB" + "\n");
-            Console.Write("Temporary Internet Files directory size: " + tempInternetSizeInMegabytes + "MB" + "\n");
-            Console.Write("Windows Error Reports size: " + windowsErrorReportsDirSizeInMegabytes + "MB" + "\n");
-            Console.Write("Windows Delivery Optimization File size: " + deliveryOptimizationFilesDirSizeInMegabytes + "MB" + "\n");
-            Console.Write("Chrome Data Size: " + totalChromeDirSize + "MB" + "\n");
-            Console.Write("Edge Data Size: " + totalEdgeDirSize + "MB" + "\n");
-            Console.Write("MSO Cache size: " + msoCacheDirSize + "MB" + "\n");
-            Console.Write("Windows Installer Cache size: " + windowsInstallerCacheDirSize + "MB" + "\n");
-            Console.Write("Windows Update Logs size: " + windowsUpdateLogDirSize + "MB" + "\n" + "\n");
+            Console.Write(Resources.Temporary_Directory_size + _tempDirSizeInMegaBytes + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Temporary_Setup_Files_directory_size + _tempSetupSizeInMegabytes + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Temporary_Internet_Files_directory_size + _tempInternetSizeInMegabytes + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Windows_Error_Reports_size + _windowsErrorReportsDirSizeInMegabytes + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Windows_Delivery_Optimization_File_size + _deliveryOptimizationFilesDirSizeInMegabytes + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Chrome_Data_Size + _totalChromeDirSize + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Edge_Data_Size + _totalEdgeDirSize + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.MSO_Cache_size + _msoCacheDirSize + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Windows_Installer_Cache_size + _windowsInstallerCacheDirSize + Resources.MB + Resources.NewLine);
+            Console.Write(Resources.Windows_Update_Logs_size + _windowsUpdateLogDirSize + Resources.MB + Resources.NewLine + Resources.NewLine);
         }
         #endregion
 
@@ -395,11 +398,11 @@ namespace CleanSweep2_CLI
         private void Option1()
         {
             // Temporary Files removal.
-            tempSizeBeforeDelete = tempDirSizeInMegaBytes;
+            _tempSizeBeforeDelete = _tempDirSizeInMegaBytes;
             
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Temporary Files..." + "\n");
-            var di = new DirectoryInfo(tempDirectory);
+            Console.Write(Resources.Sweeping_Temporary_Files);
+            var di = new DirectoryInfo(_tempDirectory);
 
             foreach (FileInfo file in di.GetFiles())
             {
@@ -409,29 +412,29 @@ namespace CleanSweep2_CLI
                     // If file no longer exists, append success to rich text box.
                     if (!File.Exists(file.Name))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
-                            Console.Write("Deleted: " + file.Name + "\n", ConsoleColor.Green);
+                            Console.Write(Resources.Deleted + file.Name + Resources.NewLine, ConsoleColor.Green);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Skip all failed files.
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Couldn't delete " + file.Name + ": " + ex.Message + " Skipping..." + "\n");
+                        Console.Write(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping + Resources.NewLine);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
                     }
                 }
             }
@@ -442,36 +445,39 @@ namespace CleanSweep2_CLI
                     dir.Delete(true);
                     if (!Directory.Exists(dir.Name))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("Deleted: " + dir.Name + "\n");
+                            Console.Write(Resources.Deleted + dir.Name + Resources.NewLine);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Skip all failed directories.
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Couldn't delete " + dir.Name + ": " + ex.Message + " Skipping..." + "\n");
+                        Console.Write(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping + Resources.NewLine);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
                     }
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Swept Temporary Files!" + "\n" + "\n");
-            tempFilesWereRemoved = true;
+            Console.WriteLine();
+            Console.Write(Resources.Swept_Temporary_Files);
+            Console.WriteLine();
+            Console.WriteLine();
+            _tempFilesWereRemoved = true;
         }
         #endregion
 
@@ -479,43 +485,46 @@ namespace CleanSweep2_CLI
         private void Option2()
         {
             // Temporary Setup Files removal
-            tempSetupFilesSizeBeforeDelete = tempSetupSizeInMegabytes;
+            _tempSetupFilesSizeBeforeDelete = _tempSetupSizeInMegabytes;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Temporary Setup Files..." + "\n");
-            var di = new DirectoryInfo(tempSetupDirectory);
+            Console.Write(Resources.Sweeping_Temporary_Setup_Files);
+            Console.WriteLine();
+            var di = new DirectoryInfo(_tempSetupDirectory);
 
-            foreach (FileInfo file in di.GetFiles())
+            foreach (var file in di.GetFiles())
             {
                 try
                 {
                     file.Delete();
                     if (!File.Exists(file.Name))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("Deleted: " + file.Name + "\n");
+                            Console.Write(Resources.Deleted + file.Name);
+                            Console.WriteLine();
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Skip all failed files.
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Couldn't delete " + file.Name + ": " + ex.Message + " Skipping..." + "\n");
+                        Console.Write(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
+                        Console.WriteLine();
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
                     }
                 }
             }
@@ -526,35 +535,41 @@ namespace CleanSweep2_CLI
                     dir.Delete(true);
                     if (Directory.Exists(dir.Name))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
-                            Console.Write("Deleted: " + dir.Name + "\n", ConsoleColor.Green);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(Resources.Deleted + dir.Name);
+                            Console.WriteLine();
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Skip all failed directories.
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Couldn't delete " + dir.Name + ": " + ex.Message + " Skipping..." + "\n");
+                        Console.Write(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
+                        Console.WriteLine();
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
                     }
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Swept Temporary Setup Files!" + "\n" + "\n");
-            tempSetupFilesWereRemoved = true;
+            Console.WriteLine();
+            Console.WriteLine(Resources.Swept_Temporary_Setup_Files);
+            Console.WriteLine();
+            Console.WriteLine();
+            _tempSetupFilesWereRemoved = true;
         }
         #endregion
 
@@ -562,82 +577,85 @@ namespace CleanSweep2_CLI
         private void Option3()
         {
             // Temporary Setup Files removal
-            tempInternetFilesBeforeDelete = tempInternetSizeInMegabytes;
+            _tempInternetFilesBeforeDelete = _tempInternetSizeInMegabytes;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Temporary Internet Files..." + "\n");
-            var di = new DirectoryInfo(tempInternetFilesDirectory);
+            Console.WriteLine(Resources.Sweeping_Temporary_Internet_Files);
+            var di = new DirectoryInfo(_tempInternetFilesDirectory);
 
-            foreach (FileInfo file in di.GetFiles())
+            foreach (var file in di.GetFiles())
             {
                 try
                 {
                     file.Delete();
                     if (!File.Exists(file.Name))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("Deleted: " + file.Name + "\n");
+                            Console.WriteLine(Resources.Deleted + file.Name);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Skip all failed files.
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Couldn't delete " + file.Name + ": " + ex.Message + "\n");
+                        Console.WriteLine(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
                     }
                 }
             }
-            foreach (DirectoryInfo dir in di.GetDirectories())
+            foreach (var dir in di.GetDirectories())
             {
                 try
                 {
                     dir.Delete(true);
                     if (Directory.Exists(dir.Name))
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("Deleted: " + dir.Name + "\n");
+                            Console.WriteLine(Resources.Deleted + dir.Name);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
                     // Skip all failed directories.
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Couldn't delete " + dir.Name + ": " + ex.Message + " Skipping..." + "\n");
+                        Console.WriteLine(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
 
                     }
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Swept Temporary Internet Files!" + "\n" + "\n");
-                    tempInternetFilesWereRemoved = true;
+                    Console.WriteLine();
+                    Console.Write(Resources.Swept_Temporary_Internet_Files);
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    _tempInternetFilesWereRemoved = true;
                 }
             }
         }
@@ -648,11 +666,11 @@ namespace CleanSweep2_CLI
         {
             // Event Viewer Logs Removal.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Event Viewer Logs");
+            Console.Write(Resources.Sweeping_Event_Viewer_Logs);
             AddWaitText();
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (showOperationWindows)
+            if (_showOperationWindows)
             {
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             }
@@ -677,8 +695,11 @@ namespace CleanSweep2_CLI
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Swept Event Viewer Logs!" + "\n" + "\n");
-            eventLogsCleared = true;
+            Console.WriteLine();
+            Console.Write(Resources.Swept_Event_Viewer_Logs);
+            Console.WriteLine();
+            Console.WriteLine();
+            _eventLogsCleared = true;
         }
         #endregion
 
@@ -687,10 +708,10 @@ namespace CleanSweep2_CLI
         {
             // Empty Recycle Bin.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Emptying Recycle Bin");
+            Console.WriteLine(Resources.Emptying_Recycle_Bin);
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (showOperationWindows)
+            if (_showOperationWindows)
             {
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             }
@@ -715,8 +736,11 @@ namespace CleanSweep2_CLI
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Emptied Recycle Bin!" + "\n" + "\n");
-            isRecycleBinEmpty = true;
+            Console.WriteLine();
+            Console.Write(Resources.Emptied_Recycle_Bin);
+            Console.WriteLine();
+            Console.WriteLine();
+            _isRecycleBinEmpty = true;
         }
         #endregion
 
@@ -724,90 +748,94 @@ namespace CleanSweep2_CLI
         private void Option6()
         {
             // Temporary Setup Files removal
-            windowsErrorReportsDirSizeBeforeDelete = windowsErrorReportsDirSizeInMegabytes;
+            _windowsErrorReportsDirSizeBeforeDelete = _windowsErrorReportsDirSizeInMegabytes;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Windows Error Reports" + "\n");
-            if (Directory.Exists(windowsErrorReportsDirectory))
+            Console.WriteLine(Resources.Sweeping_Windows_Error_Reports);
+            Console.WriteLine();
+            if (Directory.Exists(_windowsErrorReportsDirectory))
             {
-                var di = new DirectoryInfo(windowsErrorReportsDirectory);
-                foreach (FileInfo file in di.GetFiles())
+                var di = new DirectoryInfo(_windowsErrorReportsDirectory);
+                foreach (var file in di.GetFiles())
                 {
                     try
                     {
                         file.Delete();
                         if (!File.Exists(file.Name))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Deleted: " + file.Name + "\n");
+                                Console.WriteLine(Resources.Deleted + file.Name);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("o");
+                                Console.Write(Resources.o);
                             }
                         }
                     }
                     catch (Exception)
                     {
                         // Skip all failed files.
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(file.Name + " appears to be in use or locked. Skipping..." + "\n");
+                            Console.Write(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping);
+                            Console.WriteLine();
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("x");
+                            Console.Write(Resources.x);
                         }
                     }
                 }
-                foreach (DirectoryInfo dir in di.GetDirectories())
+                foreach (var dir in di.GetDirectories())
                 {
                     try
                     {
                         dir.Delete(true);
                         if (Directory.Exists(dir.Name))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Deleted: " + dir.Name + "\n");
+                                Console.WriteLine(Resources.Deleted + dir.Name);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("o");
+                                Console.Write(Resources.o);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         // Skip all failed directories.
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("Couldn't remove " + dir.Name + ": " + ex.Message + ". Skipping..." + "\n");
+                            Console.WriteLine(Resources.Couldn_t_remove + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("x");
+                            Console.Write(Resources.x);
                         }
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Swept Windows Error Reports!" + "\n" + "\n");
+                Console.WriteLine(Resources.Swept_Windows_Error_Reports);
+                Console.WriteLine();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Windows Error Report directory already removed. Skipping" + "\n" + "\n");
+                Console.WriteLine(Resources.Windows_Error_Report_directory_already_removed__Skipping);
+                Console.WriteLine();
             }
-            windowsErrorReportsCleared = true;
+            _windowsErrorReportsCleared = true;
         }
         #endregion
 
@@ -815,90 +843,94 @@ namespace CleanSweep2_CLI
         private void Option7()
         {
             // Delivery Optimization Files Removal
-            deliveryOptimizationFilesDirSizeBeforeDelete = deliveryOptimizationFilesDirSizeInMegabytes;
+            _deliveryOptimizationFilesDirSizeBeforeDelete = _deliveryOptimizationFilesDirSizeInMegabytes;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Delivery Optimization Files..." + "\n");
-            var di = new DirectoryInfo(deliveryOptimizationFilesDirectory);
+            Console.WriteLine(Resources.Sweeping_Delivery_Optimization_Files);
+            var di = new DirectoryInfo(_deliveryOptimizationFilesDirectory);
 
             if (di.GetFiles().Length != 0)
             {
-                foreach (FileInfo file in di.GetFiles())
+                foreach (var file in di.GetFiles())
                 {
                     try
                     {
                         file.Delete();
                         if (!File.Exists(file.Name))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Deleted: " + file.Name + "\n");
+                                Console.WriteLine(Resources.Deleted + file.Name);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("o");
+                                Console.Write(Resources.o);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         // Skip all failed files.
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("Couldn't delete " + file.Name + ": " + ex.Message + ". Skipping..." + "\n");
+                            Console.WriteLine(Resources.Couldn_t_delete + file.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("x");
+                            Console.Write(Resources.x);
                         }
                     }
                 }
-                foreach (DirectoryInfo dir in di.GetDirectories())
+                foreach (var dir in di.GetDirectories())
                 {
                     try
                     {
                         dir.Delete(true);
                         if (Directory.Exists(dir.Name))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Deleted: " + dir.Name + "\n");
+                                Console.WriteLine(Resources.Deleted + dir.Name);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("o");
+                                Console.Write(Resources.o);
                             }
                         }
                     }
                     catch (Exception ex)
                     {
                         // Skip all failed directories.
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
-                            Console.Write("Couldn't delete " + dir.Name + ": " + ex.Message + ". Skipping..." + "\n", ConsoleColor.Red);
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(Resources.Couldn_t_delete + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("x");
+                            Console.Write(Resources.x);
                         }
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Removed Delivery Optimization Files!" + "\n" + "\n");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Removed_Delivery_Optimization_Files);
+                Console.WriteLine();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("No Delivery Optimization Files needed to be cleaned." + "\n" + "\n");
+                Console.WriteLine(Resources.No_Delivery_Optimization_Files_needed_to_be_cleaned);
+                Console.WriteLine();
             }
-            wereDeliveryOptimizationFilesRemoved = true;
+            _wereDeliveryOptimizationFilesRemoved = true;
         }
         #endregion
 
@@ -907,11 +939,11 @@ namespace CleanSweep2_CLI
         {
             // Thumbnail Cache Removal.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Clearing Thumbnail Cache");
+            Console.Write(Resources.Clearing_Thumbnail_Cache);
             AddWaitText();
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (showOperationWindows)
+            if (_showOperationWindows)
             {
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             }
@@ -920,10 +952,11 @@ namespace CleanSweep2_CLI
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             }
             startInfo.FileName = "cmd.exe";
-            if (isVerboseMode)
+            if (_isVerboseMode)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Shutting down Explorer.exe process...");
+                Console.WriteLine();
+                Console.Write(Resources.Shutting_down_Explorer_exe_process);
             }
             startInfo.Arguments = "/C taskkill /f /im explorer.exe & timeout 1 & del / f / s / q / a %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_ *.db & timeout 1 & start %windir%\\explorer.exe";
             startInfo.UseShellExecute = true;
@@ -940,14 +973,17 @@ namespace CleanSweep2_CLI
                     break;
                 }
             }
-            if (isVerboseMode)
+            if (_isVerboseMode)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Restarted Explorer.exe process.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Restarted_Explorer_exe_process);
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Cleared Thumbnail Cache!" + "\n" + "\n");
-            thumbnailCacheCleared = true;
+            Console.WriteLine();
+            Console.Write(Resources.Cleared_Thumbnail_Cache);
+            Console.WriteLine();
+            _thumbnailCacheCleared = true;
         }
         #endregion
 
@@ -956,11 +992,11 @@ namespace CleanSweep2_CLI
         {
             // User File History Removal.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Attempting to remove all file history snapshots except latest");
+            Console.Write(Resources.Attempting_to_remove_all_file_history_snapshots_except_latest);
             AddWaitText();
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (showOperationWindows)
+            if (_showOperationWindows)
             {
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             }
@@ -985,8 +1021,10 @@ namespace CleanSweep2_CLI
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "If file history was enabled, all versions except latest were removed." + "\n" + "\n");
-            deletedFileHistory = true;
+            Console.WriteLine();
+            Console.Write(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed);
+            Console.WriteLine();
+            _deletedFileHistory = true;
         }
         #endregion
 
@@ -995,15 +1033,15 @@ namespace CleanSweep2_CLI
         {
             // Windows.old Directory Removal.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Removing old versions of Windows");
+            Console.WriteLine(Resources.Removing_old_versions_of_Windows);
             if (Directory.Exists("C:\\windows.old"))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Found Windows.old directory. Cleaning");
+                Console.WriteLine(Resources.Found_Windows_old_directory__Cleaning);
                 AddWaitText();
                 var process = new System.Diagnostics.Process();
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
-                if (showOperationWindows)
+                if (_showOperationWindows)
                 {
                     startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                 }
@@ -1029,14 +1067,18 @@ namespace CleanSweep2_CLI
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Cleaned Windows.old directory!" + "\n" + "\n");
-                windowsOldCleaned = true;
+                Console.WriteLine();
+                Console.WriteLine(Resources.Cleaned_Windows_old_directory);
+                Console.WriteLine();
+                _windowsOldCleaned = true;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "No Windows.old directory found. Skipping..." + "\n" + "\n");
-                windowsOldCleaned = false;
+                Console.WriteLine();
+                Console.Write(Resources.No_Windows_old_directory_found__Skipping);
+                Console.WriteLine();
+                _windowsOldCleaned = false;
             }
         }
         #endregion
@@ -1046,58 +1088,58 @@ namespace CleanSweep2_CLI
         {
             // Windows Defender Log Files Removal.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Deleting Windows Defender Log Files..." + "\n");
+            Console.WriteLine(Resources.Deleting_Windows_Defender_Log_Files);
 
             // Create an array that contain paths to search for log files.
-            string[] directoryPath = new string[2]
+            var directoryPath = new []
             {
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Network Inspection System\\Support\\",
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Service\\"
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Network Inspection System\\Support\\",
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Service\\"
             };
 
             // Create an array that contains the directory paths for Defender Logs.
-            string[] defenderLogDirectoryPaths = new string[6]
+            var defenderLogDirectoryPaths = new []
             {
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\ReportLatency\\Latency",
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Resource",
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Quick",
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\CacheManager",
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\MetaStore",
-                    programDataDirectory + "\\Microsoft\\Windows Defender\\Support"
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\ReportLatency\\Latency",
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Resource",
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Quick",
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\CacheManager",
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\MetaStore",
+                _programDataDirectory + "\\Microsoft\\Windows Defender\\Support"
             };
-            // Remove the logfiles.
+            // Remove the log-files.
             foreach (string directory in directoryPath)
             {
                 var dir = new DirectoryInfo(directory);
-                foreach (FileInfo f in dir.GetFiles())
+                foreach (var f in dir.GetFiles())
                 {
                     if (f.Name.Contains(".log"))
                     {
                         try
                         {
                             File.Delete(f.FullName);
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Removed " + f.Name + "\n");
+                                Console.WriteLine(Resources.Removed + f.Name);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("o");
+                                Console.Write(Resources.o);
                             }
                         }
                         catch (Exception ex)
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write(ex.Message + " Skipping..." + "\n");
+                                Console.WriteLine(ex.Message + Resources.Skipping);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("x" + f.Name + "\n");
+                                Console.WriteLine(Resources.x + f.Name);
                             }
                         }
                     }
@@ -1111,43 +1153,45 @@ namespace CleanSweep2_CLI
                     try
                     {
                         Directory.Delete(logFileDirectory, true);
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("Removed " + logFileDirectory + "\n");
+                            Console.WriteLine(Resources.Removed + logFileDirectory);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("o");
+                            Console.Write(Resources.o);
                         }
                     }
                     catch (Exception ex)
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(ex.Message + "Skipping..." + "\n");
+                            Console.WriteLine(ex.Message + Resources.Skipping___);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("x");
+                            Console.Write(Resources.x);
                         }
                     }
                 }
                 else
                 {
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("Directory already removed: " + logFileDirectory + "\n");
+                        Console.WriteLine(Resources.Directory_already_removed + logFileDirectory);
                     }
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Removed Windows Defender Logs!" + "\n" + "\n");
-            windowsDefenderLogsCleared = true;
+            Console.WriteLine();
+            Console.WriteLine(Resources.Removed_Windows_Defender_Logs);
+            Console.WriteLine();
+            _windowsDefenderLogsCleared = true;
         }
         #endregion
 
@@ -1156,20 +1200,24 @@ namespace CleanSweep2_CLI
         {
             // Microsoft Office Cache Removal.
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping MSO cache");
-            if (Directory.Exists(msoCacheDir))
+            Console.WriteLine(Resources.Sweeping_MSO_cache);
+            if (Directory.Exists(_msoCacheDir))
             {
-                Directory.Delete(msoCacheDir, true);
+                Directory.Delete(_msoCacheDir, true);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Swept MSO Cache!" + "\n" + "\n");
+                Console.WriteLine();
+                Console.Write(Resources.Swept_MSO_Cache);
+                Console.WriteLine();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "No MSOCache directory found. Skipping..." + "\n" + "\n");
+                Console.WriteLine();
+                Console.Write(Resources.No_MSOCache_directory_found__Skipping);
+                Console.WriteLine();
             }
 
-            msoCacheCleared = true;
+            _msoCacheCleared = true;
         }
         #endregion
 
@@ -1178,15 +1226,15 @@ namespace CleanSweep2_CLI
         {
             // Edge Cache Removal
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Edge cache..." + "\n");
-            if (isVerboseMode)
+            Console.WriteLine(Resources.Sweeping_Edge_cache);
+            if (_isVerboseMode)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Ending any Edge processes");
+                Console.WriteLine(Resources.Ending_any_Edge_processes);
             }
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (showOperationWindows)
+            if (_showOperationWindows)
             {
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             }
@@ -1204,7 +1252,7 @@ namespace CleanSweep2_CLI
             while (!process.HasExited)
             {
                 Thread.Sleep(200);
-                if (isVerboseMode)
+                if (_isVerboseMode)
                 {
                     AddWaitText();
                 }
@@ -1212,12 +1260,14 @@ namespace CleanSweep2_CLI
                 {
                     break;
                 }
-                if (isVerboseMode)
+                if (_isVerboseMode)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Stopped Edge processes." + "\n");
+                    Console.WriteLine();
+                    Console.Write(Resources.Stopped_Edge_processes);
+                    Console.WriteLine();
                 }
-                foreach (string edgeDirectory in edgeCacheDirectories)
+                foreach (string edgeDirectory in _edgeCacheDirectories)
                 {
                     if (Directory.Exists(edgeDirectory))
                     {
@@ -1226,50 +1276,52 @@ namespace CleanSweep2_CLI
                             Directory.Delete(edgeDirectory, true);
                             if (!Directory.Exists(edgeDirectory))
                             {
-                                if (isVerboseMode)
+                                if (_isVerboseMode)
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.Write("Removed: " + edgeDirectory + "." + "\n");
+                                    Console.WriteLine(Resources.Removed + edgeDirectory + Resources.Period);
                                 }
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.Write("x");
+                                    Console.Write(Resources.x);
                                 }
                             }
                         }
                         catch (IOException ex)
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("Skipping: " + edgeDirectory + ". " + ex.Message + "\n");
+                                Console.WriteLine(Resources.Skipping + edgeDirectory + Resources.Period + ex.Message);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("x");
+                                Console.Write(Resources.x);
                             }
                         }
                     }
                     else
                     {
-                        if (isVerboseMode)
+                        if (_isVerboseMode)
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write("Directory already removed: " + edgeDirectory + "." + "\n");
+                            Console.WriteLine(Resources.Directory_already_removed + edgeDirectory + Resources.Period);
                         }
                         else
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write("x");
+                            Console.Write(Resources.x);
                         }
                     }
                 }
             }
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Swept Edge cache!" + "\n" + "\n");
-            sweptEdgeCache = true;
+            Console.WriteLine();
+            Console.WriteLine(Resources.Swept_Edge_cache);
+            Console.WriteLine();
+            _sweptEdgeCache = true;
         }
         #endregion
 
@@ -1278,15 +1330,15 @@ namespace CleanSweep2_CLI
         {
             // Chrome Cache Removal
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Chrome cache..." + "\n");
-            if (showOperationWindows)
+            Console.WriteLine(Resources.Sweeping_Chrome_cache);
+            if (_showOperationWindows)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("Ending any Chrome processes");
+                Console.WriteLine(Resources.Ending_any_Chrome_processes);
             }
             var process = new System.Diagnostics.Process();
             var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (isVerboseMode)
+            if (_isVerboseMode)
             {
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
             }
@@ -1304,7 +1356,7 @@ namespace CleanSweep2_CLI
             while (!process.HasExited)
             {
                 Thread.Sleep(200);
-                if (isVerboseMode)
+                if (_isVerboseMode)
                 {
                     AddWaitText();
                 }
@@ -1313,12 +1365,13 @@ namespace CleanSweep2_CLI
                     break;
                 }
             }
-            if (isVerboseMode)
+            if (_isVerboseMode)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Stopped Chrome processes." + "\n");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Stopped_Chrome_processes);
             }
-            foreach (string chromeDirectory in chromeCacheDirectories)
+            foreach (string chromeDirectory in _chromeCacheDirectories)
             {
                 if (Directory.Exists(chromeDirectory))
                 {
@@ -1327,15 +1380,15 @@ namespace CleanSweep2_CLI
                         Directory.Delete(chromeDirectory, true);
                         if (!Directory.Exists(chromeDirectory))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Removed: " + chromeDirectory + "." + "\n");
+                                Console.WriteLine(Resources.Removed + chromeDirectory + Resources.Period);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("x");
+                                Console.Write(Resources.x);
                             }
                         }
                     }
@@ -1343,62 +1396,64 @@ namespace CleanSweep2_CLI
                     {
                         if (ex.GetType() == typeof(IOException))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("Skipping: " + chromeDirectory + ". " + ex.Message + "\n");
+                                Console.WriteLine(Resources.Skipping + chromeDirectory + Resources.Period + ex.Message);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("x");
+                                Console.Write(Resources.x);
                             }
                         }
                         else if (ex.GetType() == typeof(UnauthorizedAccessException))
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("Skipping: " + chromeDirectory + ". " + ex.Message + "\n");
+                                Console.WriteLine(Resources.Skipping + chromeDirectory + Resources.Period + ex.Message);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("x");
+                                Console.Write(Resources.x);
                             }
                         }
                         else
                         {
-                            if (isVerboseMode)
+                            if (_isVerboseMode)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("Skipping: " + chromeDirectory + ". " + ex.Message + "\n");
+                                Console.WriteLine(Resources.Skipping + chromeDirectory + Resources.Period + ex.Message);
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("x");
+                                Console.Write(Resources.x);
                             }
                         }
                     }
                 }
                 else
                 {
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write("Directory already removed: " + chromeDirectory + "." + "\n");
+                        Console.WriteLine(Resources.Directory_already_removed + chromeDirectory + Resources.Period);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("x");
+                        Console.Write(Resources.x);
                     }
                 }
             }
-            sweptChromeCache = true;
+            _sweptChromeCache = true;
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "Swept Chrome cache!" + "\n" + "\n");
+            Console.WriteLine();
+            Console.WriteLine(Resources.Swept_Chrome_cache);
+            Console.WriteLine();
         }
         #endregion
 
@@ -1407,15 +1462,15 @@ namespace CleanSweep2_CLI
         {
             // Windows Installer Cache Removal
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Removing Windows Installer Cache");
-            if (Directory.Exists(windowsDirectory + "\\Installer\\$PatchCache$\\Managed"))
+            Console.WriteLine(Resources.Removing_Windows_Installer_Cache);
+            if (Directory.Exists(_windowsDirectory + "\\Installer\\$PatchCache$\\Managed"))
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Found Windows Installer Cache. Cleaning");
+                Console.WriteLine(Resources.Found_Windows_Installer_Cache__Cleaning);
                 AddWaitText();
                 var process = new System.Diagnostics.Process();
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
-                if (showOperationWindows)
+                if (_showOperationWindows)
                 {
                     startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                 }
@@ -1441,9 +1496,11 @@ namespace CleanSweep2_CLI
                     }
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Cleaned Windows Installer Cache!" + "\n" + "\n");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Cleaned_Windows_Installer_Cache);
+                Console.WriteLine();
             }
-            windowsInstallerCacheCleared = true;
+            _windowsInstallerCacheCleared = true;
         }
         #endregion
 
@@ -1452,12 +1509,12 @@ namespace CleanSweep2_CLI
         {
             // Windows Update Logs Removal
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("Sweeping Windows Update Logs" + "\n");
+            Console.WriteLine(Resources.Sweeping_Windows_Update_Logs);
             try
             {
-                if (Directory.Exists(windowsUpdateLogDir))
+                if (Directory.Exists(_windowsUpdateLogDir))
                 {
-                    var di = new DirectoryInfo(tempDirectory);
+                    var di = new DirectoryInfo(_tempDirectory);
 
                     foreach (FileInfo file in di.GetFiles())
                     {
@@ -1467,78 +1524,86 @@ namespace CleanSweep2_CLI
                             // If file no longer exists, append success to rich text box.
                             if (!File.Exists(file.Name))
                             {
-                                if (isVerboseMode)
+                                if (_isVerboseMode)
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.Write("Deleted: " + file.Name + "\n");
+                                    Console.WriteLine(Resources.Deleted + file.Name);
                                 }
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
-                                    Console.Write("o");
+                                    Console.Write(Resources.o);
                                 }
                             }
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("x");
+                                Console.Write(Resources.x);
                             }
                         }
                         catch (Exception ex)
                         {
                             if (ex.GetType() == typeof(IOException))
                             {
-                                if (isVerboseMode)
+                                if (_isVerboseMode)
                                 {
                                     Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.Write("\n" + ex.Message);
+                                    Console.WriteLine();
+                                    Console.WriteLine(ex.Message);
                                 }
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.Write("x");
+                                    Console.Write(Resources.x);
                                 }
                             }
                             else if (ex.GetType() == typeof(UnauthorizedAccessException))
                             {
-                                if (isVerboseMode)
+                                if (_isVerboseMode)
                                 {
                                     Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.Write("\n" + ex.Message);
+                                    Console.WriteLine();
+                                    Console.WriteLine(ex.Message);
                                 }
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.Write("x");
+                                    Console.Write(Resources.x);
                                 }
                             }
                         }
                     }
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Swept Windows Update Logs!" + "\n" + "\n");
+                    Console.WriteLine();
+                    Console.Write(Resources.Swept_Windows_Update_Logs);
+                    Console.WriteLine();
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "No Windows Update Logs directory found. Skipping..." + "\n" + "\n");
+                    Console.WriteLine();
+                    Console.Write(Resources.No_Windows_Update_Logs_directory_found__Skipping);
+                    Console.WriteLine();
                 }
 
-                windowsUpdateLogsCleared = true;
+                _windowsUpdateLogsCleared = true;
             }
             catch (Exception ex)
             {
                 if (ex.GetType() == typeof(IOException))
                 {
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
-                        Console.Write("\n" + ex.Message, ConsoleColor.Red);
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message, ConsoleColor.Red);
                     }
                 }
                 else if (ex.GetType() == typeof(UnauthorizedAccessException))
                 {
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
-                        Console.Write("\n" + ex.Message, ConsoleColor.Red);
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message, ConsoleColor.Red);
                     }
                 }
             }
@@ -1549,287 +1614,320 @@ namespace CleanSweep2_CLI
         private void CalculateSpaceSaved()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("\n" + "\n" + "Recovery results:");
-            Console.Write("\n" + "--------------------------------------------------");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine(Resources.Recovery_results);
+            Console.WriteLine(Resources.LineSeparator);
 
-            if (tempFilesWereRemoved)
+            if (_tempFilesWereRemoved)
             {
-                tempFilesWereRemoved = false;
+                _tempFilesWereRemoved = false;
                 // Get new Temporary Files size and output what was saved.
-                tempDirSize = Directory.GetFiles(tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                tempDirSizeInMegaBytes = tempDirSize / 1024 / 1024;
-                newTempDirSize = tempSizeBeforeDelete - tempDirSizeInMegaBytes;
-                totalSpaceSaved += newTempDirSize;
-                if (newTempDirSize > 0)
+                _tempDirSize = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _tempDirSizeInMegaBytes = _tempDirSize / 1024 / 1024;
+                _newTempDirSize = _tempSizeBeforeDelete - _tempDirSizeInMegaBytes;
+                _totalSpaceSaved += _newTempDirSize;
+                if (_newTempDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Recovered " + newTempDirSize + "MB from removing Temporary Files.");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources.Recovered + _newTempDirSize + Resources.MB_from_removing_Temporary_Files_);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "<1MB recovered from Temporary Files...");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources._1MB_recovered_from_Temporary_Files);
                 }
             }
 
-            if (tempSetupFilesWereRemoved)
+            if (_tempSetupFilesWereRemoved)
             {
-                tempSetupFilesWereRemoved = false;
+                _tempSetupFilesWereRemoved = false;
                 // Get new Temporary Setup Files size and output what was saved.
-                tempSetupDirSize = Directory.GetFiles(tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                tempSetupSizeInMegabytes = tempSetupDirSize / 1024 / 1024;
-                newTempSetupDirSize = tempSetupFilesSizeBeforeDelete - tempSetupSizeInMegabytes;
-                totalSpaceSaved += newTempSetupDirSize;
-                if (newTempSetupDirSize > 0)
+                _tempSetupDirSize = Directory.GetFiles(_tempSetupDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _tempSetupSizeInMegabytes = _tempSetupDirSize / 1024 / 1024;
+                _newTempSetupDirSize = _tempSetupFilesSizeBeforeDelete - _tempSetupSizeInMegabytes;
+                _totalSpaceSaved += _newTempSetupDirSize;
+                if (_newTempSetupDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Recovered " + newTempSetupDirSize + "MB from removing Temporary Setup Files.");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources.Recovered + _newTempSetupDirSize + Resources.MB_from_removing_Temporary_Setup_Files);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "<1MB recovered from Temporary Setup Files...");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources._1MB_recovered_from_Temporary_Setup_Files);
                 }
             }
 
-            if (tempInternetFilesWereRemoved)
+            if (_tempInternetFilesWereRemoved)
             {
-                tempInternetFilesWereRemoved = false;
+                _tempInternetFilesWereRemoved = false;
                 // Get new Temporary Internet Files size and output what was saved.
                 try
                 {
-                    tempInternetFilesDirSize = Directory.GetFiles(tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                    _tempInternetFilesDirSize = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
                 }
                 catch (Exception ex)
                 {
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\n" + ex.Message);
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
                     }
                 }
-                tempInternetSizeInMegabytes = tempInternetFilesDirSize / 1024 / 1024;
-                newTempInternetFilesDirSize = tempInternetFilesBeforeDelete - tempInternetSizeInMegabytes;
-                totalSpaceSaved += newTempInternetFilesDirSize;
-                if (newTempInternetFilesDirSize > 0)
+                _tempInternetSizeInMegabytes = _tempInternetFilesDirSize / 1024 / 1024;
+                _newTempInternetFilesDirSize = _tempInternetFilesBeforeDelete - _tempInternetSizeInMegabytes;
+                _totalSpaceSaved += _newTempInternetFilesDirSize;
+                if (_newTempInternetFilesDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Recovered " + newTempInternetFilesDirSize + "MB from removing Temporary Internet Files.");
+                    Console.WriteLine();
+                    Console.Write(Resources.Recovered + _newTempInternetFilesDirSize + Resources.MB_from_removing_Temporary_Internet_Files_);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "<1MB recovered from Temporary Internet Files...");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources._1MB_recovered_from_Temporary_Internet_Files);
                 }
             }
 
-            if (eventLogsCleared)
+            if (_eventLogsCleared)
             {
                 // Mark the sweeping of Event Logs as completed to allow re-sweeping.
-                eventLogsCleared = false;
+                _eventLogsCleared = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Event Logs were cleared.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Event_Logs_were_cleared);
             }
 
-            if (isRecycleBinEmpty)
+            if (_isRecycleBinEmpty)
             {
-                isRecycleBinEmpty = false;
+                _isRecycleBinEmpty = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Recycle Bin was emptied.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Recycle_Bin_was_emptied);
             }
 
-            if (windowsErrorReportsCleared)
+            if (_windowsErrorReportsCleared)
             {
-                windowsErrorReportsCleared = false;
+                _windowsErrorReportsCleared = false;
                 // Get new Windows Error Reports Directory Size and output what was saved.
-                windowsErrorReportsDirSize = Directory.GetFiles(windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                windowsErrorReportsDirSizeInMegabytes = windowsErrorReportsDirSize / 1024 / 1024;
-                newWindowsErrorReportsDirSize = windowsErrorReportsDirSizeBeforeDelete - windowsErrorReportsDirSizeInMegabytes;
-                totalSpaceSaved += newWindowsErrorReportsDirSize;
-                if (newWindowsErrorReportsDirSize > 0)
+                _windowsErrorReportsDirSize = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _windowsErrorReportsDirSizeInMegabytes = _windowsErrorReportsDirSize / 1024 / 1024;
+                _newWindowsErrorReportsDirSize = _windowsErrorReportsDirSizeBeforeDelete - _windowsErrorReportsDirSizeInMegabytes;
+                _totalSpaceSaved += _newWindowsErrorReportsDirSize;
+                if (_newWindowsErrorReportsDirSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Recovered " + newWindowsErrorReportsDirSize + "MB from removing Windows Error Reports.");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources.Recovered + _newWindowsErrorReportsDirSize + Resources.MB_from_removing_Windows_Error_Reports);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "<1MB recovered from removing Windows Error Reports...");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources._1MB_recovered_from_removing_Windows_Error_Reports);
                 }
             }
 
-            if (wereDeliveryOptimizationFilesRemoved)
+            if (_wereDeliveryOptimizationFilesRemoved)
             {
-                wereDeliveryOptimizationFilesRemoved = false;
+                _wereDeliveryOptimizationFilesRemoved = false;
                 // Get new Windows Delivery Optimization directory size and output what was saved.
-                deliveryOptimizationFilesDirSize = Directory.GetFiles(deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
-                deliveryOptimizationFilesDirSizeInMegabytes = deliveryOptimizationFilesDirSize / 1024 / 1024;
-                newDeliveryOptimizationSize = deliveryOptimizationFilesDirSizeBeforeDelete - deliveryOptimizationFilesDirSizeInMegabytes;
-                totalSpaceSaved += newDeliveryOptimizationSize;
-                if (newDeliveryOptimizationSize > 0)
+                _deliveryOptimizationFilesDirSize = Directory.GetFiles(_deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length));
+                _deliveryOptimizationFilesDirSizeInMegabytes = _deliveryOptimizationFilesDirSize / 1024 / 1024;
+                _newDeliveryOptimizationSize = _deliveryOptimizationFilesDirSizeBeforeDelete - _deliveryOptimizationFilesDirSizeInMegabytes;
+                _totalSpaceSaved += _newDeliveryOptimizationSize;
+                if (_newDeliveryOptimizationSize > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Recovered " + newDeliveryOptimizationSize + "MB from removing Windows Delivery Optimization Files.");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources.Recovered + _newDeliveryOptimizationSize + Resources.MB_from_removing_Windows_Delivery_Optimization_Files_);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "<1MB recovered from Windows Delivery Optimization Files...");
+                    Console.WriteLine();
+                    Console.WriteLine(Resources._1MB_recovered_from_Windows_Delivery_Optimization_Files);
                 }
             }
 
-            if (thumbnailCacheCleared)
+            if (_thumbnailCacheCleared)
             {
-                thumbnailCacheCleared = false;
+                _thumbnailCacheCleared = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Thumbnail cache was cleared.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Thumbnail_cache_was_cleared);
             }
 
-            if (deletedFileHistory)
+            if (_deletedFileHistory)
             {
-                deletedFileHistory = false;
+                _deletedFileHistory = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Removed file history older than latest snapshot.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Removed_file_history_older_than_latest_snapshot);
             }
 
-            if (windowsOldCleaned)
+            if (_windowsOldCleaned)
             {
-                windowsOldCleaned = false;
+                _windowsOldCleaned = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Old versions of Windows were removed.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Old_versions_of_Windows_were_removed);
             }
 
-            if (windowsDefenderLogsCleared)
+            if (_windowsDefenderLogsCleared)
             {
-                windowsDefenderLogsCleared = false;
+                _windowsDefenderLogsCleared = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Windows Defender Logs were removed.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Windows_Defender_Logs_were_removed);
             }
-            if (sweptChromeCache)
+            if (_sweptChromeCache)
             {
-                sweptChromeCache = false;
+                _sweptChromeCache = false;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Chrome cache was cleared.");
-            }
-
-            if (sweptEdgeCache)
-            {
-                sweptEdgeCache = false;
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "Edge cache was cleared.");
+                Console.WriteLine();
+                Console.WriteLine(Resources.Chrome_cache_was_cleared);
             }
 
-            if (msoCacheCleared)
+            if (_sweptEdgeCache)
             {
-                msoCacheCleared = false;
+                _sweptEdgeCache = false;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine();
+                Console.WriteLine(Resources.Edge_cache_was_cleared);
+            }
+
+            if (_msoCacheCleared)
+            {
+                _msoCacheCleared = false;
                 // Get size of MSOCache.
                 try
                 {
-                    if (!Directory.Exists(msoCacheDir))
+                    if (!Directory.Exists(_msoCacheDir))
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("\n" + "Recovered " + msoCacheDirSize + "MB from removing MSO Cache.");
-                        totalSpaceSaved += msoCacheDirSize;
+                        Console.WriteLine();
+                        Console.Write(Resources.Recovered + _msoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
+                        _totalSpaceSaved += _msoCacheDirSize;
                     }
-                    else if (Directory.Exists(msoCacheDir))
+                    else if (Directory.Exists(_msoCacheDir))
                     {
-                        long oldMsoCacheSize = msoCacheDirSize;
-                        msoCacheDirSize = 0;
+                        long oldMsoCacheSize = _msoCacheDirSize;
+                        _msoCacheDirSize = 0;
                         try
                         {
-                            msoCacheDirSize = Directory.GetFiles(msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                            newMsoCacheDirSize = oldMsoCacheSize - msoCacheDirSize;
-                            totalSpaceSaved += newMsoCacheDirSize;
+                            _msoCacheDirSize = Directory.GetFiles(_msoCacheDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                            _newMsoCacheDirSize = oldMsoCacheSize - _msoCacheDirSize;
+                            _totalSpaceSaved += _newMsoCacheDirSize;
                         }
                         catch (Exception ex)
                         {
                             if (ex.GetType() == typeof(IOException))
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("\n" + "Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache.");
+                                Console.WriteLine();
+                                Console.WriteLine(Resources.Recovered + _newMsoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
                             }
                             else if (ex.GetType() == typeof(UnauthorizedAccessException))
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("\n" + "Recovered " + newMsoCacheDirSize + "MB from removing MSO Cache.");
+                                Console.WriteLine();
+                                Console.WriteLine(Resources.Recovered + _newMsoCacheDirSize + Resources.MB_from_removing_MSO_Cache);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (isVerboseMode)
+                    if (_isVerboseMode)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.Write("\n" + ex.Message);
+                        Console.WriteLine();
+                        Console.WriteLine(ex.Message);
                     }
                 }
             }
 
-            if (windowsInstallerCacheCleared)
+            if (_windowsInstallerCacheCleared)
             {
-                windowsInstallerCacheCleared = false;
+                _windowsInstallerCacheCleared = false;
                 // Get size of Windows Installer Cache.
-                if (Directory.Exists(windowsDirectory + "\\Installer\\$PatchCache$"))
+                if (Directory.Exists(_windowsDirectory + "\\Installer\\$PatchCache$"))
                 {
-                    long oldWindowsInstallerCacheDirSize = windowsInstallerCacheDirSize;
+                    long oldWindowsInstallerCacheDirSize = _windowsInstallerCacheDirSize;
                     Console.WriteLine(oldWindowsInstallerCacheDirSize);
-                    if (Directory.Exists(windowsInstallerCacheDir))
+                    if (Directory.Exists(_windowsInstallerCacheDir))
                     {
-                        windowsInstallerCacheDirSize = Directory.GetFiles(windowsInstallerCacheDir + "\\Managed", "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                        newWindowsInstallerCacheDirSize = oldWindowsInstallerCacheDirSize - windowsInstallerCacheDirSize;
+                        _windowsInstallerCacheDirSize = Directory.GetFiles(_windowsInstallerCacheDir + "\\Managed", "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                        _newWindowsInstallerCacheDirSize = oldWindowsInstallerCacheDirSize - _windowsInstallerCacheDirSize;
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("\n" + "Recovered " + oldWindowsInstallerCacheDirSize + "MB from removing Windows Installer Cache.");
+                        Console.WriteLine();
+                        Console.WriteLine(Resources.Recovered + oldWindowsInstallerCacheDirSize + Resources.MB_from_removing_Windows_Installer_Cache);
                     }
-                    totalSpaceSaved += newWindowsInstallerCacheDirSize;
+                    _totalSpaceSaved += _newWindowsInstallerCacheDirSize;
                 }
             }
 
-            if (windowsUpdateLogsCleared)
+            if (_windowsUpdateLogsCleared)
             {
-                windowsUpdateLogsCleared = false;
+                _windowsUpdateLogsCleared = false;
                 // Get size of Windows Update Logs.
-                if (!Directory.Exists(windowsUpdateLogDir))
+                if (!Directory.Exists(_windowsUpdateLogDir))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("\n" + "Recovered " + windowsUpdateLogDirSize + "MB from removing Windows Update Logs.");
-                    totalSpaceSaved += windowsUpdateLogDirSize;
+                    Console.WriteLine();
+                    Console.WriteLine(Resources.Recovered + _windowsUpdateLogDirSize + Resources.MB_from_removing_Windows_Update_Logs);
+                    _totalSpaceSaved += _windowsUpdateLogDirSize;
                 }
                 else
                 {
-                    long oldWindowsUpdateLogDirSize = windowsUpdateLogDirSize;
-                    windowsUpdateLogDirSize = 0;
-                    windowsUpdateLogDirSize = Directory.GetFiles(windowsUpdateLogDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-                    newWindowsUpdateLogDirSize = oldWindowsUpdateLogDirSize - windowsUpdateLogDirSize;
-                    totalSpaceSaved += newWindowsUpdateLogDirSize;
-                    if (newWindowsUpdateLogDirSize > 0)
+                    long oldWindowsUpdateLogDirSize = _windowsUpdateLogDirSize;
+                    _windowsUpdateLogDirSize = 0;
+                    _windowsUpdateLogDirSize = Directory.GetFiles(_windowsUpdateLogDir, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+                    _newWindowsUpdateLogDirSize = oldWindowsUpdateLogDirSize - _windowsUpdateLogDirSize;
+                    _totalSpaceSaved += _newWindowsUpdateLogDirSize;
+                    if (_newWindowsUpdateLogDirSize > 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("\n" + "Recovered " + newWindowsUpdateLogDirSize + "MB from removing Windows Update Logs.");
+                        Console.WriteLine();
+                        Console.WriteLine(Resources.Recovered + _newWindowsUpdateLogDirSize + Resources.MB_from_removing_Windows_Update_Logs);
                     }
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("\n" + "<1MB recovered from Windows Update Logs...");
+                        Console.WriteLine();
+                        Console.WriteLine(Resources._1MB_recovered_from_Windows_Update_Logs);
                     }
                 }
             }
 
             // Output the total space saved from the entire operation and other important completed actions.
-            if (totalSpaceSaved > 0)
+            if (_totalSpaceSaved > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "\n" + "Total space recovered: " + totalSpaceSaved + "MB" + "\n");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine(Resources.Total_space_recovered + _totalSpaceSaved + Resources.MB);
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("\n" + "\n" + "Total space recovered: <1MB" + "\n");
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine(Resources.Total_space_recovered___1MB);
             }
-            totalSpaceSaved = 0;
+            _totalSpaceSaved = 0;
         }
         #endregion
 
@@ -1837,7 +1935,7 @@ namespace CleanSweep2_CLI
         private static void AddWaitText()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(".");
+            Console.Write(Resources.Period);
         }
         #endregion
 
@@ -1845,14 +1943,14 @@ namespace CleanSweep2_CLI
         private static void ShowApplicationInfo()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("CleanSweep " + CurrentVersion + ".\n" +
-            "Created by Thomas Loupe." + "\n" +
-            "Github: https://github.com/thomasloupe" + "\n" +
-            "Twitter: https://twitter.com/acid_rain" + "\n" +
-            "Website: https://thomasloupe.com" + "\n" + "\n");
-            Console.Write("CleanSweep is, and will always be free, but beer is not!\n"
-            + "If you'd like to buy me a beer anyway, I won't tell you not to!\n"
-            + "Visit https://paypal.me/thomasloupe if you'd like to donate." + "\n" + "\n");
+            Console.WriteLine(Resources.CleanSweep);
+            Console.WriteLine(Resources.Created_by_Thomas_Loupe);
+            Console.WriteLine(Resources.Github__https___github_com_thomasloupe);
+            Console.WriteLine(Resources.Twitter__https___twitter_com_acid_rain);
+            Console.WriteLine(Resources.Website__https___thomasloupe_com);
+            Console.WriteLine(Resources.CleanSweep_is__and_will_always_be_free__but_beer_is_not);
+            Console.WriteLine(Resources.If_you_d_like_to_buy_me_a_beer_anyway__I_won_t_tell_you_not_to);
+            Console.WriteLine(Resources.Visit_https___paypal_me_thomasloupe_if_you_d_like_to_donate);
         }
         #endregion
 
@@ -1860,20 +1958,23 @@ namespace CleanSweep2_CLI
         private static void CheckForUpdates()
         {
             var client = new GitHubClient(new ProductHeaderValue("CleanSweep2_CLI"));
-            var releases = (client.Repository.Release.GetAll("thomasloupe", "CleanSweep2").Result);
+            var releases = client.Repository.Release.GetAll("thomasloupe", "CleanSweep2").Result;
             var latest = releases[0];
             if (CurrentVersion == latest.TagName)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("You have the latest version, {0}!" + "\n" + "\n", CurrentVersion);
+                Console.WriteLine(Resources.You_have_the_latest_version___0__, CurrentVersion);
+                Console.WriteLine();
+                Console.WriteLine();
             }
             else if (CurrentVersion != latest.TagName)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("A new version of CleanSweep2_CLI is available!" + "\n"
-                + "Current version: " + CurrentVersion + "\n"
-                + "Latest version: " + latest.TagName + "\n"
-                + "Visit https://github.com/thomasloupe/CleanSweep2 to download the latest version." + "\n" + "\n");
+                Console.WriteLine(Resources.A_new_version_of_CleanSweep2_CLI_is_available);
+                Console.WriteLine(Resources.Current_version);
+                Console.WriteLine(Resources.Latest_version + latest.TagName);
+                Console.WriteLine(Resources.Visit_https___github_com_thomasloupe_CleanSweep2_to_download_the_latest_version);
+                Console.WriteLine();
             }
         }
         #endregion
