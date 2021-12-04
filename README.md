@@ -1,14 +1,14 @@
 # ![CleanSweep2 Logo](https://i.imgur.com/mdSoQbh.png) CleanSweep2
 The easiest and quickest Windows junk file remover on the planet.
 
-## Supported Operating Systems
+### Supported Operating Systems
 * Windows 11
 * Windows 10
 * Windows 8/8.1
 * Windows 7
 * Previous Windows OS's *may* work, but some features may be incompatible or produce undesired results.
 
-## Cleaning Features
+### Cleaning Features
 * Temporary Files
 * Temporary Setup Files
 * Temporary Internet Files
@@ -26,7 +26,7 @@ The easiest and quickest Windows junk file remover on the planet.
 * Windows Error Reports
 * Windows Delivery Optimization
 
-## Additional Features
+### Additional Features
 * Provides potential reclaimable disk space if all cleaning options were selected.
 * Provides total reclaimed disk space after all selected cleaning operations have completed.
 * Detailed log window of all cleaning operations.
@@ -34,13 +34,14 @@ The easiest and quickest Windows junk file remover on the planet.
 * Show or hide operation windows (command prompts, etc) that perform tasks.
 * Update checking.
 
-## Potential Upcoming Features and Roadmap
+### Potential Upcoming Features and Roadmap
 * I am now developing a CLI-based version of CleanSweep2 for silent and scheduled cleans.
 * I am working on localizations for both CleanSweep2 and CleanSweep2_CLI.
 * Future updates past major feature releases will be quality-of-life additions and bugfixes.
 
 ## CleanSweep2 Demonstration
 ![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
+CleanSweep2 is the non-CLI (GUI) version of CleanSweep2 which offers visually selected cleaning on a Windows machine.
 
 ## Getting Started With CleanSweep2
 1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents. You can download [WinRAR](https://www.rarlab.com/download.htm) or use [7ZIP](https://www.7-zip.org/) to extract the contents.
@@ -48,11 +49,9 @@ The easiest and quickest Windows junk file remover on the planet.
 1. Select any cleaning options you wish.
 1. Click "Sweep it!".
 
-# CleanSweep2_CLI
-CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers all features CleanSweep2 has to offer, except that jobs are passed through arguments, including logging actions to a logfile on disk, changing verbosity modes, selective cleaning, and silent running for scheduled cleaning through Windows Task Scheduler.
-
 ## CleanSweep2_CLI Demonstration
 ![CleanSweep2_CLI](https://i.imgur.com/eqwglBE.gif)
+CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers all features CleanSweep2 has to offer, except that jobs are passed through arguments, including logging actions to a logfile on disk, changing verbosity modes, selective cleaning, and silent running for scheduled cleaning through Windows Task Scheduler.
 
 ## Getting Started with CleanSweep2_CLI
 1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents.
