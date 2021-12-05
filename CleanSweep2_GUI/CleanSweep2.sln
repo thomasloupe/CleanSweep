@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanSweep2", "CleanSweep2.csproj", "{0E5A76CA-ECD6-4B41-802F-186ECA78456D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E5A76CA-ECD6-4B41-802F-186ECA78456D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E5A76CA-ECD6-4B41-802F-186ECA78456D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E5A76CA-ECD6-4B41-802F-186ECA78456D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E5A76CA-ECD6-4B41-802F-186ECA78456D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4F2EF133-4974-49AA-AA30-CD12037EA1DC}
+	EndGlobalSection
+EndGlobal
