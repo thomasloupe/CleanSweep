@@ -204,28 +204,20 @@ namespace CleanSweep2_CLI
                         }
                     case "-v1":
                         {
-                            // Set verbosity to low.
-                            cs2cli._isVerboseMode = false;
+                            // Set verbosity to low. Default to highest level passed.
+                            cs2cli._isVerboseMode = args.Contains("v2");
                             break;
                         }
                     case "-v2":
                         {
-                            // Set verbosity to high.
-                            cs2cli._isVerboseMode = true;
+                            // Set verbosity to low. Default to highest level passed.
+                            cs2cli._isVerboseMode = args.Contains("v1");
                             break;
                         }
                     case "-visible":
                         {
                             // Show CMD window via method.
                             cs2cli._showOperationWindows = false;
-                            break;
-                        }
-                    default:
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine();
-                            Console.WriteLine(Resources.No_Arguments_Given);
-                            Console.WriteLine();
                             break;
                         }
                 }

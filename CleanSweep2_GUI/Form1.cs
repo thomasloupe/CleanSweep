@@ -1,6 +1,7 @@
 ﻿using CleanSweep2.Properties;
 using Octo = Octokit;
 using System;
+using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace CleanSweep2
 {
@@ -104,13 +106,16 @@ namespace CleanSweep2
         private long _newWindowsUpdateLogDirSize;
 
         #endregion
-
         public Form1()
         {
             InitializeComponent();
             SetWindowSizeAndLocation();
             SetVerbosity();
             SetOperationWindows();
+            var language = ConfigurationManager.AppSettings["language"];
+            Console.WriteLine(language);
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(language);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
         }
 
         private void SetWindowSizeAndLocation()
@@ -2356,9 +2361,9 @@ namespace CleanSweep2
                 languageBox.Checked = false;
             }
             englishToolStripMenuItem.Checked = true;
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            this.InitializeComponent();
-            this.Controls.Clear();
+            var changeLanguage = new ChangeLanguage();
+            changeLanguage.UpdateConfig("language", "en");
+            Application.Restart();
         }
 
         private void FrenchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2368,9 +2373,9 @@ namespace CleanSweep2
                 languageBox.Checked = false;
             }
             frenchToolStripMenuItem.Checked = true;
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            this.Controls.Clear();
-            this.InitializeComponent();
+            var changeLanguage = new ChangeLanguage();
+            changeLanguage.UpdateConfig("language", "fr");
+            Application.Restart();
         }
 
         private void GermanToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2380,9 +2385,9 @@ namespace CleanSweep2
                 languageBox.Checked = false;
             }
             germanToolStripMenuItem.Checked = true;
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            this.Controls.Clear();
-            this.InitializeComponent();
+            var changeLanguage = new ChangeLanguage();
+            changeLanguage.UpdateConfig("language", "ger");
+            Application.Restart();
         }
 
         private void ItalianToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2392,9 +2397,9 @@ namespace CleanSweep2
                 languageBox.Checked = false;
             }
             italianToolStripMenuItem.Checked = true;
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            this.Controls.Clear();
-            this.InitializeComponent();
+            var changeLanguage = new ChangeLanguage();
+            changeLanguage.UpdateConfig("language", "it");
+            Application.Restart();
         }
 
         private void SpanishToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2405,9 +2410,9 @@ namespace CleanSweep2
             }
 
             spanishToolStripMenuItem.Checked = true;
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            this.Controls.Clear();
-            this.InitializeComponent();
+            var changeLanguage = new ChangeLanguage();
+            changeLanguage.UpdateConfig("language", "es");
+            Application.Restart();
         }
 
         private void RussianToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2417,9 +2422,9 @@ namespace CleanSweep2
                 languageBox.Checked = false;
             }
             russianToolStripMenuItem.Checked = true;
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            this.Controls.Clear();
-            this.InitializeComponent();
+            var changeLanguage = new ChangeLanguage();
+            changeLanguage.UpdateConfig("language", "ru");
+            Application.Restart();
         }
     }
 }
@@ -2434,5 +2439,30 @@ public static class RichTextBoxExtensions
         box.SelectionColor = color;
         box.AppendText(text);
         box.SelectionColor = box.ForeColor;
+    }
+}
+
+public class ChangeLanguage
+{
+    public void UpdateConfig(string key, string value)
+    {
+        var xmlDoc = new XmlDocument();
+        xmlDoc.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+
+        foreach (XmlElement xmlElement in xmlDoc.DocumentElement)
+        {
+            if (xmlElement.Name.Equals("appSettings"))
+            {
+                foreach (XmlNode xNode in xmlElement.ChildNodes)
+                {
+                    if (xNode.Attributes[0].Value.Equals(key))
+                    {
+                        xNode.Attributes[1].Value = value;
+                    }
+                }
+            }
+        }
+        ConfigurationManager.RefreshSection("appSettings");
+        xmlDoc.Save(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
     }
 }
