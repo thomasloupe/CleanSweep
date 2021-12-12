@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using CleanSweep2_CLI.Properties;
+using System.Text.RegularExpressions;
 
 namespace CleanSweep2_CLI
 {
@@ -11,11 +12,11 @@ namespace CleanSweep2_CLI
     {
         #region Declarations
         private const string CurrentVersion = "v2.3.0";
-        readonly string _userName = Environment.UserName;
-        readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
-        readonly string _windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-        readonly string _programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-        readonly string _localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private readonly string _userName = Environment.UserName;
+        private readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
+        private readonly string _windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        private readonly string _programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        private readonly string _localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         private bool _isVerboseMode;
         private bool _showOperationWindows;
         private bool _tempFilesWereRemoved = false;
@@ -35,6 +36,7 @@ namespace CleanSweep2_CLI
         private bool _windowsInstallerCacheCleared = false;
         private bool _windowsUpdateLogsCleared = false;
         private long _totalSpaceSaved;
+        private string _logPath;
 
         // Temporary Files
         private string _tempDirectory;
@@ -97,108 +99,105 @@ namespace CleanSweep2_CLI
         private static void Main()
         {
             string[] args = Environment.GetCommandLineArgs();
-            var cs2cli = new CleanSweep2_CLI();
+            var cs2Cli = new CleanSweep2_CLI();
             ShowApplicationInfo();
-            cs2cli.GetSizeInformation();
-
+            cs2Cli.GetSizeInformation();
             Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Logging is currently not implemented in this version.");
 
 
             // TODO: Disable verbosity level 1/2 dependent on which was already selected in args.
-            foreach (string arg in args)
+            foreach (var arg in args)
             {
                 switch (arg)
                 {
                     case "-1":
                         {
-                            cs2cli.Option1();
+                            cs2Cli.Option1();
                             break;
                         }
                     case "-2":
                         {
-                            cs2cli.Option2();
+                            cs2Cli.Option2();
                             break;
                         }
                     case "-3":
                         {
-                            cs2cli.Option3();
+                            cs2Cli.Option3();
                             break;
                         }
                     case "-4":
                         {
-                            cs2cli.Option4();
+                            cs2Cli.Option4();
                             break;
                         }
                     case "-5":
                         {
-                            cs2cli.Option5();
+                            cs2Cli.Option5();
                             break;
                         }
                     case "-6":
                         {
-                            cs2cli.Option6();
+                            cs2Cli.Option6();
                             break;
                         }
                     case "-7":
                         {
-                            cs2cli.Option7();
+                            cs2Cli.Option7();
                             break;
                         }
                     case "-8":
                         {
-                            cs2cli.Option8();
+                            cs2Cli.Option8();
                             break;
                         }
                     case "-9":
                         {
-                            cs2cli.Option9();
+                            cs2Cli.Option9();
                             break;
                         }
                     case "-10":
                         {
-                            cs2cli.Option10();
+                            cs2Cli.Option10();
                             break;
                         }
                     case "-11":
                         {
-                            cs2cli.Option11();
+                            cs2Cli.Option11();
                             break;
                         }
                     case "-12":
                         {
-                            cs2cli.Option12();
+                            cs2Cli.Option12();
                             break;
                         }
                     case "-13":
                         {
-                            cs2cli.Option13();
+                            cs2Cli.Option13();
                             break;
                         }
                     case "-14":
                         {
-                            cs2cli.Option14();
+                            cs2Cli.Option14();
                             break;
                         }
                     case "-15":
                         {
-                            cs2cli.Option15();
+                            cs2Cli.Option15();
                             break;
                         }
                     case "-16":
                         {
-                            cs2cli.Option16();
+                            cs2Cli.Option16();
                             break;
                         }
                     case "-log":
                         {
                             // Set the path for logging.
-                            //foreach (Match match in Regex.Matches(cs2cli._logPath, "\"([^\"]*)\""))
-                            //{
-                            //    var tempLogPath = cs2cli._logPath.Replace(@"""", "");
-                            //    cs2cli._logPath = tempLogPath;
-                            //}
+                            foreach (Match match in Regex.Matches(cs2Cli._logPath, "\"([^\"]*)\""))
+                            {
+                                var tempLogPath = cs2Cli._logPath.Replace(@"""", "");
+                                cs2Cli._logPath = tempLogPath;
+                            }
                             break;
                         }
                     case "-update":
@@ -209,24 +208,24 @@ namespace CleanSweep2_CLI
                     case "-v1":
                         {
                             // Set verbosity to low. Default to highest level passed.
-                            cs2cli._isVerboseMode = args.Contains("v2");
+                            cs2Cli._isVerboseMode = args.Contains("v2");
                             break;
                         }
                     case "-v2":
                         {
                             // Set verbosity to low. Default to highest level passed.
-                            cs2cli._isVerboseMode = args.Contains("v1");
+                            cs2Cli._isVerboseMode = args.Contains("v1");
                             break;
                         }
                     case "-visible":
                         {
                             // Show CMD window via method.
-                            cs2cli._showOperationWindows = false;
+                            cs2Cli._showOperationWindows = false;
                             break;
                         }
                 }
             }
-            cs2cli.CalculateSpaceSaved();
+            cs2Cli.CalculateSpaceSaved();
         }
         #region Get Size Information
         private void GetSizeInformation()
