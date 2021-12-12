@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "wTIwAqBDxbmZm46StXZ73Y0z/+RSvNBrZVZkIF8AWOAKXmLNwEM/Omq/ql6jtzCoUeiSjYf+ZLPfuFN2LWtErg==",
+  "success": true,
+  "projectFilePath": "\\\\Athena\\Backup\\Development\\Git Repositories\\CleanSweep2\\CleanSweep2_CLI\\CleanSweep2_CLI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\acid_rain\\.nuget\\packages\\octokit\\0.50.0\\octokit.0.50.0.nupkg.sha512"
+  ],
+  "logs": []
+}

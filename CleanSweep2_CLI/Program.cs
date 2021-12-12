@@ -99,7 +99,6 @@ namespace CleanSweep2_CLI
             string[] args = Environment.GetCommandLineArgs();
             var cs2cli = new CleanSweep2_CLI();
             ShowApplicationInfo();
-            CheckForUpdates();
             cs2cli.GetSizeInformation();
 
             Console.WriteLine();
@@ -202,6 +201,11 @@ namespace CleanSweep2_CLI
                             //}
                             break;
                         }
+                    case "-update":
+                    {
+                        CheckForUpdates();
+                        break;
+                    }
                     case "-v1":
                         {
                             // Set verbosity to low. Default to highest level passed.
@@ -1911,10 +1915,10 @@ namespace CleanSweep2_CLI
         #endregion
 
         #region Check For Updates
-        private static void CheckForUpdates()
+        private static async void CheckForUpdates()
         {
             var client = new GitHubClient(new ProductHeaderValue("CleanSweep2_CLI"));
-            var releases = client.Repository.Release.GetAll("thomasloupe", "CleanSweep2").Result;
+            var releases = await client.Repository.Release.GetAll("thomasloupe", "CleanSweep2");
             var latest = releases[0];
             if (CurrentVersion == latest.TagName)
             {
