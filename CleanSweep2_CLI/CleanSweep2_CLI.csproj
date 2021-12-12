@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <ApplicationIcon>CleanSweep_Logo.ico</ApplicationIcon>
     <StartupObject>CleanSweep2_CLI.CleanSweep2_CLI</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>

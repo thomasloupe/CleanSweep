@@ -1,10 +1,11 @@
-﻿using Octokit;
+﻿using CleanSweep2_CLI.Properties;
+using Octokit;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using CleanSweep2_CLI.Properties;
 using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 namespace CleanSweep2_CLI
 {
@@ -18,7 +19,7 @@ namespace CleanSweep2_CLI
         private readonly string _programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         private readonly string _localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         private bool _isVerboseMode;
-        private bool _showOperationWindows;
+        private bool _showOperationWindows = false;
         private bool _tempFilesWereRemoved = false;
         private bool _tempSetupFilesWereRemoved = false;
         private bool _tempInternetFilesWereRemoved = false;
@@ -98,7 +99,14 @@ namespace CleanSweep2_CLI
         #endregion
         private static void Main()
         {
-            string[] args = Environment.GetCommandLineArgs();
+            [DllImport("user32.dll")]
+            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+            [DllImport("kernel32.dll")]
+            static extern IntPtr GetConsoleWindow();
+            const int swShow = 5;
+
+            var args = Environment.GetCommandLineArgs();
             var cs2Cli = new CleanSweep2_CLI();
             ShowApplicationInfo();
             cs2Cli.GetSizeInformation();
@@ -108,7 +116,8 @@ namespace CleanSweep2_CLI
             // TODO: Disable verbosity level 1/2 dependent on which was already selected in args.
             foreach (var arg in args)
             {
-                switch (arg)
+                var argument = arg.ToLower();
+                switch (argument)
                 {
                     case "-1":
                         {
@@ -200,11 +209,16 @@ namespace CleanSweep2_CLI
                             }
                             break;
                         }
+                    case "-showoperationwindows":
+                        {
+                            cs2Cli._showOperationWindows = true;
+                            break;
+                        }
                     case "-update":
-                    {
-                        CheckForUpdates();
-                        break;
-                    }
+                        {
+                            CheckForUpdates();
+                            break;
+                        }
                     case "-v1":
                         {
                             // Set verbosity to low. Default to highest level passed.
@@ -219,8 +233,8 @@ namespace CleanSweep2_CLI
                         }
                     case "-visible":
                         {
-                            // Show CMD window via method.
-                            cs2Cli._showOperationWindows = false;
+                            var handle = GetConsoleWindow();
+                            ShowWindow(handle, swShow);
                             break;
                         }
                 }
@@ -310,7 +324,7 @@ namespace CleanSweep2_CLI
             _deliveryOptimizationFilesDirSizeInMegabytes = _deliveryOptimizationFilesDirSize / 1024 / 1024;
 
             // Get size of Chrome cache directories.
-            foreach (string chromeDirectory in _chromeCacheDirectories)
+            foreach (var chromeDirectory in _chromeCacheDirectories)
             {
                 if (Directory.Exists(chromeDirectory))
                 {
@@ -320,9 +334,9 @@ namespace CleanSweep2_CLI
                 }
             }
             // Get size of Edge cache directories.
-            foreach (string edgeDirectory in _edgeCacheDirectories)
+            foreach (var edgeDirectory in _edgeCacheDirectories)
             {
-                if (Directory.Exists(edgeDirectory))
+                if (!Directory.Exists(edgeDirectory))
                 {
                     long thisEdgeDirSize = 0;
                     thisEdgeDirSize = Directory.GetFiles(edgeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
@@ -1101,7 +1115,7 @@ namespace CleanSweep2_CLI
                 _programDataDirectory + "\\Microsoft\\Windows Defender\\Support"
             };
             // Remove the log-files.
-            foreach (string directory in directoryPath)
+            foreach (var directory in directoryPath)
             {
                 var dir = new DirectoryInfo(directory);
                 foreach (var f in dir.GetFiles())
@@ -1139,7 +1153,7 @@ namespace CleanSweep2_CLI
                 }
             }
             // Remove the directories.
-            foreach (string logFileDirectory in defenderLogDirectoryPaths)
+            foreach (var logFileDirectory in defenderLogDirectoryPaths)
             {
                 if (Directory.Exists(logFileDirectory))
                 {
@@ -1256,7 +1270,7 @@ namespace CleanSweep2_CLI
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write(Resources.Stopped_Edge_processes);
                 }
-                foreach (string edgeDirectory in _edgeCacheDirectories)
+                foreach (var edgeDirectory in _edgeCacheDirectories)
                 {
                     if (Directory.Exists(edgeDirectory))
                     {
@@ -1359,7 +1373,7 @@ namespace CleanSweep2_CLI
                 Console.WriteLine();
                 Console.WriteLine(Resources.Stopped_Chrome_processes);
             }
-            foreach (string chromeDirectory in _chromeCacheDirectories)
+            foreach (var chromeDirectory in _chromeCacheDirectories)
             {
                 if (Directory.Exists(chromeDirectory))
                 {
