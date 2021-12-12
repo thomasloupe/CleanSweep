@@ -1,9 +1,6 @@
 # ![CleanSweep2 Logo](https://i.imgur.com/mdSoQbh.png) CleanSweep2
 The easiest and quickest Windows junk file remover on the planet.
 
-## CleanSweep2 Demonstration
-![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
-
 ## Supported Operating Systems
 * Windows 11
 * Windows 10
@@ -37,11 +34,10 @@ The easiest and quickest Windows junk file remover on the planet.
 * Show or hide operation windows (command prompts, etc) that perform tasks.
 * Update checking.
 
-## Potential Upcoming Features and Roadmap
-* I am now developing a CLI-based version of CleanSweep2 for silent and scheduled cleans.
-* Future updates past major feature releases will be quality-of-life additions and bugfixes.
+## CleanSweep2_GUI Demonstration
+![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
 
-## Getting Started With CleanSweep2
+## Getting Started With CleanSweep2_GUI
 1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents. You can download [WinRAR](https://www.rarlab.com/download.htm) or use [7ZIP](https://www.7-zip.org/) to extract the contents.
 1. Run CleanSweep2.exe.
 1. Select any cleaning options you wish.
