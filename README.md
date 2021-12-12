@@ -50,6 +50,9 @@ The easiest and quickest Windows junk file remover on the planet.
 # CleanSweep2_CLI
 CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers all features CleanSweep2 has to offer, except that jobs are passed through arguments, including logging actions to a logfile on disk, changing verbosity modes, selective cleaning, and silent running for scheduled cleaning through Windows Task Scheduler.
 
+## CleanSweep2_CLI Demonstration
+![CleanSweep2](https://i.imgur.com/eqwglBE.gif)
+
 ## Getting Started with CleanSweep2_CLI
 1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents.
 1. For manual cleaning, create a shortcut to the executable, and modify the arguments in the "Target" properties field, then run CleanSweep2_CLI.
