@@ -27,12 +27,15 @@ The easiest and quickest Windows junk file remover on the planet.
 * Windows Delivery Optimization
 
 ## Additional Features
-* Provides potential reclaimable disk space if all cleaning options were selected.
-* Provides total reclaimed disk space after all selected cleaning operations have completed.
-* Detailed log window of all cleaning operations.
-* Verbose and non-verbose output to the log window.
+* Provides potential reclaimable disk space prior to cleaning.
+* Provides total reclaimed disk space post cleaning.
+* Detailed logging to log window/file.
+* Verbose and non-verbose output.
+* Remembers configuration and previous cleaning selections (GUI only).
 * Show or hide operation windows (command prompts, etc) that perform tasks.
 * Update checking.
+* Perform tasks silently without user interaction (CLI only).
+* Supports Windows Task Scheduler (CLI preferred).
 
 ## CleanSweep2_GUI Demonstration
 ![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
