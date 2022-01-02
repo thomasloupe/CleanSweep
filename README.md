@@ -67,7 +67,7 @@ CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers al
 ``-7`` *(Removes Delivery Optimization Files)*  
 ``-8`` *(Clears Thumbnail Cache)*  
 ``-9`` *(Remove User File History)*  
-``10`` *(Removes Windows.old Directory)*  
+``-10`` *(Removes Windows.old Directory)*  
 ``-11`` *(Removes Windows Defender Log Files)*  
 ``-12`` *(Removes Microsoft Office Cache)*  
 ``-13`` *(Removes Microsoft Edge Cache)*  
