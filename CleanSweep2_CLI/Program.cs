@@ -13,7 +13,7 @@ namespace CleanSweep2_CLI
     internal class CleanSweep2_CLI
     {
         #region Declarations
-        private const string CurrentVersion = "v2.3.0";
+        private const string CurrentVersion = "v2.3.1";
         private readonly string _userName = Environment.UserName;
         private readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private readonly string _windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);

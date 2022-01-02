@@ -6,6 +6,8 @@
     <ApplicationIcon>CleanSweep_Logo.ico</ApplicationIcon>
     <StartupObject>CleanSweep2_CLI.CleanSweep2_CLI</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyVersion>3.2.1.0</AssemblyVersion>
+    <FileVersion>3.2.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
