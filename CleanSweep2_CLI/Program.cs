@@ -112,8 +112,51 @@ namespace CleanSweep2_CLI
             cs2Cli.GetSizeInformation();
             Console.WriteLine();
 
+            foreach (var arg in args)
+            {
+                var argument = arg.ToLower();
+                switch (argument)
+                {
+                    case "-log":
+                    {
+                        // Set the path for logging.
+                        {
+                            Console.WriteLine("Log path is: " + cs2Cli._logPath);
+                        }
+                        break;
+                    }
+                    case "-showoperationwindows":
+                    {
+                        cs2Cli._showOperationWindows = true;
+                        break;
+                    }
+                    case "-update":
+                    {
+                        CheckForUpdates();
+                        break;
+                    }
+                    case "-v1":
+                    {
+                        // Set verbosity to low. Default to highest level passed.
+                        cs2Cli._isVerboseMode = args.Contains("v2");
+                        break;
+                    }
+                    case "-v2":
+                    {
+                        // Set verbosity to low. Default to highest level passed.
+                        cs2Cli._isVerboseMode = args.Contains("v1");
+                        break;
+                    }
+                    case "-visible":
+                    {
+                        var handle = GetConsoleWindow();
+                        ShowWindow(handle, swShow);
+                        break;
+                    }
 
-            // TODO: Disable verbosity level 1/2 dependent on which was already selected in args.
+                }
+            }
+
             foreach (var arg in args)
             {
                 var argument = arg.ToLower();
@@ -197,44 +240,6 @@ namespace CleanSweep2_CLI
                     case "-16":
                         {
                             cs2Cli.Option16();
-                            break;
-                        }
-                    case "-log":
-                        {
-                            // Set the path for logging.
-                            foreach (Match match in Regex.Matches(cs2Cli._logPath, "\"([^\"]*)\""))
-                            {
-                                var tempLogPath = cs2Cli._logPath.Replace(@"""", "");
-                                cs2Cli._logPath = tempLogPath;
-                            }
-                            break;
-                        }
-                    case "-showoperationwindows":
-                        {
-                            cs2Cli._showOperationWindows = true;
-                            break;
-                        }
-                    case "-update":
-                        {
-                            CheckForUpdates();
-                            break;
-                        }
-                    case "-v1":
-                        {
-                            // Set verbosity to low. Default to highest level passed.
-                            cs2Cli._isVerboseMode = args.Contains("v2");
-                            break;
-                        }
-                    case "-v2":
-                        {
-                            // Set verbosity to low. Default to highest level passed.
-                            cs2Cli._isVerboseMode = args.Contains("v1");
-                            break;
-                        }
-                    case "-visible":
-                        {
-                            var handle = GetConsoleWindow();
-                            ShowWindow(handle, swShow);
                             break;
                         }
                 }
@@ -336,7 +341,7 @@ namespace CleanSweep2_CLI
             // Get size of Edge cache directories.
             foreach (var edgeDirectory in _edgeCacheDirectories)
             {
-                if (!Directory.Exists(edgeDirectory))
+                if (Directory.Exists(edgeDirectory))
                 {
                     long thisEdgeDirSize = 0;
                     thisEdgeDirSize = Directory.GetFiles(edgeDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
