@@ -38,7 +38,7 @@ The easiest and quickest Windows junk file remover on the planet.
 * Supports Windows Task Scheduler (CLI preferred).
 
 ## CleanSweep2_GUI Demonstration
-![CleanSweep2](https://i.imgur.com/BsTk0Wd.gif)
+![CleanSweep2](https://i.imgur.com/SMhZIGp.gif)
 
 ## Getting Started With CleanSweep2_GUI
 1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents. You can download [WinRAR](https://www.rarlab.com/download.htm) or use [7ZIP](https://www.7-zip.org/) to extract the contents.
