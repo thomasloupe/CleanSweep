@@ -74,7 +74,7 @@ CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers al
 ``-14`` *(Removes Google Chome Cache)*  
 ``-15`` *(Removes Windows Installer Cache)*  
 ``-16`` *(Removes Windows Update Log Files)*  
-``-log "path"`` *(Writes a log file to the path specified of actions performed. Path must be in double quotes.)*  
+``-log`` *(Writes a log file of actions performed and their timestamps to the "CleanSweep2 Logs" folder under the user account's Documents folder.)*  
 ``-showoperationwindows`` *(Make all spawned windows visible.)*  
 ``-update`` *(Checks for updates. This argument requires the -visible argument.)*  
 ``-v1`` *(Sets the verbosity to low)*  
