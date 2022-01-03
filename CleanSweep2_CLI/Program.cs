@@ -20,28 +20,28 @@ namespace CleanSweep2_CLI
         private readonly string _programDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
         private readonly string _localAppDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         private bool _isVerboseMode;
-        private bool _showOperationWindows = false;
-        private bool _tempFilesWereRemoved = false;
-        private bool _tempSetupFilesWereRemoved = false;
-        private bool _tempInternetFilesWereRemoved = false;
-        private bool _eventLogsCleared = false;
-        private bool _isRecycleBinEmpty = false;
-        private bool _windowsErrorReportsCleared = false;
-        private bool _wereDeliveryOptimizationFilesRemoved = false;
-        private bool _thumbnailCacheCleared = false;
-        private bool _deletedFileHistory = false;
-        private bool _windowsOldCleaned = false;
-        private bool _windowsDefenderLogsCleared = false;
-        private bool _sweptChromeCache = false;
-        private bool _sweptEdgeCache = false;
-        private bool _msoCacheCleared = false;
-        private bool _windowsInstallerCacheCleared = false;
-        private bool _windowsUpdateLogsCleared = false;
+        private bool _showOperationWindows;
+        private bool _tempFilesWereRemoved;
+        private bool _tempSetupFilesWereRemoved;
+        private bool _tempInternetFilesWereRemoved;
+        private bool _eventLogsCleared;
+        private bool _isRecycleBinEmpty;
+        private bool _windowsErrorReportsCleared;
+        private bool _wereDeliveryOptimizationFilesRemoved;
+        private bool _thumbnailCacheCleared;
+        private bool _deletedFileHistory;
+        private bool _windowsOldCleaned;
+        private bool _windowsDefenderLogsCleared;
+        private bool _sweptChromeCache;
+        private bool _sweptEdgeCache;
+        private bool _msoCacheCleared;
+        private bool _windowsInstallerCacheCleared;
+        private bool _windowsUpdateLogsCleared;
         private long _totalSpaceSaved;
         private string _logPath ;
         private string _logFile;
         private FileStream _logFileStream;
-        private bool _logToFile = false;
+        private bool _logToFile;
 
         // Temporary Files
         private string _tempDirectory;
@@ -2157,6 +2157,7 @@ namespace CleanSweep2_CLI
         }
         #endregion
 
+        #region Write To Log
         private void WriteToLog(string message, bool createNewLine)
         {
             if (!_logToFile)
@@ -2179,6 +2180,7 @@ namespace CleanSweep2_CLI
                 }
             }
         }
+        #endregion
 
         #region Show Application Info
         private static void ShowApplicationInfo()
