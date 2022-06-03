@@ -13,7 +13,7 @@ namespace CleanSweep2_CLI
     internal class CleanSweep2_CLI
     {
         #region Declarations
-        private const string CurrentVersion = "v2.3.1";
+        private const string CurrentVersion = "v2.3.2.0";
         private readonly string _userName = Environment.UserName;
         private readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
         private readonly string _windowsDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
@@ -858,7 +858,7 @@ namespace CleanSweep2_CLI
         #region Windows Error Reports Removal (6)
         private void Option6()
         {
-            // Temporary Setup Files removal
+            // Windows Error Report Removal.
             _windowsErrorReportsDirSizeBeforeDelete = _windowsErrorReportsDirSizeInMegabytes;
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -866,89 +866,100 @@ namespace CleanSweep2_CLI
             WriteToLog(Resources.Sweeping_Windows_Error_Reports, true);
             if (Directory.Exists(_windowsErrorReportsDirectory))
             {
-                var di = new DirectoryInfo(_windowsErrorReportsDirectory);
-                foreach (var file in di.GetFiles())
+                try
                 {
-                    try
+                    var di = new DirectoryInfo(_windowsErrorReportsDirectory);
+                    foreach (var file in di.GetFiles())
                     {
-                        file.Delete();
-                        if (!File.Exists(file.Name))
+                        try
                         {
+                            file.Delete();
+                            if (!File.Exists(file.Name))
+                            {
+                                if (_isVerboseMode)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.WriteLine(Resources.Deleted + file.Name);
+                                    WriteToLog(Resources.Deleted + file.Name, true);
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.Write(Resources.o);
+                                    WriteToLog(Resources.o, false);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            // Skip all failed files.
                             if (_isVerboseMode)
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine(Resources.Deleted + file.Name);
-                                WriteToLog(Resources.Deleted + file.Name, true);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping);
+                                WriteToLog(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping, true);
+                                Console.WriteLine();
                             }
                             else
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(Resources.o);
-                                WriteToLog(Resources.o, false);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                WriteToLog(Resources.x, false);
+                                Console.Write(Resources.x);
                             }
                         }
                     }
-                    catch (Exception)
+                    foreach (var dir in di.GetDirectories())
                     {
-                        // Skip all failed files.
-                        if (_isVerboseMode)
+                        try
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping);
-                            WriteToLog(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping, true);
-                            Console.WriteLine();
+                            dir.Delete(true);
+                            if (Directory.Exists(dir.Name))
+                            {
+                                if (_isVerboseMode)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.WriteLine(Resources.Deleted + dir.Name);
+                                    WriteToLog(Resources.Deleted + dir.Name, true);
+                                }
+                                else
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.Write(Resources.Folder_o);
+                                    WriteToLog(Resources.Folder_o, false);
+                                }
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            WriteToLog(Resources.x, false);
-                            Console.Write(Resources.x);
-                        }
-                    }
-                }
-                foreach (var dir in di.GetDirectories())
-                {
-                    try
-                    {
-                        dir.Delete(true);
-                        if (Directory.Exists(dir.Name))
-                        {
+                            // Skip all failed directories.
                             if (_isVerboseMode)
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine(Resources.Deleted + dir.Name);
-                                WriteToLog(Resources.Deleted + dir.Name, true);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(Resources.Couldn_t_remove + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
+                                WriteToLog(Resources.Couldn_t_remove + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping, true);
                             }
                             else
                             {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(Resources.Folder_o);
-                                WriteToLog(Resources.Folder_o, false);
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Write(Resources.Folder_x);
+                                WriteToLog(Resources.Folder_x, false);
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        // Skip all failed directories.
-                        if (_isVerboseMode)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(Resources.Couldn_t_remove + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping);
-                            WriteToLog(Resources.Couldn_t_remove + dir.Name + Resources.Colon_Symbol + ex.Message + Resources.Skipping, true);
-                        }
-                        else
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(Resources.Folder_x);
-                            WriteToLog(Resources.Folder_x, false);
-                        }
-                    }
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(Resources.Swept_Windows_Error_Reports);
+                    Console.WriteLine();
+                    WriteToLog(Resources.Swept_Windows_Error_Reports, true);
+                    WriteToLog("", true);
                 }
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(Resources.Swept_Windows_Error_Reports);
-                Console.WriteLine();
-                WriteToLog(Resources.Swept_Windows_Error_Reports, true);
-                WriteToLog("", true);
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("General Error: " + ex.Message, true);
+                    Console.WriteLine();
+                    WriteToLog("General Error: " + ex.Message, true);
+                    WriteToLog("", true);
+                }
             }
             else
             {
@@ -1137,40 +1148,50 @@ namespace CleanSweep2_CLI
             Console.Write(Resources.Attempting_to_remove_all_file_history_snapshots_except_latest);
             WriteToLog(Resources.Attempting_to_remove_all_file_history_snapshots_except_latest, true);
             AddWaitText();
-            var process = new System.Diagnostics.Process();
-            var startInfo = new System.Diagnostics.ProcessStartInfo();
-            if (_showOperationWindows)
+            try
             {
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            }
-            else
-            {
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            }
-            startInfo.FileName = "cmd.exe";
-            startInfo.UseShellExecute = true;
-            startInfo.Arguments = "/C FhManagew.exe -cleanup 0";
-            startInfo.Verb = "runas";
-            process.StartInfo = startInfo;
-            process.Start();
-
-            while (!process.HasExited)
-            {
-                Thread.Sleep(200);
-                AddWaitText();
-                if (process.HasExited)
+                var process = new System.Diagnostics.Process();
+                var startInfo = new System.Diagnostics.ProcessStartInfo();
+                if (_showOperationWindows)
                 {
-                    break;
+                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                 }
+                else
+                {
+                    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                }
+                startInfo.FileName = "cmd.exe";
+                startInfo.UseShellExecute = true;
+                startInfo.Arguments = "/C FhManagew.exe -cleanup 0";
+                startInfo.Verb = "runas";
+                process.StartInfo = startInfo;
+                process.Start();
+
+                while (!process.HasExited)
+                {
+                    Thread.Sleep(200);
+                    AddWaitText();
+                    if (process.HasExited)
+                    {
+                        break;
+                    }
+                }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine();
+                Console.WriteLine(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed);
+                Console.WriteLine();
+                WriteToLog("", true);
+                WriteToLog(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed, true);
+                WriteToLog("", true);
+                _deletedFileHistory = true;
             }
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine();
-            Console.WriteLine(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed);
-            Console.WriteLine();
-            WriteToLog("", true);
-            WriteToLog(Resources.If_file_history_was_enabled__all_versions_except_latest_were_removed, true);
-            WriteToLog("", true);
-            _deletedFileHistory = true;
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("File history was not available or enabled, skipping. Error: " + ex.Message);
+                WriteToLog("File history was not available or enabled, skipping. Error: " + ex.Message, true);
+            }
         }
         #endregion
 
@@ -1368,12 +1389,32 @@ namespace CleanSweep2_CLI
             WriteToLog(Resources.Sweeping_MSO_cache, true);
             if (Directory.Exists(_msoCacheDir))
             {
-                Directory.Delete(_msoCacheDir, true);
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(Resources.Swept_MSO_Cache);
-                Console.WriteLine();
-                WriteToLog(Resources.Swept_MSO_Cache, true);
-                WriteToLog("", true);
+                try
+                {
+                    Directory.Delete(_msoCacheDir, true);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(Resources.Swept_MSO_Cache);
+                    Console.WriteLine();
+                    WriteToLog(Resources.Swept_MSO_Cache, true);
+                    WriteToLog("", true);
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("Access"))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Access was denied to the MSO folder. Try running CleanSweep2 as Admin? Error: " + ex.Message);
+                        Console.WriteLine();
+                        WriteToLog("Couldn't remove MSO cache. Skipping - Access Denied.", true);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Could not remove MSO cache. The error was: " + ex.Message + ".");
+                        Console.WriteLine();
+                        WriteToLog("Couldn't remove MSO cache. Skipping.", true);
+                    }
+                }
             }
             else
             {

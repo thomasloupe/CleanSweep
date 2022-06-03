@@ -16,7 +16,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.3.1";
+        private const string CurrentVersion = "v2.3.2.0";
         private Octo.GitHubClient _octoClient;
         private readonly string _userName = Environment.UserName;
         private readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -740,7 +740,7 @@ namespace CleanSweep2
             }
             #endregion
             #region Windows Error Reports Removal
-            // Temporary Setup Files removal
+            // Windows Error Reports Removal.
             if (checkBox6.Checked)
             {
                 _windowsErrorReportsDirSizeBeforeDelete = _windowsErrorReportsDirSizeInMegabytes;
@@ -748,72 +748,79 @@ namespace CleanSweep2
                 richTextBox1.AppendText(Resources.Sweeping_Windows_Error_Reports, Color.Green);
                 if (Directory.Exists(_windowsErrorReportsDirectory))
                 {
-                    var di = new DirectoryInfo(_windowsErrorReportsDirectory);
-                    foreach (var file in di.GetFiles())
+                    try
                     {
-                        try
+                        var di = new DirectoryInfo(_windowsErrorReportsDirectory);
+                        foreach (var file in di.GetFiles())
                         {
-                            file.Delete();
-                            if (!File.Exists(file.Name))
+                            try
                             {
+                                file.Delete();
+                                if (!File.Exists(file.Name))
+                                {
+                                    if (_isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText(Resources.Deleted + file.Name + "\n", Color.Green);
+                                        ScrollToOutputBottom();
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("[o]", Color.Green);
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                // Skip all failed files.
                                 if (_isVerboseMode)
                                 {
-                                    richTextBox1.AppendText(Resources.Deleted + file.Name + "\n", Color.Green);
+                                    richTextBox1.AppendText(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping + "\n", Color.Red);
                                     ScrollToOutputBottom();
                                 }
                                 else
                                 {
-                                    richTextBox1.AppendText("[o]", Color.Green);
+                                    richTextBox1.AppendText("[x]", Color.Red);
                                 }
                             }
                         }
-                        catch (Exception)
+                        foreach (var dir in di.GetDirectories())
                         {
-                            // Skip all failed files.
-                            if (_isVerboseMode)
+                            try
                             {
-                                richTextBox1.AppendText(file.Name + Resources.appears_to_be_in_use_or_locked__Skipping + "\n", Color.Red);
-                                ScrollToOutputBottom();
+                                dir.Delete(true);
+                                if (Directory.Exists(dir.Name))
+                                {
+                                    if (_isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText(Resources.Deleted + dir.Name + "\n", Color.Green);
+                                        ScrollToOutputBottom();
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("[o]", Color.Green);
+                                    }
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                richTextBox1.AppendText("[x]", Color.Red);
-                            }
-                        }
-                    }
-                    foreach (var dir in di.GetDirectories())
-                    {
-                        try
-                        {
-                            dir.Delete(true);
-                            if (Directory.Exists(dir.Name))
-                            {
+                                // Skip all failed directories.
                                 if (_isVerboseMode)
                                 {
-                                    richTextBox1.AppendText(Resources.Deleted + dir.Name + "\n", Color.Green);
+                                    richTextBox1.AppendText(Resources.Couldn_t_remove + dir.Name + ": " + ex.Message + Resources.Skipping___ + "\n", Color.Red);
                                     ScrollToOutputBottom();
                                 }
                                 else
                                 {
-                                    richTextBox1.AppendText("[o]", Color.Green);
+                                    richTextBox1.AppendText("[x]", Color.Red);
                                 }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            // Skip all failed directories.
-                            if (_isVerboseMode)
-                            {
-                                richTextBox1.AppendText(Resources.Couldn_t_remove + dir.Name + ": " + ex.Message + Resources.Skipping___ + "\n", Color.Red);
-                                ScrollToOutputBottom();
-                            }
-                            else
-                            {
-                                richTextBox1.AppendText("[x]", Color.Red);
-                            }
-                        }
+                        richTextBox1.AppendText(Resources.Swept_Windows_Error_Reports, Color.Green);
                     }
-                    richTextBox1.AppendText(Resources.Swept_Windows_Error_Reports, Color.Green);
+                    catch (Exception ex)
+                    {
+                        richTextBox1.AppendText("General Error: " + ex.Message, Color.Red);
+                    }
                 }
                 else
                 {
@@ -976,42 +983,49 @@ namespace CleanSweep2
                 ScrollToOutputBottom();
                 AddWaitText();
 
-                await Task.Run(() =>
+                try
                 {
-                    System.Diagnostics.Process process = new System.Diagnostics.Process();
-                    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                    if (_showOperationWindows)
+                    await Task.Run(() =>
                     {
-                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                    }
-                    else
-                    {
-                        startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                    }
-                    startInfo.FileName = "cmd.exe";
-                    startInfo.UseShellExecute = true;
-                    startInfo.Arguments = "/C FhManagew.exe -cleanup 0";
-                    startInfo.Verb = "runas";
-                    process.StartInfo = startInfo;
-                    process.Start();
-
-                    while (!process.HasExited)
-                    {
-                        Thread.Sleep(200);
-                        AddWaitText();
-                        if (process.HasExited)
+                        System.Diagnostics.Process process = new System.Diagnostics.Process();
+                        System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                        if (_showOperationWindows)
                         {
-                            Invoke(new Action(() =>
-                            {
-                                ScrollToOutputBottom();
-                            }));
-                            break;
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                         }
-                    }
-                });
-                richTextBox1.AppendText(Resources.If_File_History_Was_Enabled_All_Versions_Except_The_Latest_Were_Removed, Color.Green);
-                _deletedFileHistory = true;
-                ScrollToOutputBottom();
+                        else
+                        {
+                            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                        }
+                        startInfo.FileName = "cmd.exe";
+                        startInfo.UseShellExecute = true;
+                        startInfo.Arguments = "/C FhManagew.exe -cleanup 0";
+                        startInfo.Verb = "runas";
+                        process.StartInfo = startInfo;
+                        process.Start();
+
+                        while (!process.HasExited)
+                        {
+                            Thread.Sleep(200);
+                            AddWaitText();
+                            if (process.HasExited)
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    ScrollToOutputBottom();
+                                }));
+                                break;
+                            }
+                        }
+                    });
+                    richTextBox1.AppendText(Resources.If_File_History_Was_Enabled_All_Versions_Except_The_Latest_Were_Removed, Color.Green);
+                    _deletedFileHistory = true;
+                    ScrollToOutputBottom();
+                }
+                catch (Exception ex)
+                {
+                    richTextBox1.AppendText("File history was not available or enabled, skipping. Error: " + ex.Message, Color.Red);
+                }
             }
             #endregion
             #region Windows.old Directory Removal
@@ -1210,8 +1224,24 @@ namespace CleanSweep2
                 ScrollToOutputBottom();
                 if (Directory.Exists(_msoCacheDir))
                 {
-                    Directory.Delete(_msoCacheDir, true);
-                    richTextBox1.AppendText(Resources.Swept_MSO_Cache, Color.Green);
+                    try
+                    {
+                        Directory.Delete(_msoCacheDir, true);
+                        richTextBox1.AppendText(Resources.Swept_MSO_Cache, Color.Green);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex.Message.Contains("Access"))
+                        {
+                            // Access denied.
+                            richTextBox1.AppendText("Access was denied to the MSO folder. Try running CleanSweep2 as Admin? Error: " + ex.Message, Color.Green);
+                        }
+                        else
+                        {
+                            // General error.
+                            richTextBox1.AppendText("Could not remove MSO cache. The error was: " + ex.Message + ".");
+                        }
+                    }
                 }
                 else
                 {
