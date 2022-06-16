@@ -115,6 +115,7 @@ namespace CleanSweep2_CLI
             ShowApplicationInfo();
             cs2Cli.GetSizeInformation();
             Console.WriteLine();
+            cs2Cli._logToFile = false;
 
             foreach (var arg in args)
             {
@@ -137,7 +138,7 @@ namespace CleanSweep2_CLI
                             var logFileTrim1 = cs2Cli._logFile.Replace(@"/", "-");
                             var logFileName = logFileTrim1.Replace(@":", "-");
 
-                            cs2Cli._logFileStream = File.Create(cs2Cli._logPath + "\\" + logFileName + ".txt", 1024);
+                            cs2Cli._logFileStream = File.Create(cs2Cli._logPath + "\\" + logFileName + ".txt", 4096);
                             {
                                 var info = new UTF8Encoding(true).GetBytes("Sweep started on " + cs2Cli._logFile);
                                 cs2Cli._logFileStream.Write(info, 0, info.Length);
