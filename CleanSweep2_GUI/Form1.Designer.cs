@@ -153,11 +153,12 @@ namespace CleanSweep2
             this.fileToolStripMenuItem.ShowShortcutKeys = false;
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Click += new System.EventHandler(this.FileToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.ToolTipText = "Exit CleanSweep";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
@@ -222,71 +223,38 @@ namespace CleanSweep2
             // 
             // languageToolStripMenuItem
             // 
-            this.languageToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.englishToolStripMenuItem,
-            this.frenchToolStripMenuItem,
-            this.germanToolStripMenuItem,
-            this.italianToolStripMenuItem,
-            this.spanishToolStripMenuItem,
-            this.russianToolStripMenuItem});
             this.languageToolStripMenuItem.Name = "languageToolStripMenuItem";
-            this.languageToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
-            this.languageToolStripMenuItem.Text = "Language";
-            this.languageToolStripMenuItem.Click += new System.EventHandler(this.LanguageToolStripMenuItem_Click);
+            this.languageToolStripMenuItem.Size = new System.Drawing.Size(12, 20);
             // 
             // englishToolStripMenuItem
             // 
-            this.englishToolStripMenuItem.CheckOnClick = true;
             this.englishToolStripMenuItem.Name = "englishToolStripMenuItem";
-            this.englishToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.englishToolStripMenuItem.Text = "English";
-            this.englishToolStripMenuItem.ToolTipText = "Change language to English";
-            this.englishToolStripMenuItem.Click += new System.EventHandler(this.EnglishToolStripMenuItem_Click);
+            this.englishToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // frenchToolStripMenuItem
             // 
-            this.frenchToolStripMenuItem.CheckOnClick = true;
             this.frenchToolStripMenuItem.Name = "frenchToolStripMenuItem";
-            this.frenchToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.frenchToolStripMenuItem.Text = "Français";
-            this.frenchToolStripMenuItem.ToolTipText = "Changer la langue en Français";
-            this.frenchToolStripMenuItem.Click += new System.EventHandler(this.FrenchToolStripMenuItem_Click);
+            this.frenchToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // germanToolStripMenuItem
             // 
-            this.germanToolStripMenuItem.CheckOnClick = true;
             this.germanToolStripMenuItem.Name = "germanToolStripMenuItem";
-            this.germanToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.germanToolStripMenuItem.Text = "Deutsch";
-            this.germanToolStripMenuItem.ToolTipText = "Sprache auf Deutsch ändern";
-            this.germanToolStripMenuItem.Click += new System.EventHandler(this.GermanToolStripMenuItem_Click);
+            this.germanToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // italianToolStripMenuItem
             // 
-            this.italianToolStripMenuItem.CheckOnClick = true;
             this.italianToolStripMenuItem.Name = "italianToolStripMenuItem";
-            this.italianToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.italianToolStripMenuItem.Text = "Italiano";
-            this.italianToolStripMenuItem.ToolTipText = "Cambia lingua in Italiano";
-            this.italianToolStripMenuItem.Click += new System.EventHandler(this.ItalianToolStripMenuItem_Click);
+            this.italianToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // spanishToolStripMenuItem
             // 
-            this.spanishToolStripMenuItem.CheckOnClick = true;
             this.spanishToolStripMenuItem.Name = "spanishToolStripMenuItem";
-            this.spanishToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.spanishToolStripMenuItem.Text = "Español";
-            this.spanishToolStripMenuItem.ToolTipText = "Cambiar idioma a Español";
-            this.spanishToolStripMenuItem.Click += new System.EventHandler(this.SpanishToolStripMenuItem_Click);
+            this.spanishToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // russianToolStripMenuItem
             // 
-            this.russianToolStripMenuItem.CheckOnClick = true;
             this.russianToolStripMenuItem.Name = "russianToolStripMenuItem";
-            this.russianToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.russianToolStripMenuItem.Text = "Pусский";
-            this.russianToolStripMenuItem.ToolTipText = "Сменить язык на Pусский";
-            this.russianToolStripMenuItem.Click += new System.EventHandler(this.RussianToolStripMenuItem_Click);
+            this.russianToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
             // richTextBox1
             // 

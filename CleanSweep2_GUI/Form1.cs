@@ -1,22 +1,19 @@
 ﻿using CleanSweep2.Properties;
 using Octo = Octokit;
 using System;
-using System.Configuration;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace CleanSweep2
 {
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.3.3";
+        private const string CurrentVersion = "v2.3.4";
         private Octo.GitHubClient _octoClient;
         private readonly string _userName = Environment.UserName;
         private readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -43,7 +40,6 @@ namespace CleanSweep2
         private bool _windowsInstallerCacheCleared = false;
         private bool _windowsUpdateLogsCleared = false;
         private bool[] _checkedArrayBool;
-        private ToolStripMenuItem[] _languageBoxes;
         private long _totalSpaceSaved;
         private CheckBox[] _checkedArray;
 
@@ -112,10 +108,6 @@ namespace CleanSweep2
             SetWindowSizeAndLocation();
             SetVerbosity();
             SetOperationWindows();
-            var language = ConfigurationManager.AppSettings["language"];
-            Console.WriteLine(language);
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(language);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(language);
         }
 
         private void SetWindowSizeAndLocation()
@@ -230,16 +222,6 @@ namespace CleanSweep2
                 checkBox14.Checked,
                 checkBox15.Checked,
                 checkBox18.Checked
-            };
-
-            _languageBoxes = new []
-            {
-                englishToolStripMenuItem,
-                frenchToolStripMenuItem,
-                germanToolStripMenuItem,
-                italianToolStripMenuItem,
-                spanishToolStripMenuItem,
-                russianToolStripMenuItem
             };
 
             RestoreSavedChecks();
@@ -1894,7 +1876,9 @@ namespace CleanSweep2
                     }
                     else
                     {
-                        richTextBox1.AppendText(Resources.Recovered + oldWindowsInstallerCacheDirSize + Resources.MB_from_removing_Windows_Installer_Cache, Color.Green);
+                        oldWindowsInstallerCacheDirSize = 0;
+                        _newWindowsInstallerCacheDirSize = oldWindowsInstallerCacheDirSize;
+                        richTextBox1.AppendText(Resources.Recovered + oldWindowsInstallerCacheDirSize + Resources.MB_from_removing_Windows_Installer_Cache + "\n", Color.Green);
                     }
                     _totalSpaceSaved += _newWindowsInstallerCacheDirSize;
                 }
@@ -2379,82 +2363,10 @@ namespace CleanSweep2
         {
 
         }
-        private void LanguageToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void FileToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void EnglishToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var languageBox in _languageBoxes)
-            {
-                languageBox.Checked = false;
-            }
-            englishToolStripMenuItem.Checked = true;
-            var changeLanguage = new ChangeLanguage();
-            changeLanguage.UpdateConfig("language", "en");
-            Application.Restart();
-        }
-
-        private void FrenchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var languageBox in _languageBoxes)
-            {
-                languageBox.Checked = false;
-            }
-            frenchToolStripMenuItem.Checked = true;
-            var changeLanguage = new ChangeLanguage();
-            changeLanguage.UpdateConfig("language", "fr");
-            Application.Restart();
-        }
-
-        private void GermanToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var languageBox in _languageBoxes)
-            {
-                languageBox.Checked = false;
-            }
-            germanToolStripMenuItem.Checked = true;
-            var changeLanguage = new ChangeLanguage();
-            changeLanguage.UpdateConfig("language", "ger");
-            Application.Restart();
-        }
-
-        private void ItalianToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var languageBox in _languageBoxes)
-            {
-                languageBox.Checked = false;
-            }
-            italianToolStripMenuItem.Checked = true;
-            var changeLanguage = new ChangeLanguage();
-            changeLanguage.UpdateConfig("language", "it");
-            Application.Restart();
-        }
-
-        private void SpanishToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var languageBox in _languageBoxes)
-            {
-                languageBox.Checked = false;
-            }
-
-            spanishToolStripMenuItem.Checked = true;
-            var changeLanguage = new ChangeLanguage();
-            changeLanguage.UpdateConfig("language", "es");
-            Application.Restart();
-        }
-
-        private void RussianToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            foreach (var languageBox in _languageBoxes)
-            {
-                languageBox.Checked = false;
-            }
-            russianToolStripMenuItem.Checked = true;
-            var changeLanguage = new ChangeLanguage();
-            changeLanguage.UpdateConfig("language", "ru");
-            Application.Restart();
         }
     }
 }
@@ -2469,30 +2381,5 @@ public static class RichTextBoxExtensions
         box.SelectionColor = color;
         box.AppendText(text);
         box.SelectionColor = box.ForeColor;
-    }
-}
-
-public class ChangeLanguage
-{
-    public void UpdateConfig(string key, string value)
-    {
-        var xmlDoc = new XmlDocument();
-        xmlDoc.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
-
-        foreach (XmlElement xmlElement in xmlDoc.DocumentElement)
-        {
-            if (xmlElement.Name.Equals("appSettings"))
-            {
-                foreach (XmlNode xNode in xmlElement.ChildNodes)
-                {
-                    if (xNode.Attributes[0].Value.Equals(key))
-                    {
-                        xNode.Attributes[1].Value = value;
-                    }
-                }
-            }
-        }
-        ConfigurationManager.RefreshSection("appSettings");
-        xmlDoc.Save(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
     }
 }
