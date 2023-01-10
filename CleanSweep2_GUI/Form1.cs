@@ -13,7 +13,7 @@ namespace CleanSweep2
     public partial class Form1 : Form
     {
         #region Declarations
-        private const string CurrentVersion = "v2.3.4";
+        private const string CurrentVersion = "v2.3.5";
         private Octo.GitHubClient _octoClient;
         private readonly string _userName = Environment.UserName;
         private readonly string _systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
@@ -1314,22 +1314,48 @@ namespace CleanSweep2
                                     }
                                 }
                             }
-                            catch (IOException ex)
+                            catch (Exception ex)
                             {
-                                if (_isVerboseMode)
+                                if (ex.GetType() == typeof(IOException))
                                 {
-                                    Invoke(new Action(() =>
+                                    if (_isVerboseMode)
                                     {
-                                        richTextBox1.AppendText(Resources.Skipping__ + edgeDirectory + ". " + ex.Message + "\n", Color.Green);
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText(Resources.Skipping__ + edgeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                            ScrollToOutputBottom();
+                                        }));
+                                    }
+                                    else
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            richTextBox1.AppendText("[x]", Color.Red);
+                                        }));
+                                    }
+                                }
+                                else if (ex.GetType() == typeof(UnauthorizedAccessException))
+                                {
+                                    if (_isVerboseMode)
+                                    {
+                                        richTextBox1.AppendText(Resources.Skipping__ + edgeDirectory + ". " + ex.Message + "\n", Color.Red);
                                         ScrollToOutputBottom();
-                                    }));
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                    }
                                 }
                                 else
                                 {
-                                    Invoke(new Action(() =>
+                                    if (_isVerboseMode)
                                     {
-                                        richTextBox1.AppendText("[x]", Color.Red);
-                                    }));
+                                        richTextBox1.AppendText(Resources.Skipping__ + edgeDirectory + ". " + ex.Message + "\n", Color.Red);
+                                    }
+                                    else
+                                    {
+                                        richTextBox1.AppendText("x", Color.Red);
+                                    }
                                 }
                             }
                         }
@@ -1440,7 +1466,7 @@ namespace CleanSweep2
                                     }
                                 }
                             }
-                            catch (SystemException ex)
+                            catch (Exception ex)
                             {
                                 if (ex.GetType() == typeof(IOException))
                                 {
