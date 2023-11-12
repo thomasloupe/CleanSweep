@@ -5,7 +5,7 @@ using System.Linq;
 
 public class TemporaryFilesCleaner : ICleaner
 {
-    private string _tempDirectory;
+    private readonly string _tempDirectory;
     private long _preCleanupSize;
 
     public TemporaryFilesCleaner(string tempDirectory)

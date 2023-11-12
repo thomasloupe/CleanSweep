@@ -5,7 +5,7 @@ using System.Linq;
 
 public class MicrosoftOfficeCacheCleaner : ICleaner
 {
-    private string _msoCacheDir;
+    private readonly string _msoCacheDir;
     private long _preCleanupSize;
 
     public MicrosoftOfficeCacheCleaner(string msoCacheDir)

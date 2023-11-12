@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 public class ChromeCacheCleaner
 {
-    private string[] _chromeCacheDirectories;
-    private bool _showOperationWindows;
-    private bool _isVerboseMode;
+    private readonly string[] _chromeCacheDirectories;
+    private readonly bool _showOperationWindows;
+    private readonly bool _isVerboseMode;
     private long _preCleanupSize;
 
     public ChromeCacheCleaner(string[] chromeCacheDirectories, bool showOperationWindows, bool isVerboseMode)

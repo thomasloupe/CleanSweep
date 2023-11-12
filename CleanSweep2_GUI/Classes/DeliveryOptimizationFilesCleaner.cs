@@ -5,7 +5,7 @@ using System.Linq;
 
 public class DeliveryOptimizationFilesCleaner : ICleaner
 {
-    private string _deliveryOptimizationFilesDirectory;
+    private readonly string _deliveryOptimizationFilesDirectory;
     private long _deliveryOptimizationFilesDirSizeInMegaBytes; // Added this field
 
     public DeliveryOptimizationFilesCleaner(string deliveryOptimizationFilesDirectory)

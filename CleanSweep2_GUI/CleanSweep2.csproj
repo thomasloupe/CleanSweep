@@ -108,6 +108,7 @@
     <Compile Include="Classes\TemporarySetupFilesCleaner.cs" />
     <Compile Include="Classes\ThumbnailCacheCleaner.cs" />
     <Compile Include="Classes\UserFileHistoryCleaner.cs" />
+    <Compile Include="Classes\CleanSweepVersion.cs" />
     <Compile Include="Classes\WindowsDefenderLogFilesCleaner.cs" />
     <Compile Include="Classes\WindowsErrorReportsCleaner.cs" />
     <Compile Include="Classes\WindowsInstallerCacheCleaner.cs" />
@@ -120,6 +121,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\UIHelpers.cs" />
+    <Compile Include="Interfaces\ICleaner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="CleanSweep2_TemporaryKey.pfx" />

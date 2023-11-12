@@ -7,9 +7,9 @@ using CleanSweep2.Interfaces;
 
 public class MicrosoftEdgeCacheCleaner : ICleaner
 {
-    private string[] _edgeCacheDirectories;
-    private bool _showOperationWindows;
-    private bool _isVerboseMode;
+    private readonly string[] _edgeCacheDirectories;
+    private readonly bool _showOperationWindows;
+    private readonly bool _isVerboseMode;
     private long _preCleanupSize;
 
     public MicrosoftEdgeCacheCleaner(string[] edgeCacheDirectories, bool showOperationWindows, bool isVerboseMode)
