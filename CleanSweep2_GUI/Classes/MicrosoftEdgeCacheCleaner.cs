@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using CleanSweep2.Interfaces;
 
-public class MicrosoftEdgeCacheCleaner
+public class MicrosoftEdgeCacheCleaner : ICleaner
 {
     private string[] _edgeCacheDirectories;
     private bool _showOperationWindows;
     private bool _isVerboseMode;
+    private long _preCleanupSize;
 
     public MicrosoftEdgeCacheCleaner(string[] edgeCacheDirectories, bool showOperationWindows, bool isVerboseMode)
     {
@@ -16,10 +19,11 @@ public class MicrosoftEdgeCacheCleaner
         _isVerboseMode = isVerboseMode;
     }
 
-    public long GetReclaimableSpace()
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        // This operation may not easily support a pre-calculation of reclaimable space
-        return 0;
+        _preCleanupSize = _edgeCacheDirectories.Sum(dir => CalculateDirectorySize(dir));
+        int spaceInMB = ConvertBytesToMegabytes(_preCleanupSize);
+        return ("Microsoft Edge Cache Files", spaceInMB);
     }
 
     public async Task Reclaim()
@@ -48,9 +52,10 @@ public class MicrosoftEdgeCacheCleaner
                     {
                         Directory.Delete(edgeDirectory, true);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Handle exceptions as needed
+                        // Handle or log exceptions
+                        Console.WriteLine($"Error deleting Edge cache directory {edgeDirectory}: {ex.Message}");
                     }
                 }
             }
@@ -59,7 +64,22 @@ public class MicrosoftEdgeCacheCleaner
 
     public long ReportReclaimedSpace()
     {
-        // This operation may not easily support reporting reclaimed space
-        return 0;
+        long postCleanupSize = _edgeCacheDirectories.Sum(dir => CalculateDirectorySize(dir));
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
+                        .Sum(file => new FileInfo(file).Length);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

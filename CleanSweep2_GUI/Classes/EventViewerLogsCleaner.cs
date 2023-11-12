@@ -1,37 +1,34 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 public class EventViewerLogsCleaner
 {
-    public long GetReclaimableSpace()
-    {
-        // This operation may not easily support a pre-calculation of reclaimable space
-        return 0;
-    }
-
     public async Task Reclaim()
     {
         await Task.Run(() =>
         {
-            var process = new Process
+            try
             {
-                StartInfo = new ProcessStartInfo
+                var process = new Process
                 {
-                    FileName = "wevtutil.exe",
-                    Arguments = "cl Application && wevtutil.exe cl Security && wevtutil.exe cl System",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                }
-            };
-            process.Start();
-            process.WaitForExit();
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "wevtutil.exe",
+                        Arguments = "cl Application && wevtutil.exe cl Security && wevtutil.exe cl System",
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    }
+                };
+                process.Start();
+                process.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                // Handle or log exceptions
+                Console.WriteLine($"Error during Event Viewer log cleanup: {ex.Message}");
+            }
         });
-    }
-
-    public long ReportReclaimedSpace()
-    {
-        // This operation may not easily support reporting reclaimed space
-        return 0;
     }
 }

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Diagnostics;
+﻿using CleanSweep2.Interfaces;
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
-public class WindowsInstallerCacheCleaner
+public class WindowsInstallerCacheCleaner : ICleaner
 {
-    private string _windowsDirectory;
-    private bool _showOperationWindows;
+    private readonly string _windowsDirectory;
+    private readonly bool _showOperationWindows;
+    private long _preCleanupSize;
 
     public WindowsInstallerCacheCleaner(string windowsDirectory, bool showOperationWindows)
     {
@@ -14,36 +16,53 @@ public class WindowsInstallerCacheCleaner
         _showOperationWindows = showOperationWindows;
     }
 
-    public long GetReclaimableSpace()
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        // This operation may not easily support a pre-calculation of reclaimable space
-        return 0;
+        string patchCacheDir = Path.Combine(_windowsDirectory, "Installer", "$PatchCache$", "Managed");
+        _preCleanupSize = CalculateDirectorySize(patchCacheDir);
+        int spaceInMB = ConvertBytesToMegabytes(_preCleanupSize);
+        return ("Windows Installer Cache", spaceInMB);
     }
 
     public async Task Reclaim()
     {
+        string patchCacheDir = Path.Combine(_windowsDirectory, "Installer", "$PatchCache$", "Managed");
+
         await Task.Run(() =>
         {
-            var process = new Process
+            if (Directory.Exists(patchCacheDir))
             {
-                StartInfo = new ProcessStartInfo
+                try
                 {
-                    FileName = "cmd.exe",
-                    Arguments = "/C rmdir /q /s " + _windowsDirectory + "\\Installer\\$PatchCache$\\Managed",
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WorkingDirectory = "C:\\Windows\\",
-                    WindowStyle = _showOperationWindows ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
+                    Directory.Delete(patchCacheDir, true);
                 }
-            };
-            process.Start();
-            process.WaitForExit();
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting Windows Installer Cache: {ex.Message}");
+                }
+            }
         });
     }
 
     public long ReportReclaimedSpace()
     {
-        // This operation may not easily support reporting reclaimed space
-        return 0;
+        string patchCacheDir = Path.Combine(_windowsDirectory, "Installer", "$PatchCache$", "Managed");
+        long postCleanupSize = CalculateDirectorySize(patchCacheDir);
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
+                        .Sum(file => new FileInfo(file).Length);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

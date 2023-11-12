@@ -1,24 +1,33 @@
-﻿using System;
+﻿using CleanSweep2.Interfaces;
+using System;
 using System.IO;
 using System.Linq;
 
-public class WindowsErrorReportsCleaner
+public class WindowsErrorReportsCleaner : ICleaner
 {
-    private string _windowsErrorReportsDirectory;
-    private long _windowsErrorReportsDirSizeInMegaBytes;
+    private readonly string _windowsErrorReportsDirectory;
+    private long _preCleanupSize;
 
     public WindowsErrorReportsCleaner(string windowsErrorReportsDirectory)
     {
         _windowsErrorReportsDirectory = windowsErrorReportsDirectory;
     }
 
-    public long GetReclaimableSpace()
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
+        long totalSizeBytes = 0;
+
         if (Directory.Exists(_windowsErrorReportsDirectory))
         {
-            _windowsErrorReportsDirSizeInMegaBytes = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+            totalSizeBytes = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories)
+                                      .Sum(t => new FileInfo(t).Length);
         }
-        return _windowsErrorReportsDirSizeInMegaBytes;
+
+        _preCleanupSize = totalSizeBytes; // Store pre-cleanup size in bytes
+
+        // Convert bytes to megabytes and safely cast to int
+        int totalSizeMBInt = ConvertBytesToMegabytes(totalSizeBytes);
+        return ("Windows Error Reports", totalSizeMBInt);
     }
 
     public void Reclaim()
@@ -33,7 +42,8 @@ public class WindowsErrorReportsCleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Enhanced exception handling
+                Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
             }
         }
 
@@ -45,7 +55,8 @@ public class WindowsErrorReportsCleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Enhanced exception handling
+                Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
             }
         }
     }
@@ -55,8 +66,16 @@ public class WindowsErrorReportsCleaner
         long newSize = 0;
         if (Directory.Exists(_windowsErrorReportsDirectory))
         {
-            newSize = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+            newSize = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories)
+                               .Sum(t => new FileInfo(t).Length);
         }
-        return _windowsErrorReportsDirSizeInMegaBytes - newSize;
+
+        long reclaimedSpace = _preCleanupSize - newSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

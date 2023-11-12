@@ -1,24 +1,33 @@
-﻿using System;
+﻿using CleanSweep2.Interfaces;
+using System;
 using System.IO;
 using System.Linq;
 
-public class TemporaryInternetFilesCleaner
+public class TemporaryInternetFilesCleaner : ICleaner
 {
     private string _tempInternetFilesDirectory;
-    private long _tempInternetFilesSizeInMegaBytes;
+    private long _preCleanupSize;
 
     public TemporaryInternetFilesCleaner(string tempInternetFilesDirectory)
     {
         _tempInternetFilesDirectory = tempInternetFilesDirectory;
     }
 
-    public long GetReclaimableSpace()
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
+        long totalSizeBytes = 0;
+
         if (Directory.Exists(_tempInternetFilesDirectory))
         {
-            _tempInternetFilesSizeInMegaBytes = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+            totalSizeBytes = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories)
+                                      .Sum(t => new FileInfo(t).Length);
         }
-        return _tempInternetFilesSizeInMegaBytes;
+
+        _preCleanupSize = totalSizeBytes; // Store pre-cleanup size in bytes
+
+        // Convert bytes to megabytes and safely cast to int
+        int totalSizeMBInt = ConvertBytesToMegabytes(totalSizeBytes);
+        return ("Temporary Internet Files", totalSizeMBInt);
     }
 
     public void Reclaim()
@@ -33,7 +42,8 @@ public class TemporaryInternetFilesCleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Enhanced exception handling
+                Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
             }
         }
 
@@ -45,7 +55,8 @@ public class TemporaryInternetFilesCleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Enhanced exception handling
+                Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
             }
         }
     }
@@ -55,8 +66,16 @@ public class TemporaryInternetFilesCleaner
         long newSize = 0;
         if (Directory.Exists(_tempInternetFilesDirectory))
         {
-            newSize = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories).Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
+            newSize = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories)
+                               .Sum(t => new FileInfo(t).Length);
         }
-        return _tempInternetFilesSizeInMegaBytes - newSize;
+
+        long reclaimedSpace = _preCleanupSize - newSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

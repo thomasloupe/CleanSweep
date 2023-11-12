@@ -1,11 +1,14 @@
-﻿using System;
+﻿using CleanSweep2.Interfaces;
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
-public class WindowsUpdateLogsCleaner
+public class WindowsUpdateLogsCleaner : ICleaner
 {
-    private string _windowsUpdateLogDir;
-    private bool _isVerboseMode;
+    private readonly string _windowsUpdateLogDir;
+    private readonly bool _isVerboseMode;
+    private long _preCleanupSize;
 
     public WindowsUpdateLogsCleaner(string windowsUpdateLogDir, bool isVerboseMode)
     {
@@ -13,50 +16,53 @@ public class WindowsUpdateLogsCleaner
         _isVerboseMode = isVerboseMode;
     }
 
-    public long GetReclaimableSpace()
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        long reclaimableSpace = 0;
-        if (Directory.Exists(_windowsUpdateLogDir))
-        {
-            var di = new DirectoryInfo(_windowsUpdateLogDir);
-            foreach (var file in di.GetFiles())
-            {
-                reclaimableSpace += file.Length;
-            }
-        }
-        return reclaimableSpace;
+        _preCleanupSize = CalculateDirectorySize(_windowsUpdateLogDir);
+        int spaceInMB = ConvertBytesToMegabytes(_preCleanupSize);
+        return ("Windows Update Logs", spaceInMB);
     }
 
     public async Task Reclaim()
     {
         if (Directory.Exists(_windowsUpdateLogDir))
         {
-            var di = new DirectoryInfo(_windowsUpdateLogDir);
-            foreach (var file in di.GetFiles())
+            await Task.Run(() =>
             {
-                try
+                var di = new DirectoryInfo(_windowsUpdateLogDir);
+                foreach (var file in di.GetFiles())
                 {
-                    file.Delete();
+                    try
+                    {
+                        file.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
+                    }
                 }
-                catch (Exception)
-                {
-                    // Log or handle exceptions as needed
-                }
-            }
+            });
         }
     }
 
     public long ReportReclaimedSpace()
     {
-        long reclaimedSpace = 0;
-        if (Directory.Exists(_windowsUpdateLogDir))
-        {
-            var di = new DirectoryInfo(_windowsUpdateLogDir);
-            foreach (var file in di.GetFiles())
-            {
-                reclaimedSpace += file.Length;
-            }
-        }
-        return reclaimedSpace;
+        long postCleanupSize = CalculateDirectorySize(_windowsUpdateLogDir);
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
+                        .Sum(file => new FileInfo(file).Length);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

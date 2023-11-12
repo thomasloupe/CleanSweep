@@ -30,7 +30,7 @@ public class MicrosoftOfficeCacheCleaner : ICleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                Console.WriteLine($"Error deleting Microsoft Office cache directory {_msoCacheDir}: {ex.Message}");
             }
         }
     }

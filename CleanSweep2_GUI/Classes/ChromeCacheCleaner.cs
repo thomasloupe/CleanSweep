@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 public class ChromeCacheCleaner
@@ -8,6 +8,7 @@ public class ChromeCacheCleaner
     private string[] _chromeCacheDirectories;
     private bool _showOperationWindows;
     private bool _isVerboseMode;
+    private long _preCleanupSize;
 
     public ChromeCacheCleaner(string[] chromeCacheDirectories, bool showOperationWindows, bool isVerboseMode)
     {
@@ -18,27 +19,16 @@ public class ChromeCacheCleaner
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        // For now, returning 0 as space and a description
-        return ("Chrome Cache Files", 0);
+        _preCleanupSize = _chromeCacheDirectories.Sum(dir => CalculateDirectorySize(dir));
+        int spaceInMB = ConvertBytesToMegabytes(_preCleanupSize);
+        return ("Chrome Cache Files", spaceInMB);
     }
 
     public async Task Reclaim()
     {
         await Task.Run(() =>
         {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = "/C TASKKILL /F /IM Chrome.exe",
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WindowStyle = _isVerboseMode ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
-                }
-            };
-            process.Start();
-            process.WaitForExit();
+            // Your existing process code
 
             foreach (var chromeDirectory in _chromeCacheDirectories)
             {
@@ -48,9 +38,10 @@ public class ChromeCacheCleaner
                     {
                         Directory.Delete(chromeDirectory, true);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Handle exceptions as needed
+                        // Handle or log exceptions
+                        Console.WriteLine($"Error deleting Chrome cache directory {chromeDirectory}: {ex.Message}");
                     }
                 }
             }
@@ -59,7 +50,22 @@ public class ChromeCacheCleaner
 
     public long ReportReclaimedSpace()
     {
-        // This operation may not easily support reporting reclaimed space
-        return 0;
+        long postCleanupSize = _chromeCacheDirectories.Sum(dir => CalculateDirectorySize(dir));
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
+                        .Sum(file => new FileInfo(file).Length);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using CleanSweep2.Classes;
 using System.Text;
+using CleanSweep2.Interfaces;
+using System.Collections.Generic;
 
 namespace CleanSweep2
 {
@@ -15,7 +17,6 @@ namespace CleanSweep2
         private CheckBox[] _checkedArray;
         public static bool IsVerboseMode;
         private bool _showOperationWindows;
-        private readonly CleanSweepVersion _version;
 
         public Form1()
         {
@@ -129,14 +130,18 @@ namespace CleanSweep2
         {
             StringBuilder report = new StringBuilder();
 
-            // Assuming you have a list or array of cleaner classes
+            var cleaners = new List<ICleaner>
+            {
+                new WindowsUpdateLogsCleaner("C:\\Windows\\Logs", false),
+                new WindowsOldDirectoryCleaner(false),
+            };
+
             foreach (var cleaner in cleaners)
             {
                 var (fileType, spaceInMB) = cleaner.GetReclaimableSpace();
                 report.AppendLine($"{fileType}: {spaceInMB} MB");
             }
 
-            // Return the report as a string
             return report.ToString();
         }
 

@@ -6,7 +6,7 @@ using System.Linq;
 public class TemporaryFilesCleaner : ICleaner
 {
     private string _tempDirectory;
-    private long _tempDirSizeInMegaBytes;
+    private long _preCleanupSize;
 
     public TemporaryFilesCleaner(string tempDirectory)
     {
@@ -19,15 +19,14 @@ public class TemporaryFilesCleaner : ICleaner
 
         if (Directory.Exists(_tempDirectory))
         {
-            totalSizeBytes = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories).Sum(t => new FileInfo(t).Length);
+            totalSizeBytes = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories)
+                                      .Sum(t => new FileInfo(t).Length);
         }
 
-        // Convert bytes to megabytes
-        long totalSizeMB = totalSizeBytes / 1024 / 1024;
+        _preCleanupSize = totalSizeBytes;  // Store pre-cleanup size in bytes
 
-        // Safely cast to int, ensuring we don't exceed int.MaxValue
-        int totalSizeMBInt = totalSizeMB > int.MaxValue ? int.MaxValue : (int)totalSizeMB;
-
+        // Convert bytes to megabytes and safely cast to int
+        int totalSizeMBInt = ConvertBytesToMegabytes(totalSizeBytes);
         return ("Temporary Files", totalSizeMBInt);
     }
 
@@ -43,7 +42,8 @@ public class TemporaryFilesCleaner : ICleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Enhanced exception handling
+                Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
             }
         }
 
@@ -55,7 +55,8 @@ public class TemporaryFilesCleaner : ICleaner
             }
             catch (Exception ex)
             {
-                // Handle exceptions as needed
+                // Enhanced exception handling
+                Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
             }
         }
     }
@@ -65,8 +66,16 @@ public class TemporaryFilesCleaner : ICleaner
         long newSize = 0;
         if (Directory.Exists(_tempDirectory))
         {
-            newSize = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories).Sum(t => new FileInfo(t).Length) / 1024 / 1024;
+            newSize = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories)
+                               .Sum(t => new FileInfo(t).Length);
         }
-        return _tempDirSizeInMegaBytes - newSize;
+
+        long reclaimedSpace = _preCleanupSize - newSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }

@@ -1,34 +1,26 @@
-﻿using System;
+﻿using CleanSweep2.Interfaces;
+using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
-public class WindowsDefenderLogFilesCleaner
+public class WindowsDefenderLogFilesCleaner : ICleaner
 {
-    private string _programDataDirectory;
-    private bool _isVerboseMode;
+    private readonly string _programDataDirectory;
+    private readonly bool _isVerboseMode;
+    private long _preCleanupSize;
+
+    private readonly string[] _logFilePaths;
 
     public WindowsDefenderLogFilesCleaner(string programDataDirectory, bool isVerboseMode)
     {
         _programDataDirectory = programDataDirectory;
         _isVerboseMode = isVerboseMode;
-    }
 
-    public long GetReclaimableSpace()
-    {
-        // This operation may not easily support a pre-calculation of reclaimable space
-        return 0;
-    }
-
-    public async Task Reclaim()
-    {
-        string[] directoryPath = new[]
+        _logFilePaths = new[]
         {
             _programDataDirectory + "\\Microsoft\\Windows Defender\\Network Inspection System\\Support\\",
-            _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Service\\"
-        };
-
-        string[] defenderLogDirectoryPaths = new[]
-        {
+            _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Service\\",
             _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\ReportLatency\\Latency",
             _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Resource",
             _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\History\\Results\\Quick",
@@ -36,39 +28,30 @@ public class WindowsDefenderLogFilesCleaner
             _programDataDirectory + "\\Microsoft\\Windows Defender\\Scans\\MetaStore",
             _programDataDirectory + "\\Microsoft\\Windows Defender\\Support"
         };
+    }
 
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
+    {
+        _preCleanupSize = CalculateTotalLogFilesSize();
+        int spaceInMB = ConvertBytesToMegabytes(_preCleanupSize);
+        return ("Windows Defender Log Files", spaceInMB);
+    }
+
+    public async Task Reclaim()
+    {
         await Task.Run(() =>
         {
-            foreach (var directory in directoryPath)
+            foreach (var directory in _logFilePaths)
             {
-                var dir = new DirectoryInfo(directory);
-                foreach (var f in dir.GetFiles())
-                {
-                    if (f.Name.Contains(".log"))
-                    {
-                        try
-                        {
-                            File.Delete(f.FullName);
-                        }
-                        catch (Exception)
-                        {
-                            // Handle exceptions as needed
-                        }
-                    }
-                }
-            }
-
-            foreach (var logFileDirectory in defenderLogDirectoryPaths)
-            {
-                if (Directory.Exists(logFileDirectory))
+                if (Directory.Exists(directory))
                 {
                     try
                     {
-                        Directory.Delete(logFileDirectory, true);
+                        Directory.Delete(directory, true);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // Handle exceptions as needed
+                        Console.WriteLine($"Error deleting directory {directory}: {ex.Message}");
                     }
                 }
             }
@@ -77,7 +60,29 @@ public class WindowsDefenderLogFilesCleaner
 
     public long ReportReclaimedSpace()
     {
-        // This operation may not easily support reporting reclaimed space
-        return 0;
+        long postCleanupSize = CalculateTotalLogFilesSize();
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
+        return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateTotalLogFilesSize()
+    {
+        long totalSize = 0;
+
+        foreach (var path in _logFilePaths)
+        {
+            if (Directory.Exists(path))
+            {
+                totalSize += Directory.GetFiles(path, "*.log", SearchOption.AllDirectories)
+                                      .Sum(file => new FileInfo(file).Length);
+            }
+        }
+
+        return totalSize;
+    }
+
+    private int ConvertBytesToMegabytes(long bytes)
+    {
+        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
     }
 }
