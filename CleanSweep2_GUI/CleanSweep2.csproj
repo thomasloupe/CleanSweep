@@ -97,12 +97,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ChromeCacheCleaner.cs" />
+    <Compile Include="Classes\DeliveryOptimizationFilesCleaner.cs" />
+    <Compile Include="Classes\EmptyRecycleBinCleaner.cs" />
+    <Compile Include="Classes\EventViewerLogsCleaner.cs" />
+    <Compile Include="Classes\MicrosoftEdgeCacheCleaner.cs" />
+    <Compile Include="Classes\MicrosoftOfficeCacheCleaner.cs" />
+    <Compile Include="Classes\TemporaryFilesCleaner.cs" />
+    <Compile Include="Classes\TemporaryInternetFilesCleaner.cs" />
+    <Compile Include="Classes\TemporarySetupFilesCleaner.cs" />
+    <Compile Include="Classes\ThumbnailCacheCleaner.cs" />
+    <Compile Include="Classes\UserFileHistoryCleaner.cs" />
+    <Compile Include="Classes\WindowsDefenderLogFilesCleaner.cs" />
+    <Compile Include="Classes\WindowsErrorReportsCleaner.cs" />
+    <Compile Include="Classes\WindowsInstallerCacheCleaner.cs" />
+    <Compile Include="Classes\WindowsOldDirectoryCleaner.cs" />
+    <Compile Include="Classes\WindowsUpdateLogsCleaner.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\UIHelpers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="CleanSweep2_TemporaryKey.pfx" />
@@ -174,5 +191,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
