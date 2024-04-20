@@ -1,0 +1,548 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Shutting_Down_Explorer.exe_Process" xml:space="preserve">
+    <value>
+Shutting down Explorer.exe process...</value>
+  </data>
+  <data name="You_have_the_latest_version" xml:space="preserve">
+    <value>You have the latest version, v2.2.0!</value>
+  </data>
+  <data name="Sweeping_Windows_Update_Logs" xml:space="preserve">
+    <value>Sweeping Windows Update Logs
+</value>
+  </data>
+  <data name="Removed__" xml:space="preserve">
+    <value>Removed: </value>
+  </data>
+  <data name="MB_from_removing_Temporary_Files" xml:space="preserve">
+    <value>MB from removing Temporary Files.</value>
+  </data>
+  <data name="Couldn_t_Connect" xml:space="preserve">
+    <value>Couldn't Connect!</value>
+  </data>
+  <data name="Website__https___thomasloupe_com" xml:space="preserve">
+    <value>Website: https://thomasloupe.com</value>
+  </data>
+  <data name="Sweeping_Delivery_Information_Files" xml:space="preserve">
+    <value>Sweeping Delivery Optimization Files...
+</value>
+  </data>
+  <data name="&lt;1MB_Recovered_From_Windows_Delivery_Optimization_Files" xml:space="preserve">
+    <value>
+&lt;1MB recovered from Windows Delivery Optimization Files...</value>
+  </data>
+  <data name="Swept_Windows_Error_Reports" xml:space="preserve">
+    <value>Swept Windows Error Reports!
+
+</value>
+  </data>
+  <data name="Restarted_Explorer.exe_Process" xml:space="preserve">
+    <value>
+Restarted Explorer.exe process.</value>
+  </data>
+  <data name="Sweeping_Chrome_Cache" xml:space="preserve">
+    <value>Sweeping Chrome cache...
+</value>
+  </data>
+  <data name="Event_Logs_Were_Cleared" xml:space="preserve">
+    <value>
+Event Logs were cleared.</value>
+  </data>
+  <data name="Windows_Error_Reports_size" xml:space="preserve">
+    <value>Windows Error Reports size: </value>
+  </data>
+  <data name="MB_from_removing_Windows_Error_Reports_" xml:space="preserve">
+    <value>MB from removing Windows Error Reports.</value>
+  </data>
+  <data name="Found_Windows_Installer_Cache_Cleaning" xml:space="preserve">
+    <value>
+Found Windows Installer Cache. Cleaning</value>
+  </data>
+  <data name="Stopped_Chrome_Processes" xml:space="preserve">
+    <value>
+Stopped Chrome processes.
+</value>
+  </data>
+  <data name="MB_from_removing_Windows_Delivery_Optimization_Files" xml:space="preserve">
+    <value>MB from removing Windows Delivery Optimization Files.</value>
+  </data>
+  <data name="appears_to_be_in_use_or_locked__Skipping" xml:space="preserve">
+    <value> appears to be in use or locked. Skipping...</value>
+  </data>
+  <data name="No_MSO_Cache_Directory_Found_Skipping" xml:space="preserve">
+    <value>
+No MSOCache directory found. Skipping...
+
+</value>
+  </data>
+  <data name="Potential_space_to_reclaim" xml:space="preserve">
+    <value>Potential space to reclaim: </value>
+  </data>
+  <data name="Skipping__" xml:space="preserve">
+    <value>Skipping: </value>
+  </data>
+  <data name="Swept_Delivery_Optimization_Files" xml:space="preserve">
+    <value>
+Swept Delivery Optimization Files!
+
+</value>
+  </data>
+  <data name="Old_Versions_Of_Windows_Were_Removed" xml:space="preserve">
+    <value>
+Old versions of Windows were removed.</value>
+  </data>
+  <data name="MB_from_removing_Windows_Installer_Cache" xml:space="preserve">
+    <value>MB from removing Windows Installer Cache.</value>
+  </data>
+  <data name="Swept_Edge_Cache" xml:space="preserve">
+    <value>
+Swept Edge cache!
+
+</value>
+  </data>
+  <data name="Recovered" xml:space="preserve">
+    <value>
+Recovered </value>
+  </data>
+  <data name="Windows_Defender_Logs_Were_Removed" xml:space="preserve">
+    <value>
+Windows Defender Logs were removed.</value>
+  </data>
+  <data name="Stopped_Edge_Processes" xml:space="preserve">
+    <value>
+Stopped Edge processes.
+</value>
+  </data>
+  <data name="Update_Available" xml:space="preserve">
+    <value>Update Available!</value>
+  </data>
+  <data name="Recovery_Results" xml:space="preserve">
+    <value>
+
+Recovery results:</value>
+  </data>
+  <data name="Thumbnail_Cache_Was_Cleared" xml:space="preserve">
+    <value>
+Thumbnail cache was cleared.</value>
+  </data>
+  <data name="Sweeping_Event_Viewer_Logs" xml:space="preserve">
+    <value>Sweeping Event Viewer Logs</value>
+  </data>
+  <data name="Sweeping_MSO_cache" xml:space="preserve">
+    <value>Sweeping MSO cache</value>
+  </data>
+  <data name="Edge_Cache_Was_Cleared" xml:space="preserve">
+    <value>
+Edge cache was cleared.</value>
+  </data>
+  <data name="Directory_already_removed" xml:space="preserve">
+    <value>Directory already removed: </value>
+  </data>
+  <data name="Emptying_Recycle_Bin" xml:space="preserve">
+    <value>Emptying Recycle Bin</value>
+  </data>
+  <data name="Ending_any_Chrome_processes" xml:space="preserve">
+    <value>Ending any Chrome processes</value>
+  </data>
+  <data name="Swept_Temporary_Internet_Files" xml:space="preserve">
+    <value>
+Swept Temporary Internet Files!
+
+</value>
+  </data>
+  <data name="Sweeping_Temporary_Setup_Files" xml:space="preserve">
+    <value>Sweeping Temporary Setup Files...
+</value>
+  </data>
+  <data name="Sweeping_Windows_Error_Reports" xml:space="preserve">
+    <value>Sweeping Windows Error Reports
+</value>
+  </data>
+  <data name="Attempting_to_remove_all_file_history_snapshots_except_latest" xml:space="preserve">
+    <value>Attempting to remove all file history snapshots except latest</value>
+  </data>
+  <data name="MSO_Cache_size" xml:space="preserve">
+    <value>MSO Cache size: </value>
+  </data>
+  <data name="Created_by_Thomas_Loupe" xml:space="preserve">
+    <value>Created by Thomas Loupe.</value>
+  </data>
+  <data name="Swept_Event_Viewer_Logs" xml:space="preserve">
+    <value>
+Swept Event Viewer Logs!
+
+</value>
+  </data>
+  <data name="Sweeping_Temporary_Files" xml:space="preserve">
+    <value>Sweeping Temporary Files...
+</value>
+  </data>
+  <data name="Chome_Cache_Was_Cleared" xml:space="preserve">
+    <value>
+Chrome cache was cleared.</value>
+  </data>
+  <data name="Emptied_Recycle_Bin" xml:space="preserve">
+    <value>
+Emptied Recycle Bin!
+
+</value>
+  </data>
+  <data name="Found_Windows_Old_Directory_Cleaning" xml:space="preserve">
+    <value>
+Found Windows.old directory. Cleaning</value>
+  </data>
+  <data name="Recycle_Bin_Was_Emptied" xml:space="preserve">
+    <value>
+Recycle Bin was emptied.</value>
+  </data>
+  <data name="Removing_Windows_Installer_Cache" xml:space="preserve">
+    <value>Removing Windows Installer Cache</value>
+  </data>
+  <data name="Swept_Temporary_Files" xml:space="preserve">
+    <value>
+Swept Temporary Files!
+
+</value>
+  </data>
+  <data name="Chrome_Data_Size" xml:space="preserve">
+    <value>Chrome Data Size: </value>
+  </data>
+  <data name="Temp_Directory_size" xml:space="preserve">
+    <value>Temp Directory size: </value>
+  </data>
+  <data name="Skipping" xml:space="preserve">
+    <value> Skipping...</value>
+  </data>
+  <data name="CleanSweep_will_always_be_free" xml:space="preserve">
+    <value>CleanSweep will always be free!
+If you'd like to buy me a beer anyway, I won't tell you no!
+Would you like to open the donation page now?</value>
+  </data>
+  <data name="Total_Space_Recovered_&lt;1MB" xml:space="preserve">
+    <value>
+
+Total space recovered: &lt;1MB
+</value>
+  </data>
+  <data name="Removed_" xml:space="preserve">
+    <value>Removed </value>
+  </data>
+  <data name="Removed_File_History_Older_Than_Latest_Snapshot" xml:space="preserve">
+    <value>
+Removed file history older than latest snapshot.</value>
+  </data>
+  <data name="&lt;1MB_Recovered_From_Temporary_Internet_Files" xml:space="preserve">
+    <value>
+&lt;1MB recovered from Temporary Internet Files...</value>
+  </data>
+  <data name="Skipping___" xml:space="preserve">
+    <value>. Skipping...</value>
+  </data>
+  <data name="Swept_Windows_Installer_Cache" xml:space="preserve">
+    <value>
+Swept Windows Installer Cache!
+
+</value>
+  </data>
+  <data name="Swept_Windows_Update_Logs" xml:space="preserve">
+    <value>
+Swept Windows Update Logs!
+
+</value>
+  </data>
+  <data name="MB_from_removing_MSO_Cache" xml:space="preserve">
+    <value>MB from removing MSO Cache.</value>
+  </data>
+  <data name="Skipping_" xml:space="preserve">
+    <value>Skipping...</value>
+  </data>
+  <data name="Categorical_breakdown" xml:space="preserve">
+    <value>Categorical breakdown:</value>
+  </data>
+  <data name="Sweeping_Edge_Cache" xml:space="preserve">
+    <value>Sweeping Edge cache...
+</value>
+  </data>
+  <data name="Deleted" xml:space="preserve">
+    <value>Deleted: </value>
+  </data>
+  <data name="Swept_Temporary_Setup_Files" xml:space="preserve">
+    <value>
+Swept Temporary Setup Files!
+
+</value>
+  </data>
+  <data name="Clearing_Thumbnail_Cache" xml:space="preserve">
+    <value>Clearing Thumbnail Cache</value>
+  </data>
+  <data name="Ending_any_Edge_processes" xml:space="preserve">
+    <value>Ending any Edge processes</value>
+  </data>
+  <data name="Swept_MSO_Cache" xml:space="preserve">
+    <value>
+Swept MSO Cache!
+
+</value>
+  </data>
+  <data name="&lt;1MB_From_Removing_Windows_Error_Reports_" xml:space="preserve">
+    <value>
+&lt;1MB recovered from removing Windows Error Reports...</value>
+  </data>
+  <data name="A_new_version_of_CleanSweep_is_available" xml:space="preserve">
+    <value>A new version of CleanSweep is available!
+Current version: v2.2.0
+Latest version: </value>
+  </data>
+  <data name="Windows_Delivery_Optimization_File_size" xml:space="preserve">
+    <value>Windows Delivery Optimization File size: </value>
+  </data>
+  <data name="Couldn_t_delete" xml:space="preserve">
+    <value>Couldn't delete </value>
+  </data>
+  <data name="&lt;1MB_Recovered_From_Temporary_Setup_Files" xml:space="preserve">
+    <value>
+&lt;1MB recovered from Temporary Setup Files...</value>
+  </data>
+  <data name="MB_from_removing_Windows_Update_Logs" xml:space="preserve">
+    <value>MB from removing Windows Update Logs.</value>
+  </data>
+  <data name="Swept_Chrome_Cache" xml:space="preserve">
+    <value>
+Swept Chrome cache!
+
+</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Removing_old_versions_of_Windows" xml:space="preserve">
+    <value>Removing old versions of Windows</value>
+  </data>
+  <data name="No_Windows_Update_Logs_Directory_Found_Skipping" xml:space="preserve">
+    <value>
+No Windows Update Logs directory found. Skipping...
+
+</value>
+  </data>
+  <data name="MB" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="Sweeping_Temporary_Internet_Files" xml:space="preserve">
+    <value>Sweeping Temporary Internet Files...
+</value>
+  </data>
+  <data name="CleanSweep_is_free__but_beer_is_not" xml:space="preserve">
+    <value>CleanSweep is free, but beer is not!</value>
+  </data>
+  <data name="If_File_History_Was_Enabled_All_Versions_Except_The_Latest_Were_Removed" xml:space="preserve">
+    <value>
+If file history was enabled, all versions except latest were removed.
+
+</value>
+  </data>
+  <data name="Github__https___github_com_thomasloupe" xml:space="preserve">
+    <value>Github: https://github.com/thomasloupe</value>
+  </data>
+  <data name="Windows_Error_Report_Directory_Already_Removed_Skipping" xml:space="preserve">
+    <value>Windows Error Report directory already removed. Skipping
+
+</value>
+  </data>
+  <data name="No_Delivery_Optimization_Files_Needed_To_Be_Cleaned" xml:space="preserve">
+    <value>No Delivery Optimization Files needed to be cleaned.
+
+</value>
+  </data>
+  <data name="&lt;1MB_Recovered_From_Windows_Update_Logs" xml:space="preserve">
+    <value>
+&lt;1MB recovered from Windows Update Logs...</value>
+  </data>
+  <data name="Edge_Data_Size" xml:space="preserve">
+    <value>Edge Data Size: </value>
+  </data>
+  <data name="Couldn_t_remove" xml:space="preserve">
+    <value>Couldn't remove </value>
+  </data>
+  <data name="Temporary_Setup_Files_directory_size" xml:space="preserve">
+    <value>Temporary Setup Files directory size: </value>
+  </data>
+  <data name="Would_you_like_to_visit_the_download_page_" xml:space="preserve">
+    <value>Would you like to visit the download page?</value>
+  </data>
+  <data name="&lt;1MB_Recovered_From_Temporary_Files" xml:space="preserve">
+    <value>
+&lt;1MB recovered from Temporary Files...</value>
+  </data>
+  <data name="Swept_Windows_Old_Directory" xml:space="preserve">
+    <value>
+Swept Windows.old directory!
+
+</value>
+  </data>
+  <data name="No_Windows_Old_Directory_Found" xml:space="preserve">
+    <value>
+No Windows.old directory found. Skipping...
+
+</value>
+  </data>
+  <data name="Swept_Thumbnail_Cache" xml:space="preserve">
+    <value>
+Swept Thumbnail Cache!
+
+</value>
+  </data>
+  <data name="Couldn_t_connect_to_get_updates__Your_connection_might_be_down__you_re_checking_too_often__or_Github_is_down__Try_checking_again_later" xml:space="preserve">
+    <value>Couldn't connect to get updates. Your connection might be down, you're checking too often, or Github is down. Try checking again later?</value>
+  </data>
+  <data name="Windows_Installer_Cache_size" xml:space="preserve">
+    <value>Windows Installer Cache size: </value>
+  </data>
+  <data name="MB_from_removing_Temporary_Internet_Files" xml:space="preserve">
+    <value>MB from removing Temporary Internet Files.</value>
+  </data>
+  <data name="Windows_Update_Logs_size" xml:space="preserve">
+    <value>Windows Update Logs size: </value>
+  </data>
+  <data name="Total_Space_Recovered" xml:space="preserve">
+    <value>
+
+Total space recovered: </value>
+  </data>
+  <data name="Sweeping_Windows_Defender_Log_Files" xml:space="preserve">
+    <value>Sweeping Windows Defender Log Files...
+</value>
+  </data>
+  <data name="Twitter__https___twitter_com_acid_rain" xml:space="preserve">
+    <value>Twitter: https://twitter.com/acid_rain</value>
+  </data>
+  <data name="MB_from_removing_Temporary_Setup_Files" xml:space="preserve">
+    <value>MB from removing Temporary Setup Files.</value>
+  </data>
+  <data name="Temporary_Internet_Files_directory_size" xml:space="preserve">
+    <value>Temporary Internet Files directory size: </value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="clear" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\clear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\copy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+</root>
