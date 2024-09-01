@@ -1,12 +1,8 @@
-# ![CleanSweep2 Logo](https://i.imgur.com/mdSoQbh.png) CleanSweep2
+# ![CleanSweep Logo](https://i.imgur.com/mdSoQbh.png) CleanSweep
 The easiest and quickest Windows junk file remover on the planet.
 
 ## Supported Operating Systems
-* Windows 11
-* Windows 10
-* Windows 8/8.1
-* Windows 7
-* Previous Windows OS's *may* work, but some features may be incompatible or produce undesired results.
+* Windows 11, 10, 8.1, 8, 7. Windows 11 is the only OS version CleanSweep is tested on.
 
 ## Cleaning Features
 * Temporary Files
@@ -37,27 +33,27 @@ The easiest and quickest Windows junk file remover on the planet.
 * Perform tasks silently without user interaction (CLI only).
 * Supports Windows Task Scheduler (CLI preferred).
 
-## CleanSweep2_GUI Demonstration
-![CleanSweep2](https://i.imgur.com/SMhZIGp.gif)
+## CleanSweep_GUI Demonstration
+![CleanSweep](https://i.imgur.com/SMhZIGp.gif)
 
-## Getting Started With CleanSweep2_GUI
-1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents. You can download [WinRAR](https://www.rarlab.com/download.htm) or use [7ZIP](https://www.7-zip.org/) to extract the contents.
-1. Run CleanSweep2.exe.
+## Getting Started With CleanSweep_GUI
+1. Download the [latest](https://github.com/thomasloupe/CleanSweep/releases) CleanSweep release and extract the contents. You can download [WinRAR](https://www.rarlab.com/download.htm) or use [7ZIP](https://www.7-zip.org/) to extract the contents.
+1. Run CleanSweep.exe.
 1. Select any cleaning options you wish.
 1. Click "Sweep it!".
 
-# CleanSweep2_CLI
-CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers all features CleanSweep2 has to offer, except that jobs are passed through arguments, including logging actions to a logfile on disk, changing verbosity modes, selective cleaning, and silent running for scheduled cleaning through Windows Task Scheduler.
+# CleanSweep_CLI
+CleanSweep_CLI is the command-line based version of the CleanSweep Windows application, which offers all the same features. Cleaning obs are passed through arguments, including logging actions to a logfile on disk, changing verbosity modes, selective cleaning, and silent running for scheduled cleaning through Windows Task Scheduler.
 
-## CleanSweep2_CLI Demonstration
-![CleanSweep2](https://i.imgur.com/eqwglBE.gif)
+## CleanSweep_CLI Demonstration
+![CleanSweep](https://i.imgur.com/eqwglBE.gif)
 
-## Getting Started with CleanSweep2_CLI
-1. Download the [latest](https://github.com/thomasloupe/CleanSweep2/releases) CleanSweep2 release and extract the contents.
-1. For manual cleaning, create a shortcut to the executable, and modify the arguments in the "Target" properties field, then run CleanSweep2_CLI.
-1. For automated cleaning, launch Task Scheduler in Windows, click "Create Basic Task". Enter a name for the task (example: CleanSweep2_CLI) and give a description if desired. Select a scheduled time for CleanSweep2_CLI to run. On the "Action" page, select "Start a program". Select the CleanSweep2_CLI executable, and pass desired arguments. For a list of arguments, see below.
+## Getting Started with CleanSweep_CLI
+1. Download the [latest](https://github.com/thomasloupe/CleanSweep/releases) CleanSweep release and extract the contents.
+1. For manual cleaning, create a shortcut to the executable, and modify the arguments in the "Target" properties field, then run CleanSweep_CLI.
+1. For automated cleaning, launch Task Scheduler in Windows, click "Create Basic Task". Enter a name for the task (example: CleanSweep_CLI) and give a description if desired. Select a scheduled time for CleanSweep_CLI to run. On the "Action" page, select "Start a program". Select the CleanSweep_CLI executable, and pass desired arguments. For a list of arguments, see below.
 
-## CleanSweep2_CLI Arguments
+## CleanSweep_CLI Arguments
 `-1` *(Remove Temporary Files)*  
 `-2` *(Remove Temporary Setup Files)*  
 ``-3`` *(Remove Temporary Internet Files)*  
@@ -74,16 +70,15 @@ CleanSweep2_CLI is the command-line based version of CleanSweep2 which offers al
 ``-14`` *(Removes Google Chome Cache)*  
 ``-15`` *(Removes Windows Installer Cache)*  
 ``-16`` *(Removes Windows Update Log Files)*  
-``-log`` *(Writes a log file of actions performed and their timestamps to the "CleanSweep2 Logs" folder under the user account's Documents folder.)*  
+``-log`` *(Writes a log file of actions performed and their timestamps to the "CleanSweep Logs" folder under the user account's Documents folder.)*  
 ``-showoperationwindows`` *(Make all spawned windows visible.)*  
 ``-update`` *(Checks for updates. This argument requires the -visible argument.)*  
 ``-v1`` *(Sets the verbosity to low)*  
 ``-v2`` *(Sets the verbosity to high)*  
 
 ## Potential Data Loss Warning and Disclaimer:
-Due to the nature of CleanSweep2 being an application that removes data from a Windows machine, it is imperative to note that potential or undesired data loss can potentially occur. Please do not select options in which you wish to keep data for, especially for Windows .Old folders, and previous Windows installs. These are unrecoverable once removed, as are most options in this application. Please use CleanSweep2 at your own risk.
+Due to the nature of CleanSweep being an application that removes data from a Windows machine, it is imperative to note that potential or undesired data loss can potentially occur. Please do not select options in which you wish to keep data for, especially for Windows .Old folders, and previous Windows installs. These are unrecoverable once removed, as are most options in this application. Please use CleanSweep at your own risk.
 
 # Important: Please Read!
-* If you need help, please feel free to get in touch with me on [Twitter](https://twitter.com/acid_rain), or open a new issue if it doesn't already exist. Please note: If you choose to contact me through Twitter. Please understand delays in responses may happen if you send a direct message, as I have to explicity check for them if they've been filtered by Twitter.
-* CleanSweep, CleanSweep2, and CleanSweep2_CLI are free, and they will always be free. Please do not pay anyone for this application. However, if you found CleanSweep, CleanSweep2, and/or CleanSweep2_CLI worth donating for, you can donate from within CleanSweep2 by accessing the "Donate" menu option from the "Help" context menu in CleanSweep2, or by copying the donate link provided in CleanSweep2_CLI. You can also donate directly to me [here](https://paypal.me/thomasloupe) (PayPal).
-* CleanSweep, CleanSweep2, and CleanSweep2_CLI are applications I created in my spare time to continue learning multiple programming languages. I would not consider myself an "expert" programmer, and should probably not be treated as such.
+* If you need help, please feel free to get in touch with me on [Twitter](https://twitter.com/acid_rain), or open a new issue if it doesn't already exist.
+* CleanSweep is free, and it will always be free. Please do not pay anyone for this application. However, if you found CleanSweep worth donating for, you can donate from within the CleanSweep application by accessing the "Donate" menu option from the "Help" context menu in Windows, or by copying the donate link provided in CleanSweep_CLI. You can also donate directly to me [here](https://paypal.me/thomasloupe) (PayPal).
