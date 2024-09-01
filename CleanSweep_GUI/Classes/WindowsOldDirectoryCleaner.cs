@@ -1,19 +1,21 @@
 ﻿using CleanSweep.Interfaces;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class WindowsOldDirectoryCleaner : ICleaner
 {
-    private readonly bool _showOperationWindows;
     private readonly string _windowsOldDirectoryPath = "C:\\Windows.old";
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public WindowsOldDirectoryCleaner(bool showOperationWindows)
+    public WindowsOldDirectoryCleaner(RichTextBox outputWindow)
     {
-        _showOperationWindows = showOperationWindows;
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -40,7 +42,7 @@ public class WindowsOldDirectoryCleaner : ICleaner
                             UseShellExecute = true,
                             Verb = "runas",
                             WorkingDirectory = "C:\\Windows\\",
-                            WindowStyle = _showOperationWindows ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
+                            WindowStyle = ProcessWindowStyle.Hidden
                         }
                     };
                     process.Start();
@@ -48,10 +50,15 @@ public class WindowsOldDirectoryCleaner : ICleaner
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error deleting Windows.old directory: {ex.Message}");
+                    Console.WriteLine($"Windows OLD Directory Cleaner: Error deleting Windows.old directory: {ex.Message}");
                 }
             });
         }
+        else
+        {
+            Console.WriteLine("WindowsOldDirectoryCleaner(): The Windows .old directory doesn't exist.");
+        }
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows OLD Directory cleaned!\n", Color.Green);
     }
 
     public long ReportReclaimedSpace()

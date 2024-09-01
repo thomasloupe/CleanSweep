@@ -1,17 +1,21 @@
 ﻿using CleanSweep.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class WindowsErrorReportsCleaner : ICleaner
 {
     private readonly string _windowsErrorReportsDirectory;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public WindowsErrorReportsCleaner(string windowsErrorReportsDirectory)
+    public WindowsErrorReportsCleaner(RichTextBox outputWindow)
     {
-        _windowsErrorReportsDirectory = windowsErrorReportsDirectory;
+        _windowsErrorReportsDirectory = @"C:\ProgramData\Microsoft\Windows\WER";
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -34,30 +38,24 @@ public class WindowsErrorReportsCleaner : ICleaner
     {
         var di = new DirectoryInfo(_windowsErrorReportsDirectory);
 
-        foreach (var file in di.GetFiles())
+        try
         {
-            try
+            foreach (var file in di.GetFiles())
             {
                 file.Delete();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
-            }
-        }
 
-        foreach (var dir in di.GetDirectories())
-        {
-            try
+            foreach (var dir in di.GetDirectories())
             {
                 dir.Delete(true);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
-            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Windows Error Reports Cleaner: {ex.Message}");
         }
 
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Error Reports Cleaned!\n", Color.Green);
         return Task.CompletedTask;
     }
 

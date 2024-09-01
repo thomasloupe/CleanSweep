@@ -50,18 +50,6 @@ namespace CleanSweep.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool Verbosity {
-            get {
-                return ((bool)(this["Verbosity"]));
-            }
-            set {
-                this["Verbosity"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool OperationWindows {
             get {
                 return ((bool)(this["OperationWindows"]));

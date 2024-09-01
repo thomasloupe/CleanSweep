@@ -1,33 +1,62 @@
-﻿using System;
+﻿using CleanSweep.Interfaces;
+using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-public class EventViewerLogsCleaner
+public class EventViewerLogsCleaner : ICleaner
 {
+    private readonly RichTextBox _outputWindow;
+
+    public EventViewerLogsCleaner(RichTextBox outputWindow)
+    {
+        _outputWindow = outputWindow;
+    }
+
     public async Task Reclaim()
     {
-        await Task.Run(() =>
+        await Task.Run(async () =>
         {
             try
             {
-                var process = new Process
+                var commands = new[] { "cl Application", "cl Security", "cl System" };
+
+                foreach (var command in commands)
                 {
-                    StartInfo = new ProcessStartInfo
+                    var process = new Process
                     {
-                        FileName = "wevtutil.exe",
-                        Arguments = "cl Application && wevtutil.exe cl Security && wevtutil.exe cl System",
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = "wevtutil.exe",
+                            Arguments = command,
+                            RedirectStandardOutput = true,
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                        }
+                    };
+
+                    process.Start();
+
+                    while (!process.HasExited)
+                    {
+                        Helpers.AddWaitText(_outputWindow);
+                        await Task.Delay(1000);
                     }
-                };
-                process.Start();
-                process.WaitForExit();
+
+                    process.WaitForExit();
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error during Event Viewer log cleanup: {ex.Message}");
+                Console.WriteLine($"Event Logs Viewer: Error during Event Viewer log cleanup: {ex.Message}");
             }
         });
+        RichTextBoxExtensions.AppendText(_outputWindow, "Event Viewer Logs cleaned!\n", Color.Green);
+    }
+
+    (string FileType, int SpaceInMB) ICleaner.GetReclaimableSpace()
+    {
+        return ("Event Viewer Logs", 0);
     }
 }

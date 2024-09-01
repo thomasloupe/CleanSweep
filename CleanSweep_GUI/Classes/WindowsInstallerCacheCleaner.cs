@@ -1,19 +1,21 @@
 ﻿using CleanSweep.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class WindowsInstallerCacheCleaner : ICleaner
 {
     private readonly string _windowsDirectory;
-    private readonly bool _showOperationWindows;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public WindowsInstallerCacheCleaner(string windowsDirectory, bool showOperationWindows)
+    public WindowsInstallerCacheCleaner(RichTextBox outputWindow)
     {
-        _windowsDirectory = windowsDirectory;
-        _showOperationWindows = showOperationWindows;
+        _windowsDirectory = @"C:\Windows\Installer";
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -30,18 +32,19 @@ public class WindowsInstallerCacheCleaner : ICleaner
 
         await Task.Run(() =>
         {
-            if (Directory.Exists(patchCacheDir))
+            try
             {
-                try
+                if (Directory.Exists(patchCacheDir))
                 {
                     Directory.Delete(patchCacheDir, true);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error deleting Windows Installer Cache: {ex.Message}");
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Windows Installer Cache Cleaner: Error during Windows Installer Cache cleanup: {ex.Message}");
             }
         });
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Installer Cache cleaned!\n", Color.Green);
     }
 
     public long ReportReclaimedSpace()

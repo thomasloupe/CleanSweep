@@ -1,15 +1,23 @@
-﻿using Microsoft.Win32;
+﻿using CleanSweep.Interfaces;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-public class UserFileHistoryCleaner
+public class UserFileHistoryCleaner : ICleaner
 {
-    private readonly bool _showOperationWindows;
+    private readonly RichTextBox _outputWindow;
 
-    public UserFileHistoryCleaner(bool showOperationWindows)
+    public UserFileHistoryCleaner(RichTextBox outputWindow)
     {
-        _showOperationWindows = showOperationWindows;
+        _outputWindow = outputWindow;
+    }
+
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
+    {
+        return ("User File History", 0);
     }
 
     public async Task Reclaim()
@@ -32,7 +40,7 @@ public class UserFileHistoryCleaner
                         Arguments = "/C FhManagew.exe -cleanup 0",
                         UseShellExecute = true,
                         Verb = "runas",
-                        WindowStyle = _showOperationWindows ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
+                        WindowStyle = ProcessWindowStyle.Hidden
                     }
                 };
                 process.Start();
@@ -41,8 +49,9 @@ public class UserFileHistoryCleaner
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error during User File History cleanup: {ex.Message}");
+            Console.WriteLine($"User File History Cleaner: Error during User File History cleanup: {ex.Message}");
         }
+        RichTextBoxExtensions.AppendText(_outputWindow, "if enabled, Windows File History has been removed!\n", Color.Green);
     }
 
     private bool IsFileHistoryEnabled()

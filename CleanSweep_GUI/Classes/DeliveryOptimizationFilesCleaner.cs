@@ -1,17 +1,21 @@
 ﻿using CleanSweep.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class DeliveryOptimizationFilesCleaner : ICleaner
 {
     private readonly string _deliveryOptimizationFilesDirectory;
     private long _deliveryOptimizationFilesDirSizeInMegaBytes;
+    private readonly RichTextBox _outputWindow;
 
-    public DeliveryOptimizationFilesCleaner(string deliveryOptimizationFilesDirectory)
+    public DeliveryOptimizationFilesCleaner(RichTextBox outputWindow)
     {
-        _deliveryOptimizationFilesDirectory = deliveryOptimizationFilesDirectory;
+        _deliveryOptimizationFilesDirectory = @"C:\Windows\SoftwareDistribution\Download";
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -32,30 +36,38 @@ public class DeliveryOptimizationFilesCleaner : ICleaner
     {
         var di = new DirectoryInfo(_deliveryOptimizationFilesDirectory);
 
-        foreach (var file in di.GetFiles())
+        try
         {
-            try
+            foreach (var file in di.GetFiles())
             {
-                file.Delete();
+                try
+                {
+                    file.Delete();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+
+            foreach (var dir in di.GetDirectories())
             {
-                Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
+                try
+                {
+                    dir.Delete(true);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
+                }
             }
         }
-
-        foreach (var dir in di.GetDirectories())
+        catch (Exception ex)
         {
-            try
-            {
-                dir.Delete(true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
-            }
+            Console.WriteLine($"Delivery Optimization Files Cleaner: Error during Delivery Optimization files cleanup: {ex.Message}");
         }
 
+        RichTextBoxExtensions.AppendText(_outputWindow, "Delivery Optimization Files cleaned!\n", Color.Green);
         return Task.CompletedTask;
     }
 

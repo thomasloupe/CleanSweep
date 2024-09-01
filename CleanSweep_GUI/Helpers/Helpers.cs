@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
-public class UIHelpers
+public static class Helpers
 {
-    private readonly RichTextBox _richTextBox;
-
-    public UIHelpers(RichTextBox richTextBox)
+    public static void AddWaitText(RichTextBox outputWindow)
     {
-        _richTextBox = richTextBox;
-    }
-
-    public void AddWaitText()
-    {
-        _richTextBox.Invoke(new Action(() =>
+        if (outputWindow.InvokeRequired)
         {
-            _richTextBox.AppendText(".", Color.Green);
-        }));
+            outputWindow.Invoke(new Action(() => AddWaitText(outputWindow)));
+        }
+        else
+        {
+            outputWindow.AppendText(".", Color.Green);
+        }
     }
 }
 
@@ -24,6 +21,7 @@ public static class RichTextBoxExtensions
 {
     public static void AppendText(this RichTextBox box, string text, Color color)
     {
+        box.HideSelection = false;
         box.SelectionStart = box.TextLength;
         box.SelectionLength = 0;
 

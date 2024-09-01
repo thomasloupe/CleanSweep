@@ -1,17 +1,21 @@
 ﻿using CleanSweep.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class MicrosoftOfficeCacheCleaner : ICleaner
 {
     private readonly string _msoCacheDir;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public MicrosoftOfficeCacheCleaner(string msoCacheDir)
+    public MicrosoftOfficeCacheCleaner(RichTextBox outputWindow)
     {
-        _msoCacheDir = msoCacheDir;
+        _msoCacheDir = @"C:\Users\%USERNAME%\AppData\Local\Microsoft\Office\16.0\OfficeFileCache";
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -23,18 +27,26 @@ public class MicrosoftOfficeCacheCleaner : ICleaner
 
     public Task Reclaim()
     {
-        if (Directory.Exists(_msoCacheDir))
+        try
         {
-            try
+            if (Directory.Exists(_msoCacheDir))
             {
-                Directory.Delete(_msoCacheDir, true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting Microsoft Office cache directory {_msoCacheDir}: {ex.Message}");
+                try
+                {
+                    Directory.Delete(_msoCacheDir, true);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Microsoft Office Cache Cleaner: Error deleting Microsoft Office cache directory {_msoCacheDir}: {ex.Message}");
+                }
             }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error during Microsoft Office cache cleanup: {ex.Message}");
+        }
 
+        RichTextBoxExtensions.AppendText(_outputWindow, "Microsoft Office Cache cleaned!\n", Color.Green);
         return Task.CompletedTask;
     }
 

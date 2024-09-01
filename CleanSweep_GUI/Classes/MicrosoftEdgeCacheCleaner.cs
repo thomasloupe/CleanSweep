@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using CleanSweep.Interfaces;
 
 public class MicrosoftEdgeCacheCleaner : ICleaner
 {
     private readonly string[] _edgeCacheDirectories;
-    private readonly bool _showOperationWindows;
-    private readonly bool _isVerboseMode;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public MicrosoftEdgeCacheCleaner(string[] edgeCacheDirectories, bool showOperationWindows, bool isVerboseMode)
+    public MicrosoftEdgeCacheCleaner(RichTextBox outputWindow)
     {
-        _edgeCacheDirectories = edgeCacheDirectories;
-        _showOperationWindows = showOperationWindows;
-        _isVerboseMode = isVerboseMode;
+        _edgeCacheDirectories = new[]
+        { 
+            @"C:\Users\%USERNAME%\AppData\Local\Microsoft\Edge\User Data\Default\Cache", 
+            @"C:\Users\%USERNAME%\AppData\Local\Microsoft\Edge\User Data\Profile 1\Cache" 
+        };
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -30,35 +34,43 @@ public class MicrosoftEdgeCacheCleaner : ICleaner
     {
         await Task.Run(() =>
         {
-            var process = new Process
+            try
             {
-                StartInfo = new ProcessStartInfo
+                var process = new Process
                 {
-                    FileName = "cmd.exe",
-                    Arguments = "/C TASKKILL /F /IM msedge.exe",
-                    UseShellExecute = true,
-                    Verb = "runas",
-                    WindowStyle = _showOperationWindows ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
-                }
-            };
-            process.Start();
-            process.WaitForExit();
-
-            foreach (var edgeDirectory in _edgeCacheDirectories)
-            {
-                if (Directory.Exists(edgeDirectory))
-                {
-                    try
+                    StartInfo = new ProcessStartInfo
                     {
-                        Directory.Delete(edgeDirectory, true);
+                        FileName = "cmd.exe",
+                        Arguments = "/C TASKKILL /F /IM msedge.exe",
+                        UseShellExecute = true,
+                        Verb = "runas",
+                        WindowStyle = ProcessWindowStyle.Hidden
                     }
-                    catch (Exception ex)
+                };
+                process.Start();
+                process.WaitForExit();
+
+                foreach (var edgeDirectory in _edgeCacheDirectories)
+                {
+                    if (Directory.Exists(edgeDirectory))
                     {
-                        Console.WriteLine($"Error deleting Edge cache directory {edgeDirectory}: {ex.Message}");
+                        try
+                        {
+                            Directory.Delete(edgeDirectory, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Microsoft Edge Cache Claner: Error deleting Edge cache directory {edgeDirectory}: {ex.Message}");
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during Edge cache cleanup: {ex.Message}");
+            }
         });
+        RichTextBoxExtensions.AppendText(_outputWindow, "Edge Cache cleaned!\n", Color.Green);
     }
 
     public long ReportReclaimedSpace()

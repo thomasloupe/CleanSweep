@@ -1,16 +1,22 @@
-﻿using System;
+﻿using CleanSweep.Interfaces;
+using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-public class ThumbnailCacheCleaner
+public class ThumbnailCacheCleaner : ICleaner
 {
-    private readonly bool _showOperationWindows;
-    private readonly bool _isVerboseMode;
+    private readonly RichTextBox _outputWindow;
 
-    public ThumbnailCacheCleaner(bool showOperationWindows, bool isVerboseMode)
+    public ThumbnailCacheCleaner(RichTextBox outputWindow)
     {
-        _showOperationWindows = showOperationWindows;
-        _isVerboseMode = isVerboseMode;
+        _outputWindow = outputWindow;
+    }
+
+    public (string FileType, int SpaceInMB) GetReclaimableSpace()
+    {
+        return ("Thumbnail Cache", 0);
     }
 
     public async Task Reclaim()
@@ -27,7 +33,7 @@ public class ThumbnailCacheCleaner
                         Arguments = "/C taskkill /f /im explorer.exe & timeout 1 & del /f /s /q /a %LocalAppData%\\Microsoft\\Windows\\Explorer\\thumbcache_*.db & timeout 1 & start %windir%\\explorer.exe",
                         UseShellExecute = true,
                         Verb = "runas",
-                        WindowStyle = _showOperationWindows ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
+                        WindowStyle = ProcessWindowStyle.Hidden
                     }
                 };
                 process.Start();
@@ -35,8 +41,9 @@ public class ThumbnailCacheCleaner
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error during thumbnail cache cleanup: {ex.Message}");
+                Console.WriteLine($"Thumbnail Cache Cleaner: Error during thumbnail cache cleanup: {ex.Message}");
             }
         });
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Thumbnail Cache Cleaned...\n", Color.Green);
     }
 }

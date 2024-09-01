@@ -1,25 +1,34 @@
-﻿using System;
+﻿using CleanSweep.Interfaces;
+using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-public class ChromeCacheCleaner
+public class ChromeCacheCleaner : ICleaner
 {
     private readonly string[] _chromeCacheDirectories;
-    private readonly bool _showOperationWindows;
-    private readonly bool _isVerboseMode;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public ChromeCacheCleaner(string[] chromeCacheDirectories, bool showOperationWindows, bool isVerboseMode)
+    public ChromeCacheCleaner(RichTextBox outputWindow)
     {
-        _chromeCacheDirectories = chromeCacheDirectories;
-        _showOperationWindows = showOperationWindows;
-        _isVerboseMode = isVerboseMode;
+        var basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Google", "Chrome", "User Data");
+        var directories = new DirectoryInfo(basePath).GetDirectories()
+                                   .Where(dir => dir.Name.StartsWith("Profile ") || dir.Name == "Default")
+                                   .Select(dir => Path.Combine(dir.FullName, "Cache")).ToList();
+        if (directories.Count == 0)
+        {
+            directories.Add(Path.Combine(basePath, "Default", "Cache"));
+        }
+        _chromeCacheDirectories = directories.ToArray();
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        _preCleanupSize = _chromeCacheDirectories.Sum(dir => CalculateDirectorySize(dir));
+        _preCleanupSize = _chromeCacheDirectories.Sum(CalculateDirectorySize);
         int spaceInMB = ConvertBytesToMegabytes(_preCleanupSize);
         return ("Chrome Cache Files", spaceInMB);
     }
@@ -28,8 +37,6 @@ public class ChromeCacheCleaner
     {
         await Task.Run(() =>
         {
-            // Your existing process code
-
             foreach (var chromeDirectory in _chromeCacheDirectories)
             {
                 if (Directory.Exists(chromeDirectory))
@@ -45,13 +52,8 @@ public class ChromeCacheCleaner
                 }
             }
         });
-    }
 
-    public long ReportReclaimedSpace()
-    {
-        long postCleanupSize = _chromeCacheDirectories.Sum(dir => CalculateDirectorySize(dir));
-        long reclaimedSpace = _preCleanupSize - postCleanupSize;
-        return ConvertBytesToMegabytes(reclaimedSpace);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Chrome Cache cleaned!\n", Color.Green);
     }
 
     private long CalculateDirectorySize(string directoryPath)
@@ -59,12 +61,13 @@ public class ChromeCacheCleaner
         if (!Directory.Exists(directoryPath))
             return 0;
 
-        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
-                        .Sum(file => new FileInfo(file).Length);
+        return new DirectoryInfo(directoryPath)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
+                .Sum(file => file.Length);
     }
 
     private int ConvertBytesToMegabytes(long bytes)
     {
-        return (int)Math.Min(bytes / 1024 / 1024, int.MaxValue);
+        return (int)(bytes / 1024 / 1024);
     }
 }

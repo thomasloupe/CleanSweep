@@ -1,19 +1,21 @@
 ﻿using CleanSweep.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class WindowsUpdateLogsCleaner : ICleaner
 {
     private readonly string _windowsUpdateLogDir;
-    private readonly bool _isVerboseMode;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public WindowsUpdateLogsCleaner(string windowsUpdateLogDir, bool isVerboseMode)
+    public WindowsUpdateLogsCleaner(RichTextBox outputWindow)
     {
-        _windowsUpdateLogDir = windowsUpdateLogDir;
-        _isVerboseMode = isVerboseMode;
+        _windowsUpdateLogDir = @"C:\Windows\Logs\WindowsUpdate";
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -30,19 +32,27 @@ public class WindowsUpdateLogsCleaner : ICleaner
             await Task.Run(() =>
             {
                 var di = new DirectoryInfo(_windowsUpdateLogDir);
-                foreach (var file in di.GetFiles())
+                try
                 {
-                    try
+                    foreach (var file in di.GetFiles())
                     {
-                        file.Delete();
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Windows Update Logs Cleaner: Error deleting files in {di.FullName}: {ex.Message}");
                 }
             });
         }
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Update Logs cleaned!\n", Color.Green);
     }
 
     public long ReportReclaimedSpace()

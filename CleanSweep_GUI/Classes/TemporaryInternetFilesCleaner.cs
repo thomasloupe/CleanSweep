@@ -1,20 +1,24 @@
 ﻿using CleanSweep.Interfaces;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 public class TemporaryInternetFilesCleaner : ICleaner
 {
     private readonly string _tempInternetFilesDirectory;
     private long _preCleanupSize;
+    private readonly RichTextBox _outputWindow;
 
-    public TemporaryInternetFilesCleaner()
+    public TemporaryInternetFilesCleaner(RichTextBox outputWindow)
     {
         _tempInternetFilesDirectory = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "Microsoft", "Windows", "INetCache"
         );
+        _outputWindow = outputWindow;
     }
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
@@ -44,30 +48,24 @@ public class TemporaryInternetFilesCleaner : ICleaner
     {
         var di = new DirectoryInfo(_tempInternetFilesDirectory);
 
-        foreach (var file in di.GetFiles())
+        try
         {
-            try
+            foreach (var file in di.GetFiles())
             {
                 file.Delete();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting file {file.FullName}: {ex.Message}");
-            }
-        }
 
-        foreach (var dir in di.GetDirectories())
-        {
-            try
+            foreach (var dir in di.GetDirectories())
             {
                 dir.Delete(true);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error deleting directory {dir.FullName}: {ex.Message}");
-            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Temporary Internet Files Cleaner: Failed to delete file or directory { ex.Message}");
         }
 
+        RichTextBoxExtensions.AppendText(_outputWindow, "Cleaning Temporary Setup Files...\n", Color.Green);
         return Task.CompletedTask;
     }
 

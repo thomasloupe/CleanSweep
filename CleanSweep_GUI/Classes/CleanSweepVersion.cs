@@ -1,4 +1,4 @@
-﻿namespace CleanSweep2.Classes
+﻿namespace CleanSweep.Classes
 {
     public class CleanSweepVersion
     {
