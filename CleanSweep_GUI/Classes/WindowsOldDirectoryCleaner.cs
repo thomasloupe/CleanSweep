@@ -1,7 +1,6 @@
 ﻿using CleanSweep.Interfaces;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,7 +57,7 @@ public class WindowsOldDirectoryCleaner : ICleaner
         {
             Console.WriteLine("WindowsOldDirectoryCleaner(): The Windows .old directory doesn't exist.");
         }
-        RichTextBoxExtensions.AppendText(_outputWindow, "Windows OLD Directory cleaned!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows OLD Directory cleaned!\n");
     }
 
     public long ReportReclaimedSpace()
@@ -73,8 +72,17 @@ public class WindowsOldDirectoryCleaner : ICleaner
         if (!Directory.Exists(directoryPath))
             return 0;
 
-        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
-                        .Sum(file => new FileInfo(file).Length);
+        long totalSize = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                try { totalSize += file.Length; }
+                catch { }
+            }
+        }
+        catch { }
+        return totalSize;
     }
 
     private int ConvertBytesToMegabytes(long bytes)

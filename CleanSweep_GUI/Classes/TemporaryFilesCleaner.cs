@@ -1,7 +1,5 @@
 ﻿using CleanSweep.Interfaces;
-using Octokit;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,25 +19,9 @@ public class TemporaryFilesCleaner : ICleaner
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        long totalSizeBytes = 0;
-        try
-        {
-            if (Directory.Exists(_tempDirectory))
-            {
-                totalSizeBytes = Directory.GetFiles(_tempDirectory, "*.*", SearchOption.AllDirectories)
-                                          .Sum(t => new FileInfo(t).Length);
-            }
-
-            _preCleanupSize = totalSizeBytes;
-
-            int totalSizeMBInt = ConvertBytesToMegabytes(totalSizeBytes);
-            return ("Temporary Files", totalSizeMBInt);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Temporary Files Cleaner: Error during Temporary Files cleanup: {ex.Message}");
-            return ("Temporary Files", 0);
-        }
+        _preCleanupSize = CalculateDirectorySize(_tempDirectory);
+        int totalSizeMBInt = ConvertBytesToMegabytes(_preCleanupSize);
+        return ("Temporary Files", totalSizeMBInt);
     }
 
     public Task Reclaim()
@@ -63,21 +45,33 @@ public class TemporaryFilesCleaner : ICleaner
             Console.WriteLine($"Temporary Files Cleaner: Error during Temporary Files cleanup: {ex.Message}");
         }
         
-        RichTextBoxExtensions.AppendText(_outputWindow, "Temporary Files cleaned!\n", Color.YellowGreen);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Temporary Files cleaned!\n");
         return Task.CompletedTask;
     }
 
     public long ReportReclaimedSpace()
     {
-        long newSize = 0;
-        if (Directory.Exists(_tempDirectory))
-        {
-            newSize = Directory.GetFiles(_tempDirectory, "*", SearchOption.AllDirectories)
-                               .Sum(t => new FileInfo(t).Length);
-        }
-
-        long reclaimedSpace = _preCleanupSize - newSize;
+        long postCleanupSize = CalculateDirectorySize(_tempDirectory);
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
         return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        long totalSize = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                try { totalSize += file.Length; }
+                catch { }
+            }
+        }
+        catch { }
+        return totalSize;
     }
 
     private int ConvertBytesToMegabytes(long bytes)

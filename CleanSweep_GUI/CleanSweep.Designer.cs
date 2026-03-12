@@ -39,7 +39,10 @@ namespace CleanSweep
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CheckForUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.themeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.donateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outputWindow = new System.Windows.Forms.RichTextBox();
@@ -124,7 +127,7 @@ namespace CleanSweep
             // 
             // menuStrip1
             // 
-            this.menuStrip1.BackColor = System.Drawing.Color.Black;
+            this.menuStrip1.BackColor = System.Drawing.Color.White;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.optionsToolStripMenuItem});
@@ -139,7 +142,7 @@ namespace CleanSweep
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
-            this.fileToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Control;
+            this.fileToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this.fileToolStripMenuItem.ShowShortcutKeys = false;
@@ -158,10 +161,11 @@ namespace CleanSweep
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.checkForUpdatesToolStripMenuItem,
+            this.CheckForUpdatesToolStripMenuItem,
+            this.themeToolStripMenuItem,
             this.aboutToolStripMenuItem,
             this.donateToolStripMenuItem});
-            this.optionsToolStripMenuItem.ForeColor = System.Drawing.SystemColors.Control;
+            this.optionsToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.ShortcutKeyDisplayString = "";
             this.optionsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -170,13 +174,39 @@ namespace CleanSweep
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.OptionsToolStripMenuItem_Click);
             // 
-            // checkForUpdatesToolStripMenuItem
+            // CheckForUpdatesToolStripMenuItem
             // 
-            this.checkForUpdatesToolStripMenuItem.Name = "checkForUpdatesToolStripMenuItem";
-            this.checkForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.checkForUpdatesToolStripMenuItem.Text = "Check For Updates";
-            this.checkForUpdatesToolStripMenuItem.ToolTipText = "Check the CleanSweep Github release page for the latest version and new features";
-            this.checkForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdatesToolStripMenuItem_Click);
+            this.CheckForUpdatesToolStripMenuItem.Name = "CheckForUpdatesToolStripMenuItem";
+            this.CheckForUpdatesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.CheckForUpdatesToolStripMenuItem.Text = "Check For Updates";
+            this.CheckForUpdatesToolStripMenuItem.ToolTipText = "Check the CleanSweep Github release page for the latest version and new features";
+            this.CheckForUpdatesToolStripMenuItem.Click += new System.EventHandler(this.CheckForUpdatesToolStripMenuItem_Click);
+            // 
+            // themeToolStripMenuItem
+            // 
+            this.themeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.darkToolStripMenuItem,
+            this.lightToolStripMenuItem});
+            this.themeToolStripMenuItem.Name = "themeToolStripMenuItem";
+            this.themeToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.themeToolStripMenuItem.Text = "Theme";
+            this.themeToolStripMenuItem.Click += new System.EventHandler(this.themeToolStripMenuItem_Click);
+            // 
+            // darkToolStripMenuItem
+            // 
+            this.darkToolStripMenuItem.CheckOnClick = true;
+            this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
+            this.darkToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.darkToolStripMenuItem.Text = "Dark";
+            this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
+            // 
+            // lightToolStripMenuItem
+            // 
+            this.lightToolStripMenuItem.CheckOnClick = true;
+            this.lightToolStripMenuItem.Name = "lightToolStripMenuItem";
+            this.lightToolStripMenuItem.Size = new System.Drawing.Size(101, 22);
+            this.lightToolStripMenuItem.Text = "Light";
+            this.lightToolStripMenuItem.Click += new System.EventHandler(this.lightToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -197,7 +227,7 @@ namespace CleanSweep
             // outputWindow
             // 
             this.outputWindow.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.outputWindow.BackColor = System.Drawing.SystemColors.Desktop;
+            this.outputWindow.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.outputWindow.Location = new System.Drawing.Point(0, 259);
             this.outputWindow.Name = "outputWindow";
             this.outputWindow.ReadOnly = true;
@@ -388,7 +418,7 @@ namespace CleanSweep
             // 
             this.WindowsDeliveryOptimizationCheckbox.AutoSize = true;
             this.WindowsDeliveryOptimizationCheckbox.ForeColor = System.Drawing.SystemColors.Control;
-            this.WindowsDeliveryOptimizationCheckbox.Location = new System.Drawing.Point(376, 119);
+            this.WindowsDeliveryOptimizationCheckbox.Location = new System.Drawing.Point(376, 117);
             this.WindowsDeliveryOptimizationCheckbox.Name = "WindowsDeliveryOptimizationCheckbox";
             this.WindowsDeliveryOptimizationCheckbox.Size = new System.Drawing.Size(152, 13);
             this.WindowsDeliveryOptimizationCheckbox.TabIndex = 24;
@@ -397,7 +427,7 @@ namespace CleanSweep
             // checkBox7
             // 
             this.checkBox7.AutoSize = true;
-            this.checkBox7.Location = new System.Drawing.Point(355, 119);
+            this.checkBox7.Location = new System.Drawing.Point(355, 117);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(15, 14);
             this.checkBox7.TabIndex = 23;
@@ -637,7 +667,7 @@ namespace CleanSweep
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.Desktop;
+            this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(534, 568);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.DeselectAllOptionsButton);
@@ -701,7 +731,7 @@ namespace CleanSweep
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem checkForUpdatesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem CheckForUpdatesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
         private System.Windows.Forms.RichTextBox outputWindow;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
@@ -749,6 +779,9 @@ namespace CleanSweep
         private System.Windows.Forms.Button SelectAllOptionsButton;
         private System.Windows.Forms.Button DeselectAllOptionsButton;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ToolStripMenuItem themeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem darkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lightToolStripMenuItem;
     }
 }
 

@@ -12,20 +12,18 @@ public static class Helpers
         }
         else
         {
-            outputWindow.AppendText(".", Color.Green);
+            outputWindow.AppendText(".");
         }
     }
 }
 
 public static class RichTextBoxExtensions
 {
-    public static void AppendText(this RichTextBox box, string text, Color color)
+    public static void AppendText(this RichTextBox box, string text)
     {
         box.HideSelection = false;
         box.SelectionStart = box.TextLength;
         box.SelectionLength = 0;
-
-        box.SelectionColor = color;
         box.AppendText(text);
         box.SelectionColor = box.ForeColor;
     }

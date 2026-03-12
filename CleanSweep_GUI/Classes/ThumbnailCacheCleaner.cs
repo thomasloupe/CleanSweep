@@ -1,7 +1,6 @@
 ﻿using CleanSweep.Interfaces;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -44,6 +43,6 @@ public class ThumbnailCacheCleaner : ICleaner
                 Console.WriteLine($"Thumbnail Cache Cleaner: Error during thumbnail cache cleanup: {ex.Message}");
             }
         });
-        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Thumbnail Cache Cleaned...\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Thumbnail Cache Cleaned...\n");
     }
 }

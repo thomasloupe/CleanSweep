@@ -1,5 +1,4 @@
 ﻿using CleanSweep.Properties;
-using Octo = Octokit;
 using System;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,23 +7,25 @@ using System.Text;
 using CleanSweep.Interfaces;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace CleanSweep
 {
     public partial class CleanSweep : Form
     {
-        private Octo.GitHubClient _octoClient;
         private bool[] _checkedArrayBool;
         private CheckBox[] _checkedArray;
 
         public CleanSweep()
         {
-#if !DEBUG
-            CheckForUpdates();
-#endif
             InitializeComponent();
             SetWindowSizeAndLocation();
-            SetDefaultFontColor(Controls, Color.Green, Color.Black);
+            SweepItButton.Enabled = false;
+        }
+
+        private async Task CheckForUpdates()
+        {
+            await UpdateCheck.CheckForUpdates();
         }
 
         private void SetWindowSizeAndLocation()
@@ -51,8 +52,10 @@ namespace CleanSweep
 
             for (int i = 0; i < settingsArray.Length; i++)
             {
-                Console.WriteLine($"CheckBox {i + 1}: {settingsArray[i]}");
+                _checkedArray[i].Checked = settingsArray[i];
             }
+
+            UpdateSweepItButtonState();
         }
 
         private void SaveSettingsEventHandler(object sender, FormClosingEventArgs e)
@@ -64,7 +67,6 @@ namespace CleanSweep
             {
                 Settings.Default.FirstRun = false;
             }
-
             Settings.Default.Save();
         }
 
@@ -78,9 +80,11 @@ namespace CleanSweep
             };
 
             _checkedArrayBool = _checkedArray.Select(c => c.Checked).ToArray();
-            
+
             RestoreSavedChecks();
+            SetTheme();
             GetTotalReclaimableSpace();
+            UpdateSweepItButtonState();
         }
 
         private string GetTotalReclaimableSpace()
@@ -110,9 +114,16 @@ namespace CleanSweep
 
             foreach (var cleaner in cleaners)
             {
-                var (fileType, spaceInMB) = cleaner.GetReclaimableSpace();
-                report.AppendLine($"{fileType}: {spaceInMB} MB");
-                totalSpace += spaceInMB;
+                try
+                {
+                    var (fileType, spaceInMB) = cleaner.GetReclaimableSpace();
+                    report.AppendLine($"{fileType}: {spaceInMB} MB");
+                    totalSpace += spaceInMB;
+                }
+                catch (Exception ex)
+                {
+                    report.AppendLine($"Error calculating space: {ex.Message}");
+                }
             }
 
             return outputWindow.Text += report.ToString() + $"\nTotal Reclaimable Space: {totalSpace}MB\n";
@@ -184,29 +195,17 @@ namespace CleanSweep
             outputWindow.ScrollToCaret();
         }
 
-        private void MenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
         private void CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             var checkBox = sender as CheckBox;
             int index = Array.IndexOf(_checkedArray, checkBox);
             _checkedArrayBool[index] = checkBox.Checked;
-            CanCleanStatus();
+            UpdateSweepItButtonState();
         }
 
-        private void CanCleanStatus()
+        private void UpdateSweepItButtonState()
         {
-            if (_checkedArrayBool.Contains(true))
-            {
-                SweepItButton.Enabled = true;
-            }
-            else
-            {
-                SweepItButton.Enabled = false;
-            }
+            SweepItButton.Enabled = _checkedArrayBool.Any(checkedState => checkedState);
         }
 
         private void LockCleaning(bool isEnabled)
@@ -233,41 +232,7 @@ namespace CleanSweep
 
         private void CheckForUpdatesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CheckForUpdates();
-        }
-
-        private async void CheckForUpdates()
-        {
-            if (_octoClient == null)
-            {
-                _octoClient = new Octo.GitHubClient(new Octo.ProductHeaderValue("CleanSweep"));
-            }
-
-            try
-            {
-                var version = CleanSweepVersion.Version;
-                var releases = await _octoClient.Repository.Release.GetAll("thomasloupe", "CleanSweep").ConfigureAwait(false);
-                Octo.Release latest = releases.OrderByDescending(r => r.PublishedAt).FirstOrDefault();
-
-                if (latest != null && version == latest.TagName)
-                {
-                    MessageBox.Show($"You are on the latest version: {version}.", "Version Check");
-                    return;
-                }
-
-                var matchingRelease = releases.FirstOrDefault(r => r.TagName == version);
-                if (matchingRelease != null && version != latest.TagName)
-                {
-                    MessageBox.Show($"A new version is available: {latest.TagName}. You are currently on version {version}.", "Version Update Available");
-                    return;
-                }
-
-                Console.WriteLine("Running a development build; no update check required.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to check for updates: {ex.Message}", "Error");
-            }
+            _ = CheckForUpdates().ConfigureAwait(false);
         }
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -289,16 +254,17 @@ namespace CleanSweep
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var version = CleanSweepVersion.Version;
-            MessageBox.Show($"CleanSweep {version} \n" +
-            "Created by: Thomas Loupe\n" +
-            "Github: https://github.com/thomasloupe\n" +
-            "Twitter: https://twitter.com/acid_rain\n" +
-            "Website: https://thomasloupe.com", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
+            var message = $"CleanSweep {version}\nCreated by: Thomas Loupe";
+            var title = "About";
 
-        private void ToolStripContainer1_TopToolStripPanel_Click(object sender, EventArgs e)
-        {
-
+            CustomMessageBox.Show(
+                message,
+                title,
+                ("Created by Thomas Loupe", "https://thomasloupe.com"),
+                ("CleanSweep Github", "https://github.com/thomasloupe/CleanSweep"),
+                ("Thomas's Github", "https://github.com/thomasloupe"),
+                ("Twitter", "https://twitter.com/acid_rain")
+            );
         }
 
         private void ToolStripButton1_Click_1(object sender, EventArgs e)
@@ -343,6 +309,234 @@ namespace CleanSweep
             Settings.Default.Box14Checked = checkBox14.Checked;
             Settings.Default.Box15Checked = checkBox15.Checked;
             Settings.Default.Box18Checked = checkBox18.Checked;
+            Settings.Default.DarkMode = darkToolStripMenuItem.Checked;
+        }
+
+        private void SetTheme()
+        {
+            if (Settings.Default.DarkMode)
+            {
+                SetDarkMode();
+                darkToolStripMenuItem.Checked = true;
+                lightToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                SetLightMode();
+                darkToolStripMenuItem.Checked = false;
+                lightToolStripMenuItem.Checked = true;
+            }
+        }
+
+        private void SetLightMode()
+        {
+            Color backgroundColor = Color.White;
+            Color textColor = Color.Black;
+            Color buttonBackColor = Color.LightGray;
+            Color buttonTextColor = Color.Black;
+
+            ApplyThemeToControls(this.Controls, backgroundColor, textColor, buttonBackColor, buttonTextColor);
+
+            menuStrip1.BackColor = backgroundColor;
+            menuStrip1.ForeColor = textColor;
+            menuStrip1.Renderer = new CustomToolStripRenderer(backgroundColor, textColor);
+
+            foreach (ToolStripMenuItem item in menuStrip1.Items)
+            {
+                item.ForeColor = textColor;
+                item.BackColor = backgroundColor;
+                UpdateDropDownItemsColor(item, backgroundColor, textColor);
+            }
+
+            BackColor = backgroundColor;
+            Settings.Default.DarkMode = false;
+            Settings.Default.Save();
+        }
+
+        private void SetDarkMode()
+        {
+            Color backgroundColor = Color.Black;
+            Color textColor = Color.White;
+            Color buttonBackColor = Color.DarkGray;
+            Color buttonTextColor = Color.White;
+
+            ApplyThemeToControls(this.Controls, backgroundColor, textColor, buttonBackColor, buttonTextColor);
+
+            menuStrip1.BackColor = backgroundColor;
+            menuStrip1.ForeColor = textColor;
+            menuStrip1.Renderer = new CustomToolStripRenderer(backgroundColor, textColor);
+
+            foreach (ToolStripMenuItem item in menuStrip1.Items)
+            {
+                item.ForeColor = textColor;
+                item.BackColor = backgroundColor;
+                UpdateDropDownItemsColor(item, backgroundColor, textColor);
+            }
+
+            BackColor = backgroundColor;
+            Settings.Default.DarkMode = true;
+            Settings.Default.Save();
+        }
+
+        private void ApplyThemeToControls(Control.ControlCollection controls, Color backgroundColor, Color textColor, Color buttonBackColor, Color buttonTextColor)
+        {
+            foreach (Control control in controls)
+            {
+                if (control is RichTextBox)
+                {
+                    control.BackColor = backgroundColor;
+                    control.ForeColor = textColor;
+                }
+                else if (control is Button)
+                {
+                    control.BackColor = buttonBackColor;
+                    control.ForeColor = buttonTextColor;
+                }
+                else if (control is CheckBox)
+                {
+                    control.BackColor = backgroundColor;
+                    control.ForeColor = textColor;
+                }
+                else if (control is Panel || control is GroupBox)
+                {
+                    control.BackColor = backgroundColor;
+                }
+                else if (control is ToolStrip strip)
+                {
+                    strip.BackColor = backgroundColor;
+                    strip.ForeColor = textColor;
+                }
+                else
+                {
+                    control.BackColor = backgroundColor;
+                    control.ForeColor = textColor;
+                }
+
+                if (control.HasChildren)
+                {
+                    ApplyThemeToControls(control.Controls, backgroundColor, textColor, buttonBackColor, buttonTextColor);
+                }
+            }
+        }
+
+        private void UpdateDropDownItemsColor(ToolStripMenuItem menuItem, Color backgroundColor, Color textColor)
+        {
+            foreach (ToolStripItem subItem in menuItem.DropDownItems)
+            {
+                subItem.BackColor = backgroundColor;
+                subItem.ForeColor = textColor;
+
+                if (subItem is ToolStripMenuItem subMenuItem)
+                {
+                    UpdateDropDownItemsColor(subMenuItem, backgroundColor, textColor);
+                }
+            }
+        }
+
+        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            darkToolStripMenuItem.Checked = true;
+            lightToolStripMenuItem.Checked = false;
+            SetDarkMode();
+        }
+
+        private void lightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lightToolStripMenuItem.Checked = true;
+            darkToolStripMenuItem.Checked = false;
+            SetLightMode();
+        }
+
+        private class CustomToolStripRenderer : ToolStripProfessionalRenderer
+        {
+            private readonly Color backgroundColor;
+            private readonly Color textColor;
+            private readonly Color hoverBackgroundColor;
+            private readonly Color hoverTextColor;
+
+            public CustomToolStripRenderer(Color backColor, Color foreColor) : base(new CustomColorTable(backColor, foreColor))
+            {
+                backgroundColor = backColor;
+                textColor = foreColor;
+                hoverBackgroundColor = backColor == Color.Black ? Color.Gray : Color.LightGray;
+                hoverTextColor = foreColor;
+            }
+
+            protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+            {
+                Rectangle rc = new Rectangle(Point.Empty, e.Item.Size);
+
+                if (e.Item.Selected)
+                {
+                    using (SolidBrush brush = new SolidBrush(hoverBackgroundColor))
+                    {
+                        e.Graphics.FillRectangle(brush, rc);
+                    }
+                    e.Item.ForeColor = hoverTextColor;
+                }
+                else if (e.Item.Pressed)
+                {
+                    using (SolidBrush brush = new SolidBrush(hoverBackgroundColor))
+                    {
+                        e.Graphics.FillRectangle(brush, rc);
+                    }
+                    e.Item.ForeColor = hoverTextColor;
+                }
+                else
+                {
+                    using (SolidBrush brush = new SolidBrush(backgroundColor))
+                    {
+                        e.Graphics.FillRectangle(brush, rc);
+                    }
+                    e.Item.ForeColor = textColor;
+                }
+            }
+
+            protected override void OnRenderToolStripBackground(ToolStripRenderEventArgs e)
+            {
+                // Set the overall background of the tool strip
+                using (SolidBrush brush = new SolidBrush(backgroundColor))
+                {
+                    e.Graphics.FillRectangle(brush, e.AffectedBounds);
+                }
+            }
+
+            protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+            {
+                // Ensure the text is always visible and clear
+                e.TextColor = e.Item.Selected ? hoverTextColor : textColor;
+                base.OnRenderItemText(e);
+            }
+        }
+
+        private class CustomColorTable : ProfessionalColorTable
+        {
+            private readonly Color menuBackColor;
+            private readonly Color menuTextColor;
+
+            public CustomColorTable(Color backColor, Color textColor)
+            {
+                menuBackColor = backColor;
+                menuTextColor = textColor;
+            }
+
+            public override Color MenuItemSelected => menuTextColor;
+            public override Color MenuItemSelectedGradientBegin => menuBackColor;
+            public override Color MenuItemSelectedGradientEnd => menuBackColor;
+            public override Color MenuItemBorder => menuTextColor;
+            public override Color MenuItemPressedGradientBegin => menuBackColor;
+            public override Color MenuItemPressedGradientEnd => menuBackColor;
+            public override Color ToolStripDropDownBackground => menuBackColor;
+        }
+
+        private void MenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void ToolStripContainer1_TopToolStripPanel_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void OptionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -355,25 +549,9 @@ namespace CleanSweep
 
         }
 
-        private void SetDefaultFontColor(Control.ControlCollection controls, Color richTextBoxColor, Color buttonColor)
+        private void themeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (Control control in controls)
-            {
-                if (control is RichTextBox)
-                {
-                    control.ForeColor = richTextBoxColor; // Set RichTextBox text color
-                }
-                else if (control is Button)
-                {
-                    control.ForeColor = buttonColor; // Set Button text color
-                }
 
-                // If the control has children, recursively apply the same logic
-                if (control.HasChildren)
-                {
-                    SetDefaultFontColor(control.Controls, richTextBoxColor, buttonColor);
-                }
-            }
         }
     }
 }

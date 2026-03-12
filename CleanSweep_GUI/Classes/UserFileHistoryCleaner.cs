@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -51,7 +50,7 @@ public class UserFileHistoryCleaner : ICleaner
         {
             Console.WriteLine($"User File History Cleaner: Error during User File History cleanup: {ex.Message}");
         }
-        RichTextBoxExtensions.AppendText(_outputWindow, "if enabled, Windows File History has been removed!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "if enabled, Windows File History has been removed!\n");
     }
 
     private bool IsFileHistoryEnabled()

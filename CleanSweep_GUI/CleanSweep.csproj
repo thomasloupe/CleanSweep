@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>CleanSweep</RootNamespace>
     <AssemblyName>CleanSweep</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -32,8 +32,8 @@
     <PublisherName>Thomas Loupe</PublisherName>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>true</UseApplicationTrust>
+    <ApplicationVersion>3.1.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -115,6 +115,7 @@
     <Compile Include="Classes\TemporaryInternetFilesCleaner.cs" />
     <Compile Include="Classes\TemporarySetupFilesCleaner.cs" />
     <Compile Include="Classes\ThumbnailCacheCleaner.cs" />
+    <Compile Include="Classes\UpdateCheck.cs" />
     <Compile Include="Classes\UserFileHistoryCleaner.cs" />
     <Compile Include="Classes\CleanSweepVersion.cs" />
     <Compile Include="Classes\WindowsDefenderLogFilesCleaner.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="CleanSweep.Designer.cs">
       <DependentUpon>CleanSweep.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CustomMessageBox.cs" />
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Interfaces\ICleaner.cs" />
     <Compile Include="Program.cs" />

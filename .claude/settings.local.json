@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:/GitHub Projects/CleanSweep\" && ls *.sln)",
+      "Bash(cd \"D:/GitHub Projects/CleanSweep/CleanSweep_GUI\" && dotnet build CleanSweep.sln 2>&1)"
+    ]
+  }
+}

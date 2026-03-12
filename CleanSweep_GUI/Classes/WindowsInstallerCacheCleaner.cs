@@ -1,6 +1,5 @@
 ﻿using CleanSweep.Interfaces;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,7 +43,7 @@ public class WindowsInstallerCacheCleaner : ICleaner
                 Console.WriteLine($"Windows Installer Cache Cleaner: Error during Windows Installer Cache cleanup: {ex.Message}");
             }
         });
-        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Installer Cache cleaned!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Installer Cache cleaned!\n");
     }
 
     public long ReportReclaimedSpace()
@@ -60,8 +59,17 @@ public class WindowsInstallerCacheCleaner : ICleaner
         if (!Directory.Exists(directoryPath))
             return 0;
 
-        return Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)
-                        .Sum(file => new FileInfo(file).Length);
+        long totalSize = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                try { totalSize += file.Length; }
+                catch { }
+            }
+        }
+        catch { }
+        return totalSize;
     }
 
     private int ConvertBytesToMegabytes(long bytes)

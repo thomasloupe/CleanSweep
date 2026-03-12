@@ -23,24 +23,8 @@ public class TemporaryInternetFilesCleaner : ICleaner
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        long totalSizeBytes = 0;
-
-        try
-        {
-            if (Directory.Exists(_tempInternetFilesDirectory))
-            {
-                totalSizeBytes = Directory.GetFiles(_tempInternetFilesDirectory, "*.*", SearchOption.AllDirectories)
-                                          .Sum(t => new FileInfo(t).Length);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-
-        _preCleanupSize = totalSizeBytes;
-
-        int totalSizeMBInt = ConvertBytesToMegabytes(totalSizeBytes);
+        _preCleanupSize = CalculateDirectorySize(_tempInternetFilesDirectory);
+        int totalSizeMBInt = ConvertBytesToMegabytes(_preCleanupSize);
         return ("Temporary Internet Files", totalSizeMBInt);
     }
 
@@ -65,21 +49,33 @@ public class TemporaryInternetFilesCleaner : ICleaner
             Console.WriteLine($"Temporary Internet Files Cleaner: Failed to delete file or directory { ex.Message}");
         }
 
-        RichTextBoxExtensions.AppendText(_outputWindow, "Cleaning Temporary Setup Files...\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Cleaning Temporary Setup Files...\n");
         return Task.CompletedTask;
     }
 
     public long ReportReclaimedSpace()
     {
-        long newSize = 0;
-        if (Directory.Exists(_tempInternetFilesDirectory))
-        {
-            newSize = Directory.GetFiles(_tempInternetFilesDirectory, "*", SearchOption.AllDirectories)
-                               .Sum(t => new FileInfo(t).Length);
-        }
-
-        long reclaimedSpace = _preCleanupSize - newSize;
+        long postCleanupSize = CalculateDirectorySize(_tempInternetFilesDirectory);
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
         return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        long totalSize = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                try { totalSize += file.Length; }
+                catch { }
+            }
+        }
+        catch { }
+        return totalSize;
     }
 
     private int ConvertBytesToMegabytes(long bytes)

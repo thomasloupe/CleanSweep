@@ -1,7 +1,6 @@
 ﻿using CleanSweep.Interfaces;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -52,7 +51,7 @@ public class EventViewerLogsCleaner : ICleaner
                 Console.WriteLine($"Event Logs Viewer: Error during Event Viewer log cleanup: {ex.Message}");
             }
         });
-        RichTextBoxExtensions.AppendText(_outputWindow, "Event Viewer Logs cleaned!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Event Viewer Logs cleaned!\n");
     }
 
     (string FileType, int SpaceInMB) ICleaner.GetReclaimableSpace()

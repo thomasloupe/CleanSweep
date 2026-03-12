@@ -1,6 +1,5 @@
 ﻿using CleanSweep.Interfaces;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,12 +19,7 @@ public class DeliveryOptimizationFilesCleaner : ICleaner
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        long sizeInBytes = 0;
-        if (Directory.Exists(_deliveryOptimizationFilesDirectory))
-        {
-            sizeInBytes = Directory.GetFiles(_deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories)
-                                   .Sum(file => (new FileInfo(file).Length));
-        }
+        long sizeInBytes = CalculateDirectorySize(_deliveryOptimizationFilesDirectory);
 
         int sizeInMB = ConvertBytesToMegabytes(sizeInBytes);
         _deliveryOptimizationFilesDirSizeInMegaBytes = sizeInMB;
@@ -67,19 +61,32 @@ public class DeliveryOptimizationFilesCleaner : ICleaner
             Console.WriteLine($"Delivery Optimization Files Cleaner: Error during Delivery Optimization files cleanup: {ex.Message}");
         }
 
-        RichTextBoxExtensions.AppendText(_outputWindow, "Delivery Optimization Files cleaned!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Delivery Optimization Files cleaned!\n");
         return Task.CompletedTask;
     }
 
     public long ReportReclaimedSpace()
     {
-        long newSize = 0;
-        if (Directory.Exists(_deliveryOptimizationFilesDirectory))
-        {
-            newSize = Directory.GetFiles(_deliveryOptimizationFilesDirectory, "*", SearchOption.AllDirectories)
-                               .Sum(t => (new FileInfo(t).Length)) / 1024 / 1024;
-        }
+        long newSize = ConvertBytesToMegabytes(CalculateDirectorySize(_deliveryOptimizationFilesDirectory));
         return _deliveryOptimizationFilesDirSizeInMegaBytes - newSize;
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        long totalSize = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                try { totalSize += file.Length; }
+                catch { }
+            }
+        }
+        catch { }
+        return totalSize;
     }
 
     private int ConvertBytesToMegabytes(long bytes)

@@ -1,6 +1,5 @@
 ﻿using CleanSweep.Interfaces;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -64,7 +63,7 @@ public class WindowsDefenderLogFilesCleaner : ICleaner
                 Console.WriteLine($"Windows Defender Log Files Cleaner: Error during Windows Defender log files cleanup: {ex.Message}");
             }
         });
-        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Defender cleaned!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Defender cleaned!\n");
     }
 
     public long ReportReclaimedSpace()
@@ -82,8 +81,15 @@ public class WindowsDefenderLogFilesCleaner : ICleaner
         {
             if (Directory.Exists(path))
             {
-                totalSize += Directory.GetFiles(path, "*.log", SearchOption.AllDirectories)
-                                      .Sum(file => new FileInfo(file).Length);
+                try
+                {
+                    foreach (var file in new DirectoryInfo(path).EnumerateFiles("*.log", SearchOption.AllDirectories))
+                    {
+                        try { totalSize += file.Length; }
+                        catch { }
+                    }
+                }
+                catch { }
             }
         }
 

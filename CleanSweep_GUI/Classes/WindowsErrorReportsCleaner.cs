@@ -1,6 +1,5 @@
 ﻿using CleanSweep.Interfaces;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,17 +19,9 @@ public class WindowsErrorReportsCleaner : ICleaner
 
     public (string FileType, int SpaceInMB) GetReclaimableSpace()
     {
-        long totalSizeBytes = 0;
+        _preCleanupSize = CalculateDirectorySize(_windowsErrorReportsDirectory);
 
-        if (Directory.Exists(_windowsErrorReportsDirectory))
-        {
-            totalSizeBytes = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories)
-                                      .Sum(t => new FileInfo(t).Length);
-        }
-
-        _preCleanupSize = totalSizeBytes;
-
-        int totalSizeMBInt = ConvertBytesToMegabytes(totalSizeBytes);
+        int totalSizeMBInt = ConvertBytesToMegabytes(_preCleanupSize);
         return ("Windows Error Reports", totalSizeMBInt);
     }
 
@@ -55,21 +46,33 @@ public class WindowsErrorReportsCleaner : ICleaner
             Console.WriteLine($"Windows Error Reports Cleaner: {ex.Message}");
         }
 
-        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Error Reports Cleaned!\n", Color.Green);
+        RichTextBoxExtensions.AppendText(_outputWindow, "Windows Error Reports Cleaned!\n");
         return Task.CompletedTask;
     }
 
     public long ReportReclaimedSpace()
     {
-        long newSize = 0;
-        if (Directory.Exists(_windowsErrorReportsDirectory))
-        {
-            newSize = Directory.GetFiles(_windowsErrorReportsDirectory, "*", SearchOption.AllDirectories)
-                               .Sum(t => new FileInfo(t).Length);
-        }
-
-        long reclaimedSpace = _preCleanupSize - newSize;
+        long postCleanupSize = CalculateDirectorySize(_windowsErrorReportsDirectory);
+        long reclaimedSpace = _preCleanupSize - postCleanupSize;
         return ConvertBytesToMegabytes(reclaimedSpace);
+    }
+
+    private long CalculateDirectorySize(string directoryPath)
+    {
+        if (!Directory.Exists(directoryPath))
+            return 0;
+
+        long totalSize = 0;
+        try
+        {
+            foreach (var file in new DirectoryInfo(directoryPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            {
+                try { totalSize += file.Length; }
+                catch { }
+            }
+        }
+        catch { }
+        return totalSize;
     }
 
     private int ConvertBytesToMegabytes(long bytes)

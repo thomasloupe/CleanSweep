@@ -65,5 +65,8 @@
     <Setting Name="FormWidth" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">550</Value>
     </Setting>
+    <Setting Name="DarkMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

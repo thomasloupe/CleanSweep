@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,7 +49,7 @@ public class RecycleBinCleaner : ICleaner
 
     public async Task Reclaim()
     {
-        SafeAppendText("Cleaning Recycle Bin...\n", Color.Blue);
+        SafeAppendText("Cleaning Recycle Bin...\n");
 
         try
         {
@@ -59,11 +58,11 @@ public class RecycleBinCleaner : ICleaner
                 uint result = SHEmptyRecycleBin(IntPtr.Zero, null, SHERB_NOCONFIRMATION | SHERB_NOPROGRESSUI | SHERB_NOSOUND);
                 if (result == 0)
                 {
-                    SafeAppendText("Recycle Bin cleaned successfully.\n", Color.Green);
+                    SafeAppendText("Recycle Bin cleaned successfully.\n");
                 }
                 else
                 {
-                    SafeAppendText($"Recycle Bin is already empty!\n", Color.Red);
+                    SafeAppendText($"Recycle Bin is already empty!\n");
                 }
             });
         }
@@ -111,15 +110,15 @@ public class RecycleBinCleaner : ICleaner
         return (int)(bytes / 1024 / 1024);
     }
 
-    private void SafeAppendText(string text, Color color)
+    private void SafeAppendText(string text)
     {
         if (_outputWindow.InvokeRequired)
         {
-            _outputWindow.Invoke(new Action(() => SafeAppendText(text, color)));
+            _outputWindow.Invoke(new Action(() => SafeAppendText(text)));
         }
         else
         {
-            RichTextBoxExtensions.AppendText(_outputWindow, text, color);
+            RichTextBoxExtensions.AppendText(_outputWindow, text);
         }
     }
 }

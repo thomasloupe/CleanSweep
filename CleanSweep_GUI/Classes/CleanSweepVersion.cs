@@ -2,6 +2,6 @@
 {
     public class CleanSweepVersion
     {
-        public static string Version { get; } = "v3.0";
+        public static string Version { get; } = "v3.1";
     }
 }
